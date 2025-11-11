@@ -2,9 +2,9 @@
 import math
 import os
 from datetime import datetime
-from src.backend.system.tools.Laser import Laser
+from src.backend.robot_application.glue_dispensing_application.tools.Laser import Laser
 from modules.VisionSystem.heightMeasuring.LaserTracker import LaserTrackService
-from src.backend.system.tools.enums.Gripper import Gripper
+from src.backend.robot_application.glue_dispensing_application.tools.enums.Gripper import Gripper
 from src.backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
     setup_logger
 from src.backend.system.utils.contours import is_contour_inside_polygon

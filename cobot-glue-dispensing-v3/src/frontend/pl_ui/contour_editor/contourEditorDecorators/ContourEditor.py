@@ -1,12 +1,10 @@
 from PyQt6.QtCore import pyqtSignal, Qt, QTimer, QPointF
-from PyQt6.QtGui import QImage, QPainter
+from PyQt6.QtGui import QPainter
 from PyQt6.QtWidgets import QFrame
 
 from modules.shared.shared.contour_editor.BezierSegmentManager import BezierSegmentManager
-from src.backend.system.workpiece.Workpiece import Workpiece
+from src.backend.robot_application.glue_dispensing_application.workpiece import Workpiece
 from src.frontend.pl_ui.contour_editor import constants
-from src.frontend.pl_ui.contour_editor.constants import EDIT_MODE, RECTANGLE_SELECT_MODE, DRAG_MODE, PICKUP_POINT_MODE, \
-    MULTI_SELECT_MODE
 from src.frontend.pl_ui.contour_editor.controllers.SegmentActionController import SegmentActionController
 from src.frontend.pl_ui.contour_editor.controllers.viewport_controller import ViewportController
 from src.frontend.pl_ui.contour_editor.managers.selection_manager import SelectionManager
@@ -18,7 +16,6 @@ from src.frontend.pl_ui.contour_editor.managers.data_export_manager import DataE
 from src.frontend.pl_ui.contour_editor.managers.event_manager import EventManager
 from src.frontend.pl_ui.contour_editor.managers.layer_manager import LayerManager
 from src.frontend.pl_ui.contour_editor.managers.workpiece_manager import WorkpieceManager
-from src.frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space
 from src.frontend.pl_ui.contour_editor.rendering.editor_renderer import EditorRenderer
 
 class ContourEditor(QFrame):

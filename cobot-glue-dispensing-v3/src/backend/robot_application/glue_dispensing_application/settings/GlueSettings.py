@@ -5,7 +5,7 @@ from src.backend.robot_application.glue_dispensing_application.settings.enums.Gl
 from src.backend.robot_application.glue_dispensing_application.settings.GlueConstants import (
     SETTINGS_GLUE_GET, SETTINGS_GLUE_SET, SETTINGS_GLUE_GET_LEGACY, SETTINGS_GLUE_SET_LEGACY
 )
-from src.backend.system.tools.GlueCell import GlueType
+from src.backend.robot_application.glue_dispensing_application.tools.GlueCell import GlueType
 
 
 class GlueSettings(Settings, ApplicationSettingsInterface):

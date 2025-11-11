@@ -5,7 +5,7 @@ Description:
     serving as an abstraction between the business logic and data access layers.
 """
 from modules.shared.shared.workpiece import Workpiece
-from src.backend.system.workpiece.WorkPieceRepositorySingleton import WorkPieceRepositorySingleton
+from src.backend.robot_application.glue_dispensing_application.workpiece.WorkPieceRepositorySingleton import WorkPieceRepositorySingleton
 
 
 class WorkpieceService:

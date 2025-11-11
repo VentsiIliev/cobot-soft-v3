@@ -1,7 +1,7 @@
 from modules.shared.v1.Response import Response
 from modules.shared.v1 import Constants
 from src.backend.robot_application.robot_application_interface import RobotApplicationInterface
-from src.backend.system.workpiece.WorkpieceController import WorkpieceController
+from src.backend.robot_application.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
 from src.frontend.pl_ui.Endpoints import  *
 
 # Import specialized handlers

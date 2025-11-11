@@ -16,9 +16,9 @@ from src.backend.system.robot.robotService.RobotServiceStateManager import Robot
 from src.backend.system.robot.robotService.RobotServiceSubscriptionManager import RobotServiceSubscriptionManager
 from src.backend.system.robot.robotService.RobotStateManager import RobotStateManager
 from src.backend.system.robot.robotService.enums.RobotServiceState import RobotServiceState
-from src.backend.system.tools.Laser import Laser
-from src.backend.system.tools.ToolChanger import ToolChanger
-from src.backend.system.tools.VacuumPump import VacuumPump
+from src.backend.robot_application.glue_dispensing_application.tools.Laser import Laser
+from src.backend.robot_application.glue_dispensing_application.tools.ToolChanger import ToolChanger
+from src.backend.robot_application.glue_dispensing_application.tools.VacuumPump import VacuumPump
 from src.backend.system.utils.custom_logging import setup_logger, \
     LoggerContext, log_info_message, log_debug_message
 

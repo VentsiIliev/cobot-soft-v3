@@ -1,6 +1,6 @@
 from modules.shared.shared.settings.BaseSettings import Settings
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-from src.backend.system.tools.GlueCell import GlueType
+from src.backend.robot_application.glue_dispensing_application.tools.GlueCell import GlueType
 
 
 class GlueSettings(Settings):

@@ -29,7 +29,7 @@ from src.backend.robot_application.glue_dispensing_application.handlers.workpiec
 from src.backend.system.robot.robotService.RobotService import RobotService
 from src.backend.system.robot.robotService.enums.RobotServiceState import RobotServiceState
 from src.backend.system.settings.SettingsService import SettingsService
-from src.backend.system.tools.GlueCell import GlueCellsManagerSingleton
+from src.backend.robot_application.glue_dispensing_application.tools.GlueCell import GlueCellsManagerSingleton
 from src.backend.system.vision.VisionService import _VisionService
 from src.backend.robot_application.interfaces.application_settings_interface import settings_registry
 from src.backend.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings

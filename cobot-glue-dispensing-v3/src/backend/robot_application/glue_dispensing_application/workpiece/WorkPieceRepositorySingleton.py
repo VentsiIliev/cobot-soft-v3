@@ -2,8 +2,7 @@
 from modules.shared.shared.workpiece.WorkpieceJsonRepository import WorkpieceJsonRepository
 from modules.shared.shared.workpiece.Workpiece import  WorkpieceField
 from src.backend.system.utils.PathResolver import PathType
-from src.backend.system.workpiece.Workpiece import Workpiece
-import os
+from src.backend.robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
 from src.backend.system.utils import PathResolver
 class WorkPieceRepositorySingleton:
     """

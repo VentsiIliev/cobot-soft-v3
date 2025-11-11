@@ -247,7 +247,7 @@ Controller for camera system operations exposed to external interfaces.
 
 ## Workpiece Management
 
-**Documentation**: [workpiece/README.md](./workpiece/README.md)
+**Documentation**: [workpiece/README.md](../robot_application/glue_dispensing_application/workpiece/README.md)
 
 ### Workpiece
 
@@ -270,7 +270,7 @@ Manages workpiece CRUD operations and validation.
 
 ## Tools Management
 
-**Documentation**: [tools/README.md](./tools/README.md)
+**Documentation**: [tools/README.md](../robot_application/glue_dispensing_application/tools/README.md)
 
 ### Glue Cells
 

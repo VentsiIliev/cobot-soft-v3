@@ -1,18 +1,17 @@
 import sys
 import requests
-from enum import Enum
 
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScroller
 from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QApplication, QHBoxLayout,
                              QSizePolicy, QComboBox,
-                             QScrollArea, QGroupBox, QGridLayout, QPushButton)
+                             QScrollArea, QGroupBox, QGridLayout)
 from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.localization import TranslationKeys, get_app_translator
+from src.frontend.pl_ui.localization import get_app_translator
 from src.frontend.pl_ui.ui.widgets.SwitchButton import QToggle
 from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
 from src.frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
-from src.backend.system.tools.GlueCell import GlueCellsManagerSingleton, GlueDataFetcher, GlueType
+from src.backend.robot_application.glue_dispensing_application.tools.GlueCell import GlueCellsManagerSingleton, GlueDataFetcher
 import random
 import json
 from pathlib import Path
@@ -817,7 +816,7 @@ class LoadCellsSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
         """)
 
     def fetch_calibration_config(self, load_cell_id: int):
-        from src.backend.system.tools.GlueCell import GET_CONFIG_ENDPOINT
+        from src.backend.robot_application.glue_dispensing_application.tools.GlueCell import GET_CONFIG_ENDPOINT
         """Fetch calibration settings (offset and scale) for the given load cell."""
         import requests
 

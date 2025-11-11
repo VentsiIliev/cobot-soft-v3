@@ -23,7 +23,7 @@ from src.backend.robot_application.glue_dispensing_application.settings.GlueCons
     SETTINGS_GLUE_GET,
     SETTINGS_GLUE_SET
 )
-from src.backend.system.workpiece.Workpiece import Workpiece
+from src.backend.robot_application.glue_dispensing_application.workpiece import Workpiece
 
 from src.frontend.pl_ui.ui.windows.settings.CameraSettingsTabLayout import CameraSettingsTabLayout
 from src.frontend.pl_ui.ui.windows.settings.ContourSettingsTabLayout import ContourSettingsTabLayout
