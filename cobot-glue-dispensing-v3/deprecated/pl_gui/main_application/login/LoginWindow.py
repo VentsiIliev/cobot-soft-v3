@@ -36,7 +36,7 @@ LOGO = os.path.join(RESOURCE_DIR, "pl_ui_icons", "logo.ico")
 
 # Resolve the base directory of this file
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-SETTINGS_PATH = os.path.join(BASE_DIR, "GlueDispensingApplication", "storage", "ui_settings", "ui_settings.json")
+SETTINGS_PATH = os.path.join(BASE_DIR, "system", "storage", "ui_settings", "ui_settings.json")
 
 
 class LoginTab(QWidget):

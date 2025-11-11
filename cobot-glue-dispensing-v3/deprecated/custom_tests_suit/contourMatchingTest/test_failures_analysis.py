@@ -42,7 +42,7 @@ def test_shape_pair(name1, func1, name2, func2, should_match, rotation=45, trans
 
     # Load model and predict
     model = load_latest_model(
-        save_dir="/GlueDispensingApplication/contourMatching/shapeMatchinModelTraining/saved_models"
+        save_dir="/system/contourMatching/shapeMatchinModelTraining/saved_models"
     )
 
     result, confidence, features = predict_similarity(model, c1, c2)

@@ -1,6 +1,6 @@
 # from VisionSystem.VisionSystem import VisionSystem
-# from GlueDispensingApplication.utils import utils
-# from GlueDispensingApplication.robot.RobotWrapper import RobotWrapper
+# from system.utils import utils
+# from system.robot.RobotWrapper import RobotWrapper
 # import numpy as np
 #
 # robotIp = '192.168.58.2'

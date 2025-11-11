@@ -1,3 +1,3 @@
-from src.backend.GlueDispensingApplication.settings.SettingsService import SettingsService
+from src.backend.system.settings.SettingsService import SettingsService
 if __name__ == "__main__":
     settingsManager = SettingsService()

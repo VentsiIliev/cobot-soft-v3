@@ -29,7 +29,7 @@ model = None
 window_name = "Contour Matcher"
 import os
 import sys
-def ensure_project_root_contains(pkg_dir='GlueDispensingApplication'):
+def ensure_project_root_contains(pkg_dir='system'):
     p = os.path.abspath(os.path.dirname(__file__))
     while True:
         if os.path.isdir(os.path.join(p, pkg_dir)):

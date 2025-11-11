@@ -1,6 +1,6 @@
 import cv2
 
-from src.backend.GlueDispensingApplication.utils.custom_logging import log_if_enabled, LoggingLevel
+from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
 from libs.plvision.PLVision.arucoModule import ArucoDictionary, ArucoDetector
 
 

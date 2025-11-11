@@ -4,9 +4,9 @@ import minimalmodbus
 import serial
 
 utilsimport linuxUtils
-from src.backend.GlueDispensingApplication.SensorPublisher import Sensor, SENSOR_STATE_NO_COMMUNICATION, SENSOR_STATE_DISCONNECTED, \
+from src.backend.system.SensorPublisher import Sensor, SENSOR_STATE_NO_COMMUNICATION, SENSOR_STATE_DISCONNECTED, \
     SENSOR_STATE_READY, SENSOR_STATE_ERROR
-from src.backend.GlueDispensingApplication.modbusCommunication.ModbusClient import ModbusClient
+from src.backend.system.modbusCommunication.ModbusClient import ModbusClient
 
 
 class DetectionStatus(Enum):

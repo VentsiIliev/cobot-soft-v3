@@ -2,9 +2,9 @@ from modules.glueSprayService.generatorControl.timer import Timer
 from typing import List, Optional
 from dataclasses import dataclass
 
-from src.backend.GlueDispensingApplication.Statistics import Statistics
+from src.backend.system.Statistics import Statistics
 from modules.modbusCommunication.ModbusController import ModbusController
-from src.backend.GlueDispensingApplication.utils.custom_logging import setup_logger,log_if_enabled, LoggingLevel
+from src.backend.system.utils.custom_logging import setup_logger,log_if_enabled, LoggingLevel
 
 ENABLE_LOGGING = True
 generator_control_logger = setup_logger("generator_control_logger")

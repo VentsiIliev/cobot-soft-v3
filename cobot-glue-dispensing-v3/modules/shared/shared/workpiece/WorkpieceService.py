@@ -5,7 +5,7 @@ Description:
     serving as an abstraction between the business logic and data access layers.
 """
 from modules.shared.shared.workpiece import Workpiece
-from src.backend.GlueDispensingApplication.workpiece.WorkPieceRepositorySingleton import WorkPieceRepositorySingleton
+from src.backend.system.workpiece.WorkPieceRepositorySingleton import WorkPieceRepositorySingleton
 
 
 class WorkpieceService:
@@ -20,7 +20,7 @@ class WorkpieceService:
        """
     DATE_FORMAT = "%Y-%m-%d"
     TIMESTAMP_FORMAT = "%Y-%m-%d_%H-%M-%S-%f"
-    BASE_DIR = "GlueDispensingApplication/storage/workpieces"
+    BASE_DIR = "system/storage/workpieces"
     WORKPIECE_FILE_SUFFIX = "_workpiece.json"
 
     def __init__(self):

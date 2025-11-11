@@ -2,10 +2,11 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QSizePoli
 from PyQt6.QtCore import Qt, pyqtSignal, QMetaObject, pyqtSlot
 
 from modules.shared.MessageBroker import MessageBroker
+from modules.shared.v1.topics import SystemTopics, RobotTopics
 from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 from src.frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
-from src.backend.GlueDispensingApplication.GlueSprayApplicationState import GlueSprayApplicationState
-from src.backend.GlueDispensingApplication.robot.robotService.RobotService import RobotServiceState
+from src.backend.robot_application.base_robot_application import ApplicationState
+from src.backend.system.robot.robotService.enums.RobotServiceState import RobotServiceState
 
 
 class ControlButtonsWidget(TranslatableWidget):
@@ -28,8 +29,8 @@ class ControlButtonsWidget(TranslatableWidget):
         # Initialize translations after UI is created
         self.init_translations()
         self.broker = MessageBroker()
-        self.broker.subscribe("system/state", self.on_system_status_update)
-        self.broker.subscribe("robot-service/state", self.on_robot_service_state_update)
+        self.broker.subscribe(SystemTopics.APPLICATION_STATE, self.on_system_status_update)
+        self.broker.subscribe(RobotTopics.SERVICE_STATE, self.on_robot_service_state_update)
 
     def init_ui(self) -> None:
         # Main layout for the widget
@@ -108,17 +109,30 @@ class ControlButtonsWidget(TranslatableWidget):
             # Widget has been deleted, silently ignore
             pass
 
-    def on_system_status_update(self, state) -> None:
-        """Handle GlueSprayApplication state updates"""
+    def on_system_status_update(self, state_data) -> None:
+        """Handle application state updates from new base system"""
         try:
             if not self.start_btn or not self.stop_btn or not self.pause_btn:
                 return
 
+            # Extract state from the new message format: {"state": "idle", "timestamp": "..."}
+            if isinstance(state_data, dict) and "state" in state_data:
+                state_value = state_data["state"]
+                # Convert string state to ApplicationState enum
+                try:
+                    new_state = ApplicationState(state_value)
+                except ValueError:
+                    print(f"Unknown application state: {state_value}")
+                    return
+            else:
+                # Fallback for old format or direct state object
+                new_state = state_data
+
             # Store the state and schedule GUI update on main thread
-            # FIST CHECK IF THE RECEIVED STATE IS DIFFERENT FROM THE CURRENT ONE
-            if self.app_state == state:
+            # FIRST CHECK IF THE RECEIVED STATE IS DIFFERENT FROM THE CURRENT ONE
+            if self.app_state == new_state:
                 return
-            self.app_state = state
+            self.app_state = new_state
             QMetaObject.invokeMethod(self, "_update_button_states_safe", Qt.ConnectionType.QueuedConnection)
         except RuntimeError:
             # Widget has been deleted, silently ignore
@@ -152,8 +166,8 @@ class ControlButtonsWidget(TranslatableWidget):
             self.pause_btn.setText("Resume")  # Show Resume when paused
             return
 
-        # Handle GlueSprayApplication states (when robot is not paused)
-        if self.app_state == GlueSprayApplicationState.IDLE:
+        # Handle Application states (when robot is not paused)
+        if self.app_state == ApplicationState.IDLE:
             # Only start button enabled when system is idle
             self.start_btn.setEnabled(True)
             print(f"START BUTTON ENABLED: {self.start_btn.isEnabled()}")
@@ -163,8 +177,8 @@ class ControlButtonsWidget(TranslatableWidget):
             self.is_paused = False
             self.pause_btn.setText(self.tr(TranslationKeys.Dashboard.PAUSE))
             
-        elif self.app_state == GlueSprayApplicationState.STARTED:
-            # When started, disable start and enable stop/pause
+        elif self.app_state == ApplicationState.RUNNING:
+            # When running, disable start and enable stop/pause
             self.start_btn.setEnabled(False)
             self.stop_btn.setEnabled(True)
             self.pause_btn.setEnabled(True)
@@ -172,12 +186,41 @@ class ControlButtonsWidget(TranslatableWidget):
             # Handle pause button text (robot should not be paused here due to early return above)
             self.is_paused = False
             self.pause_btn.setText(self.tr(TranslationKeys.Dashboard.PAUSE))
+        
+        elif self.app_state == ApplicationState.PAUSED:
+            # When application is paused, enable resume and stop
+            self.start_btn.setEnabled(False)
+            self.stop_btn.setEnabled(True)
+            self.pause_btn.setEnabled(True)
+            self.is_paused = True
+            self.pause_btn.setText("Resume")
                 
-        elif self.app_state == GlueSprayApplicationState.INITIALIZING:
+        elif self.app_state == ApplicationState.INITIALIZING:
             # All buttons disabled during initialization
             self.start_btn.setEnabled(False)
             self.stop_btn.setEnabled(False)
             self.pause_btn.setEnabled(False)
+            
+        elif self.app_state == ApplicationState.CALIBRATING:
+            # All buttons disabled during calibration
+            self.start_btn.setEnabled(False)
+            self.stop_btn.setEnabled(False)
+            self.pause_btn.setEnabled(False)
+            
+        elif self.app_state == ApplicationState.STOPPING:
+            # All buttons disabled while stopping
+            self.start_btn.setEnabled(False)
+            self.stop_btn.setEnabled(False)
+            self.pause_btn.setEnabled(False)
+            
+        elif self.app_state == ApplicationState.ERROR:
+            # Only stop button enabled in error state
+            self.start_btn.setEnabled(False)
+            self.stop_btn.setEnabled(True)
+            self.pause_btn.setEnabled(False)
+            # Reset pause button text
+            self.is_paused = False
+            self.pause_btn.setText(self.tr(TranslationKeys.Dashboard.PAUSE))
 
     def retranslate(self) -> None:
         """Update all text labels for language changes - called automatically"""
@@ -187,8 +230,8 @@ class ControlButtonsWidget(TranslatableWidget):
 
     def clean_up(self) -> None:
         """Clean up resources when the widget is closed"""
-        self.broker.unsubscribe("system/state", self.on_system_status_update)
-        self.broker.unsubscribe("robot-service/state", self.on_robot_service_state_update)
+        self.broker.unsubscribe(SystemTopics.APPLICATION_STATE, self.on_system_status_update)
+        self.broker.unsubscribe(RobotTopics.SERVICE_STATE, self.on_robot_service_state_update)
 
 if __name__ == "__main__":
     import sys

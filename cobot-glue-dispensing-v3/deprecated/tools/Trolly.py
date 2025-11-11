@@ -5,7 +5,7 @@ from logging import CRITICAL
 import serial.serialutil
 
 from modules.modbusCommunication.ModbusClient import ModbusClient
-from src.backend.GlueDispensingApplication.SensorPublisher import Sensor, SENSOR_STATE_NO_COMMUNICATION, SENSOR_STATE_DISCONNECTED, SENSOR_STATE_RECONNECTING, SENSOR_STATE_READY, SENSOR_STATE_ERROR, \
+from src.backend.system.SensorPublisher import Sensor, SENSOR_STATE_NO_COMMUNICATION, SENSOR_STATE_DISCONNECTED, SENSOR_STATE_RECONNECTING, SENSOR_STATE_READY, SENSOR_STATE_ERROR, \
     SENSOR_STATE_INITIALIZING,SENSOR_STATE_USB_NOT_CONNECTED
 import linuxUtils
 import minimalmodbus
@@ -289,7 +289,7 @@ class Trolly(Sensor):
 
 import threading
 
-from src.backend.GlueDispensingApplication.SensorPublisher import SensorPublisher
+from src.backend.system.SensorPublisher import SensorPublisher
 from modules.shared.MessageBroker import MessageBroker
 
 from PyQt6.QtCore import QObject, pyqtSignal

@@ -12,7 +12,7 @@ from src.frontend.pl_ui.localization import TranslationKeys, get_app_translator
 from src.frontend.pl_ui.ui.widgets.SwitchButton import QToggle
 from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
 from src.frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
-from src.backend.GlueDispensingApplication.tools.GlueCell import GlueCellsManagerSingleton, GlueDataFetcher, GlueType
+from src.backend.system.tools.GlueCell import GlueCellsManagerSingleton, GlueDataFetcher, GlueType
 import random
 import json
 from pathlib import Path
@@ -52,7 +52,7 @@ class LoadCellsSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
         
         # Load configuration values
         # Current file is in pl_ui/ui/windows/settings/, need to go up to project root
-        self.config_path = Path(__file__).parent.parent.parent.parent.parent / "GlueDispensingApplication" / "storage" / "glueCells" / "glue_cell_config.json"
+        self.config_path = Path(__file__).parent.parent.parent.parent.parent / "system" / "storage" / "glueCells" / "glue_cell_config.json"
         self.load_config()
 
         self.create_main_content()
@@ -816,7 +816,7 @@ class LoadCellsSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
         """)
 
     def fetch_calibration_config(self, load_cell_id: int):
-        from src.backend.GlueDispensingApplication.tools.GlueCell import GET_CONFIG_ENDPOINT
+        from src.backend.system.tools.GlueCell import GET_CONFIG_ENDPOINT
         """Fetch calibration settings (offset and scale) for the given load cell."""
         import requests
 

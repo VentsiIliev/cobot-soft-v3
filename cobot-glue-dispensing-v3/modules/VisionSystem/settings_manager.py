@@ -2,7 +2,7 @@ import json
 import os
 
 from modules.shared.shared.settings.conreateSettings.enums.CameraSettingKey import CameraSettingKey
-from src.backend.GlueDispensingApplication.utils.custom_logging import log_if_enabled, LoggingLevel
+from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
 from libs.plvision.PLVision.Camera import Camera
 
 CONFIG_FILE_PATH = os.path.join(os.path.dirname(__file__), 'config.json') # this is just a default path if not path provided

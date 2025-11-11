@@ -1,6 +1,6 @@
 # import numpy as np
 #
-# from GlueDispensingApplication.utils.custom_logging import log_if_enabled
+# from system.utils.custom_logging import log_if_enabled
 #
 #
 # def saveWorkAreaPoints(self, data):

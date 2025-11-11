@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from src.backend.GlueDispensingApplication.utils.custom_logging import log_if_enabled, LoggingLevel
+from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
 
 # Paths to camera calibration data
 CAMERA_DATA_PATH = os.path.join(os.path.dirname(__file__), 'calibration', 'cameraCalibration', 'storage',

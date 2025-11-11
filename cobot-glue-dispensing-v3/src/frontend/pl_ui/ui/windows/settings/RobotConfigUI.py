@@ -539,10 +539,11 @@ class RobotConfigController:
     def __init__(self,requestSender):
         self.ui = None  # Will be set by the UI after initialization
         self.requestSender=requestSender
-        # Use relative path from the current file location
+        # Use absolute path to the config file
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.join(current_dir, '..', '..', '..', '..')
-        self.config_file = os.path.join(project_root, 'GlueDispensingApplication', 'storage', 'settings', 'robot_config.json')
+        # Go up from current directory to project root (5 levels up from settings directory)
+        project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..', '..', '..'))
+        self.config_file = os.path.join(project_root,  "backend", 'system', 'storage', 'settings', 'robot_config.json')
         self.command_history = CommandHistory()
         self.is_loading = False  # Flag to prevent undo tracking during load
 

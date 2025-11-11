@@ -17,6 +17,8 @@ from modules.shared.v1.endpoints import (
     workpiece_endpoints,
     settings_endpoints
 )
+from src.backend.system.workpiece.Workpiece import Workpiece
+
 from src.frontend.pl_ui.ui.windows.settings.CameraSettingsTabLayout import CameraSettingsTabLayout
 from src.frontend.pl_ui.ui.windows.settings.ContourSettingsTabLayout import ContourSettingsTabLayout
 from src.frontend.pl_ui.ui.windows.settings.RobotSettingsTabLayout import RobotSettingsTabLayout
@@ -511,7 +513,18 @@ class Controller:
         if response.status == Constants.RESPONSE_STATUS_ERROR:
             print("Error fetching workpiece:", response.message)
             return False, response.message
-        return True,response.data
+        
+        # Convert the response data to a Workpiece object
+        try:
+            if isinstance(response.data, dict):
+                workpiece = Workpiece.fromDict(response.data)
+                return True, workpiece
+            else:
+                # response.data is already a Workpiece object
+                return True, response.data
+        except Exception as e:
+            print(f"Error converting response data to Workpiece: {e}")
+            return False, f"Error converting response data: {e}"
 
     def handleDeleteWorkpiece(self,workpieceId):
         request = workpiece_endpoints.WORKPIECE_DELETE

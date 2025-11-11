@@ -1,4 +1,4 @@
-# from src.backend.GlueDispensingApplication.tools.Trolly import Trolly
+# from src.backend.system.tools.Trolly import Trolly
 import logging
 import os
 
@@ -9,22 +9,23 @@ setup_localization()
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
 from modules.shared.v1.DomesticRequestSender import DomesticRequestSender
-from src.backend.GlueDispensingApplication.GlueSprayingApplication import GlueSprayingApplication
-from src.backend.GlueDispensingApplication.SensorPublisher import SensorPublisher
+from src.backend.robot_application.application_factory import create_application_factory, ApplicationFactory
+from src.backend.robot_application.base_robot_application import ApplicationType
+from src.backend.system.SensorPublisher import SensorPublisher
 
-from src.backend.GlueDispensingApplication.robot.RobotController import RobotController
-from src.backend.GlueDispensingApplication.robot.robotService.RobotService import RobotService
+from src.backend.system.robot.RobotController import RobotController
+from src.backend.system.robot.robotService.RobotService import RobotService
 # IMPORT CONTROLLERS
-from src.backend.GlueDispensingApplication.settings.SettingsController import SettingsController
-# from src.backend.GlueDispensingApplication.RequestHandler import RequestHandler
+from src.backend.system.settings.SettingsController import SettingsController
+# from src.backend.system.RequestHandler import RequestHandler
 # IMPORT SERVICES
-from src.backend.GlueDispensingApplication.settings.SettingsService import SettingsService
-from src.backend.GlueDispensingApplication.tools.GlueCell import GlueDataFetcher
+from src.backend.system.settings.SettingsService import SettingsService
+from src.backend.system.tools.GlueCell import GlueDataFetcher
 
 
-from src.backend.GlueDispensingApplication.vision.CameraSystemController import CameraSystemController
-from src.backend.GlueDispensingApplication.vision.VisionService import VisionServiceSingleton
-from src.backend.GlueDispensingApplication.workpiece.WorkpieceController import WorkpieceController
+from src.backend.system.vision.CameraSystemController import CameraSystemController
+from src.backend.system.vision.VisionService import VisionServiceSingleton
+from src.backend.system.workpiece.WorkpieceController import WorkpieceController
 
 
 if os.environ.get("WAYLAND_DISPLAY"):
@@ -56,10 +57,10 @@ if __name__ == "__main__":
     robot_config = settingsService.load_robot_config()
 
     if testRobot:
-        from src.backend.GlueDispensingApplication.robot.FairinoRobot import TestRobotWrapper
+        from src.backend.system.robot.FairinoRobot import TestRobotWrapper
         robot = TestRobotWrapper()
     else:
-        from src.backend.GlueDispensingApplication.robot.FairinoRobot import FairinoRobot
+        from src.backend.system.robot.FairinoRobot import FairinoRobot
         robot = FairinoRobot(robot_config.robot_ip)
 
     cameraService = VisionServiceSingleton().get_instance()
@@ -76,16 +77,25 @@ if __name__ == "__main__":
     workpieceController = WorkpieceController(workpieceService)
     robotController = RobotController(robotService)
 
-    # INIT APPLICATION
-
-    glueSprayingApplication = GlueSprayingApplication(cameraService, settingsService, workpieceService,
-                                                      robotService)  # Initialize ActionManager with a placeholder callback
+    # INIT APPLICATION FACTORY
+    
+    application_factory = create_application_factory(
+        vision_service=cameraService,
+        settings_service=settingsService, 
+        workpiece_service=workpieceService,
+        robot_service=robotService,
+        auto_register=True
+    )
+    
+    # GET CURRENT APPLICATION (defaulting to glue dispensing)
+    current_application = application_factory.switch_application(ApplicationType.GLUE_DISPENSING)
+    print(f"Initialized application: {current_application.get_application_name()} v{current_application.get_application_version()}")
     # INIT REQUEST HANDLER
     if API_VERSION == 1:
 
         from src.communication_layer.api_gateway.handlers.request_handler import RequestHandler
-        requestHandler = RequestHandler(glueSprayingApplication, settingsController, cameraSystemController,
-                                        workpieceController, robotController)
+        requestHandler = RequestHandler(current_application, settingsController, cameraSystemController,
+                                        workpieceController, robotController, application_factory)
 
 
     else:

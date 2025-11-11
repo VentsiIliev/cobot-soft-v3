@@ -2,10 +2,10 @@
 # import time
 #
 # from API.MessageBroker import MessageBroker
-# from GlueDispensingApplication.robot.RobotUtils import calculate_distance_between_points, calculate_velocity, \
+# from system.robot.RobotUtils import calculate_distance_between_points, calculate_velocity, \
 #     calculate_acceleration
-# from GlueDispensingApplication.robot.FairinoRobot import FairinoRobot
-# from GlueDispensingApplication.robot.robotService.enums.RobotState import RobotState
+# from system.robot.FairinoRobot import FairinoRobot
+# from system.robot.robotService.enums.RobotState import RobotState
 #
 # class RobotStateManager:
 #     def __init__(self,robot_ip, cycle_time=0.03, velocity_threshold=1, acceleration_threshold=0.001):

@@ -497,7 +497,7 @@ SaveWorkpieceHandler prints: "❌ Failed to save workpiece: {error}"
 ### Storage Paths:
 
 ```python
-BASE_DIR = "GlueDispensingApplication/storage/workpieces"
+BASE_DIR = "system/storage/workpieces"
 DATE_FORMAT = "%Y-%m-%d"
 TIMESTAMP_FORMAT = "%Y-%m-%d_%H-%M-%S-%f"
 WORKPIECE_FILE_SUFFIX = "_workpiece.json"

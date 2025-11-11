@@ -18,14 +18,16 @@ class OperationsHandler:
     demo operations, test runs, and general system operations.
     """
     
-    def __init__(self, application):
+    def __init__(self, application, application_factory=None):
         """
         Initialize the OperationsHandler.
         
         Args:
-            application: Main GlueSprayingApplication instance
+            application: RobotApplicationInterface instance
+            application_factory: Optional ApplicationFactory for switching applications
         """
         self.application = application
+        self.application_factory = application_factory
     
     def handle(self, request, data=None):
         """
@@ -63,6 +65,12 @@ class OperationsHandler:
             return self.handle_set_preselected_workpiece(data)
         elif request == "handleExecuteFromGallery":
             return self.handle_execute_from_gallery(data)
+        elif request == "switchApplication":
+            return self.handle_switch_application(data)
+        elif request == "getApplicationInfo":
+            return self.handle_get_application_info()
+        elif request == "getAvailableApplications":
+            return self.handle_get_available_applications()
         else:
             raise ValueError(f"Unknown request: {request}")
             return Response(
@@ -80,18 +88,18 @@ class OperationsHandler:
         print("OperationsHandler: Handling start operation")
         
         try:
-            result, message = self.application.start()
+            result = self.application.start()
             print(f"OperationsHandler: Start result: {result}")
             
-            if not result:
+            if not result.get("success", False):
                 return Response(
                     Constants.RESPONSE_STATUS_ERROR, 
-                    message=message
+                    message=result.get("message", "Operation failed")
                 ).to_dict()
             else:
                 return Response(
                     Constants.RESPONSE_STATUS_SUCCESS, 
-                    message=message
+                    message=result.get("message", "Operation successful")
                 ).to_dict()
                 
         except Exception as e:
@@ -112,10 +120,10 @@ class OperationsHandler:
         print("OperationsHandler: Handling stop operation")
         
         try:
-            result, message = self.application.stop()
-            status = Constants.RESPONSE_STATUS_SUCCESS if result else Constants.RESPONSE_STATUS_ERROR
+            result = self.application.stop()
+            status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
             
-            return Response(status, message=message).to_dict()
+            return Response(status, message=result.get("message", "Operation completed")).to_dict()
             
         except Exception as e:
             print(f"OperationsHandler: Error stopping: {e}")
@@ -134,10 +142,10 @@ class OperationsHandler:
         print("OperationsHandler: Handling pause operation")
         
         try:
-            result, message = self.application.pause()
-            status = Constants.RESPONSE_STATUS_SUCCESS if result else Constants.RESPONSE_STATUS_ERROR
+            result = self.application.pause()
+            status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
             
-            return Response(status, message=message).to_dict()
+            return Response(status, message=result.get("message", "Operation completed")).to_dict()
             
         except Exception as e:
             print(f"OperationsHandler: Error pausing: {e}")
@@ -156,18 +164,25 @@ class OperationsHandler:
         print("OperationsHandler: Handling run demo operation")
         
         try:
-            result, message = self.application.run_demo()
-            
-            if result is True:
-                return Response(
-                    Constants.RESPONSE_STATUS_SUCCESS, 
-                    message=message
-                ).to_dict()
+            # Check if the application has a run_demo method (legacy support)
+            if hasattr(self.application, 'run_demo'):
+                result, message = self.application.run_demo()
+                
+                if result is True:
+                    return Response(
+                        Constants.RESPONSE_STATUS_SUCCESS, 
+                        message=message
+                    ).to_dict()
+                else:
+                    return Response(
+                        Constants.RESPONSE_STATUS_ERROR, 
+                        message=message
+                    ).to_dict()
             else:
-                return Response(
-                    Constants.RESPONSE_STATUS_ERROR, 
-                    message=message
-                ).to_dict()
+                # Use standard start method as demo
+                result = self.application.start()
+                status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
+                return Response(status, message=f"Demo mode: {result.get('message', 'Operation completed')}").to_dict()
                 
         except Exception as e:
             print(f"OperationsHandler: Error running demo: {e}")
@@ -186,12 +201,10 @@ class OperationsHandler:
         print("OperationsHandler: Handling stop demo operation")
         
         try:
-            # Assuming there's a stop_demo method on the application
-            # If not, this could delegate to the regular stop method
-            result, message = self.application.stop()
-            status = Constants.RESPONSE_STATUS_SUCCESS if result else Constants.RESPONSE_STATUS_ERROR
+            result = self.application.stop()
+            status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
             
-            return Response(status, message=f"Demo stopped: {message}").to_dict()
+            return Response(status, message=f"Demo stopped: {result.get('message', 'Operation completed')}").to_dict()
             
         except Exception as e:
             print(f"OperationsHandler: Error stopping demo: {e}")
@@ -210,8 +223,23 @@ class OperationsHandler:
         print("OperationsHandler: Handling test run")
         
         try:
-            result = self.application.testRun()
-            return result
+            # Check if application has legacy testRun method
+            if hasattr(self.application, 'testRun'):
+                result = self.application.testRun()
+                return result
+            else:
+                # Use standard methods for test run
+                safety_check = self.application.safety_check()
+                if not safety_check.get("safe", False):
+                    return Response(
+                        Constants.RESPONSE_STATUS_ERROR,
+                        message=f"Safety check failed: {safety_check.get('message', 'Unknown safety issue')}"
+                    ).to_dict()
+                
+                # Perform test operation
+                result = self.application.start()
+                status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
+                return Response(status, message=f"Test run: {result.get('message', 'Operation completed')}").to_dict()
             
         except Exception as e:
             print(f"OperationsHandler: Error in test run: {e}")
@@ -230,12 +258,33 @@ class OperationsHandler:
         print("OperationsHandler: Handling calibrate operation")
         
         try:
-            # This could potentially call both camera and robot calibration
-            # For now, let's assume it's a general calibration method
-            return Response(
-                Constants.RESPONSE_STATUS_SUCCESS, 
-                message="Calibration completed"
-            ).to_dict()
+            # Perform both camera and robot calibration
+            robot_result = self.application.calibrate_robot()
+            camera_result = self.application.calibrate_camera()
+            
+            robot_success = robot_result.get("success", False)
+            camera_success = camera_result.get("success", False)
+            
+            if robot_success and camera_success:
+                return Response(
+                    Constants.RESPONSE_STATUS_SUCCESS, 
+                    message="Robot and camera calibration completed successfully"
+                ).to_dict()
+            elif robot_success:
+                return Response(
+                    Constants.RESPONSE_STATUS_ERROR, 
+                    message=f"Robot calibration successful, camera calibration failed: {camera_result.get('message', 'Unknown error')}"
+                ).to_dict()
+            elif camera_success:
+                return Response(
+                    Constants.RESPONSE_STATUS_ERROR, 
+                    message=f"Camera calibration successful, robot calibration failed: {robot_result.get('message', 'Unknown error')}"
+                ).to_dict()
+            else:
+                return Response(
+                    Constants.RESPONSE_STATUS_ERROR, 
+                    message=f"Both calibrations failed - Robot: {robot_result.get('message', 'Unknown error')}, Camera: {camera_result.get('message', 'Unknown error')}"
+                ).to_dict()
             
         except Exception as e:
             print(f"OperationsHandler: Error in calibration: {e}")
@@ -259,10 +308,22 @@ class OperationsHandler:
         ).to_dict()
 
     def handler_clean_nozzle(self):
-        result = self.application.clean_nozzle()
-        status = Constants.RESPONSE_STATUS_SUCCESS if result else Constants.RESPONSE_STATUS_ERROR
-        message = "Nozzle cleaned successfully" if result else "Failed to clean nozzle"
-        return Response(status, message=message).to_dict()
+        """
+        Handle nozzle cleaning operation.
+        
+        Returns:
+            dict: Response indicating success or failure of nozzle cleaning
+        """
+        try:
+            result = self.application.clean_tool("nozzle")
+            status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
+            message = result.get("message", "Nozzle cleaning completed")
+            return Response(status, message=message).to_dict()
+        except Exception as e:
+            return Response(
+                Constants.RESPONSE_STATUS_ERROR, 
+                message=f"Error cleaning nozzle: {e}"
+            ).to_dict()
     def handle_set_preselected_workpiece(self, workpiece):
         """
         Handle setting preselected workpiece.
@@ -276,12 +337,18 @@ class OperationsHandler:
         print(f"OperationsHandler: Handling set preselected workpiece: {workpiece}")
         
         try:
-            self.application.handle_set_preselected_workpiece(workpiece)
-            
-            return Response(
-                Constants.RESPONSE_STATUS_SUCCESS, 
-                message="Preselected workpiece set successfully"
-            ).to_dict()
+            # Check if application has the legacy method
+            if hasattr(self.application, 'handle_set_preselected_workpiece'):
+                self.application.handle_set_preselected_workpiece(workpiece)
+                return Response(
+                    Constants.RESPONSE_STATUS_SUCCESS, 
+                    message="Preselected workpiece set successfully"
+                ).to_dict()
+            else:
+                # Use standard interface method
+                result = self.application.load_workpiece(str(workpiece))
+                status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
+                return Response(status, message=result.get("message", "Workpiece operation completed")).to_dict()
             
         except Exception as e:
             print(f"OperationsHandler: Error setting preselected workpiece: {e}")
@@ -303,16 +370,147 @@ class OperationsHandler:
         print(f"OperationsHandler: Handling execute from gallery: {workpiece}")
         
         try:
-            self.application.handleExecuteFromGallery(workpiece)
-            
-            return Response(
-                Constants.RESPONSE_STATUS_SUCCESS, 
-                message="Execute from gallery initiated successfully"
-            ).to_dict()
+            # Check if application has the legacy method
+            if hasattr(self.application, 'handleExecuteFromGallery'):
+                self.application.handleExecuteFromGallery(workpiece)
+                return Response(
+                    Constants.RESPONSE_STATUS_SUCCESS, 
+                    message="Execute from gallery initiated successfully"
+                ).to_dict()
+            else:
+                # Use standard interface method
+                workpiece_id = str(workpiece) if not isinstance(workpiece, dict) else workpiece.get('id', str(workpiece))
+                result = self.application.process_workpiece(workpiece_id)
+                status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
+                return Response(status, message=result.get("message", "Gallery execution completed")).to_dict()
             
         except Exception as e:
             print(f"OperationsHandler: Error executing from gallery: {e}")
             return Response(
                 Constants.RESPONSE_STATUS_ERROR, 
                 message=f"Error executing from gallery: {e}"
+            ).to_dict()
+    
+    def handle_switch_application(self, data):
+        """
+        Handle switching to a different robot application.
+        
+        Args:
+            data: Dict containing application_type to switch to
+            
+        Returns:
+            dict: Response indicating success or failure of application switch
+        """
+        print(f"OperationsHandler: Handling switch application: {data}")
+        
+        if not self.application_factory:
+            return Response(
+                Constants.RESPONSE_STATUS_ERROR,
+                message="Application switching not available - no factory configured"
+            ).to_dict()
+        
+        try:
+            from src.backend.robot_application.base_robot_application import ApplicationType
+            
+            app_type_str = data.get('application_type') if isinstance(data, dict) else str(data)
+            
+            # Convert string to ApplicationType enum
+            try:
+                app_type = ApplicationType(app_type_str.lower())
+            except ValueError:
+                available_types = [t.value for t in ApplicationType]
+                return Response(
+                    Constants.RESPONSE_STATUS_ERROR,
+                    message=f"Invalid application type '{app_type_str}'. Available types: {available_types}"
+                ).to_dict()
+            
+            # Switch application
+            new_application = self.application_factory.switch_application(app_type)
+            self.application = new_application
+            
+            return Response(
+                Constants.RESPONSE_STATUS_SUCCESS,
+                message=f"Successfully switched to {new_application.get_application_name()}",
+                data={
+                    "application_type": app_type.value,
+                    "application_name": new_application.get_application_name(),
+                    "application_version": new_application.get_application_version()
+                }
+            ).to_dict()
+            
+        except Exception as e:
+            print(f"OperationsHandler: Error switching application: {e}")
+            return Response(
+                Constants.RESPONSE_STATUS_ERROR,
+                message=f"Error switching application: {e}"
+            ).to_dict()
+    
+    def handle_get_application_info(self):
+        """
+        Get information about the current application.
+        
+        Returns:
+            dict: Response with current application information
+        """
+        try:
+            return Response(
+                Constants.RESPONSE_STATUS_SUCCESS,
+                message="Current application information",
+                data={
+                    "application_type": self.application.get_application_type().value,
+                    "application_name": self.application.get_application_name(),
+                    "application_version": self.application.get_application_version(),
+                    "supported_operations": self.application.get_supported_operations(),
+                    "supported_tools": self.application.get_supported_tools(),
+                    "supported_workpiece_types": self.application.get_supported_workpiece_types(),
+                    "status": self.application.get_status()
+                }
+            ).to_dict()
+            
+        except Exception as e:
+            return Response(
+                Constants.RESPONSE_STATUS_ERROR,
+                message=f"Error getting application info: {e}"
+            ).to_dict()
+    
+    def handle_get_available_applications(self):
+        """
+        Get list of available applications.
+        
+        Returns:
+            dict: Response with available applications
+        """
+        if not self.application_factory:
+            return Response(
+                Constants.RESPONSE_STATUS_ERROR,
+                message="Application factory not available"
+            ).to_dict()
+        
+        try:
+            available_apps = []
+            for app_type in self.application_factory.get_registered_applications():
+                try:
+                    app_info = self.application_factory.get_application_info(app_type)
+                    available_apps.append(app_info)
+                except Exception as e:
+                    print(f"Error getting info for {app_type.value}: {e}")
+                    available_apps.append({
+                        "type": app_type.value,
+                        "name": f"{app_type.value.replace('_', ' ').title()} Application",
+                        "error": str(e)
+                    })
+            
+            return Response(
+                Constants.RESPONSE_STATUS_SUCCESS,
+                message="Available applications retrieved",
+                data={
+                    "current_application": self.application.get_application_type().value,
+                    "available_applications": available_apps
+                }
+            ).to_dict()
+            
+        except Exception as e:
+            return Response(
+                Constants.RESPONSE_STATUS_ERROR,
+                message=f"Error getting available applications: {e}"
             ).to_dict()

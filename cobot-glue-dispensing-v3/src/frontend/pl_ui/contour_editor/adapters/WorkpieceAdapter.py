@@ -41,6 +41,7 @@ class WorkpieceAdapter:
             ContourEditorData instance
         """
         # Extract main contour and settings
+        print(f"from_workpiece: Extracting main contour and settings {workpiece}")
         main_contour = workpiece.get_main_contour()
         main_settings = workpiece.get_main_contour_settings()
 

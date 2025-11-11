@@ -9,7 +9,7 @@ from API.shared.settings.robotConfig.robotConfigModel import RobotConfig
 
 from GlueDispensingApplication.tools.GlueNozzleService import GlueNozzleService
 from GlueDispensingApplication.robot.RobotWrapper import RobotWrapper, Axis, Direction
-# from GlueDispensingApplication.robot.RobotConfig import *
+# from system.robot.RobotConfig import *
 from GlueDispensingApplication.tools.enums import ToolID
 from GlueDispensingApplication.tools.enums.ToolID import ToolID
 from GlueDispensingApplication.tools.enums.Gripper import Gripper

@@ -1,13 +1,8 @@
-from modules.shared.v1.Request import Request
 from modules.shared.v1.Response import Response
 from modules.shared.v1 import Constants
-from src.backend.GlueDispensingApplication.GlueSprayingApplication import GlueSprayingApplication
-from src.backend.GlueDispensingApplication.workpiece.WorkpieceController import WorkpieceController
+from src.backend.robot_application.robot_application_interface import RobotApplicationInterface
+from src.backend.system.workpiece.WorkpieceController import WorkpieceController
 from src.frontend.pl_ui.Endpoints import  *
-from modules.shared.shared.workpiece.Workpiece import WorkpieceField
-from src.backend.GlueDispensingApplication.utils import utils
-import traceback
-
 
 # Import specialized handlers
 from .auth_handler import AuthHandler
@@ -34,18 +29,19 @@ class RequestHandler:
           workpieceController: Controller for managing workpieces.
           robotController: Controller for managing robot operations.
       """
-    def __init__(self, controller:GlueSprayingApplication, settingsController, cameraSystemController, workpieceController:WorkpieceController, robotController):
+    def __init__(self, application: RobotApplicationInterface, settingsController, cameraSystemController, workpieceController:WorkpieceController, robotController, application_factory=None):
         """
               Initializes the RequestHandler with the necessary controllers.
 
               Args:
-                  controller (object): The main controller for handling operations.
+                  application (RobotApplicationInterface): The robot application instance.
                   settingsController (object): The settings controller.
                   cameraSystemController (object): The camera system controller.
                   workpieceController (object): The workpieces controller.
                   robotController (object): The robot controller.
+                  application_factory (ApplicationFactory): Optional factory for application switching.
               """
-        self.application = controller
+        self.application = application
         self.settingsController = settingsController
         self.cameraSystemController = cameraSystemController
         self.workpieceController = workpieceController
@@ -57,7 +53,7 @@ class RequestHandler:
         self.camera_handler = CameraHandler(self.application, self.cameraSystemController)
         self.workpiece_handler = WorkpieceHandler(self.application, self.workpieceController)
         self.settings_handler = SettingsHandler(self.settingsController)
-        self.operations_handler = OperationsHandler(self.application)
+        self.operations_handler = OperationsHandler(self.application, application_factory)
 
         self.resource_dispatch = {
             Constants.REQUEST_RESOURCE_ROBOT.lower(): self.robot_handler.handle,

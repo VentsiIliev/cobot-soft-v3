@@ -341,9 +341,11 @@ class WorkpieceHandler:
             workpiece = self.workpieceController.getWorkpieceById(workpieceId)
             
             if workpiece:
+                # Convert workpiece object to dictionary for serialization
+                workpiece_dict = workpiece.toDict()
                 return Response(
                     Constants.RESPONSE_STATUS_SUCCESS, 
-                    data=workpiece
+                    data=workpiece_dict
                 ).to_dict()
             else:
                 return Response(

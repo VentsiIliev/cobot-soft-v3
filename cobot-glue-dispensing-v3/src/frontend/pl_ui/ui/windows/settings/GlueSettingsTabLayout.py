@@ -1093,9 +1093,9 @@ class GlueSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
 # Run this file to launch the settings tab layout in a PyQt6 application window.
 
 if __name__ == "__main__":
-    from src.backend.GlueDispensingApplication.settings.SettingsService import SettingsService
-    from src.backend.GlueDispensingApplication.robot.FairinoRobot import FairinoRobot
-    from src.backend.GlueDispensingApplication.robot.robotService.RobotService import RobotService
+    from src.backend.system.settings.SettingsService import SettingsService
+    from src.backend.system.robot.FairinoRobot import FairinoRobot
+    from src.backend.system.robot.robotService.RobotService import RobotService
     settingsService = SettingsService()
     glueSettings = settingsService.glue_settings
 

@@ -2,15 +2,15 @@
 # import json
 # import os
 # import numpy as np
-# from GlueDispensingApplication.model.Workpiece import Workpiece
-# from GlueDispensingApplication.model.enums.Program import Program
-# from GlueDispensingApplication.model.enums.ToolID import ToolID
+# from system.model.Workpiece import Workpiece
+# from system.model.enums.Program import Program
+# from system.model.enums.ToolID import ToolID
 #
 #
 # class WorkPieceRepository():
 #     DATE_FORMAT = "%Y-%m-%d"
 #     TIMESTAMP_FORMAT = "%Y-%m-%d_%H-%M-%S-%f"
-#     BASE_DIR = "GlueDispensingApplication/storage/workpieces"
+#     BASE_DIR = "system/storage/workpieces"
 #     WORKPIECE_FILE_SUFFIX = "_workpiece.json"
 #
 #     def __init__(self):

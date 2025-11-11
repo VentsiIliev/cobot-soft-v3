@@ -6,7 +6,7 @@ from modules.shared.MessageBroker import MessageBroker
 BASE_DIR = Path(__file__).resolve().parent
 
 # Construct relative paths
-SETTINGS_PATH = BASE_DIR.parent.parent / "GlueDispensingApplication" / "storage" / "ui_settings" / "ui_settings.json"
+SETTINGS_PATH = BASE_DIR.parent.parent / "system" / "storage" / "ui_settings" / "ui_settings.json"
 LANGUAGES_DIR = BASE_DIR / "languages"  # assuming this file is inside shared/localization/
 
 class LanguageResourceLoader:

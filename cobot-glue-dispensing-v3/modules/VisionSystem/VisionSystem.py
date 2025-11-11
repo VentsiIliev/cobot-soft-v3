@@ -26,7 +26,7 @@ from modules.VisionSystem.handlers.contour_detection_handler import handle_conto
 from libs.plvision.PLVision import ImageProcessing
 
 # Conditional logging import
-from src.backend.GlueDispensingApplication.utils.custom_logging import (
+from src.backend.system.utils.custom_logging import (
     setup_logger, LoggerContext, log_debug_message, log_info_message
 )
 

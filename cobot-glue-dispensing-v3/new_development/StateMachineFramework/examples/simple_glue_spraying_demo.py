@@ -2,7 +2,7 @@
 Simple Glue Spraying Application State Machine Demo
 
 This is a simplified standalone demonstration that shows how the original
-GlueSprayingApplication.py could be refactored using state machine principles,
+system.py could be refactored using state machine principles,
 without complex framework dependencies.
 
 This demo focuses on the core state management concepts and can run independently.

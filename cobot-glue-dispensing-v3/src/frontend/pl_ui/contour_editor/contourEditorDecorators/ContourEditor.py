@@ -3,7 +3,7 @@ from PyQt6.QtGui import QImage, QPainter
 from PyQt6.QtWidgets import QFrame
 
 from modules.shared.shared.contour_editor.BezierSegmentManager import BezierSegmentManager
-from src.backend.GlueDispensingApplication.workpiece.Workpiece import Workpiece
+from src.backend.system.workpiece.Workpiece import Workpiece
 from src.frontend.pl_ui.contour_editor import constants
 from src.frontend.pl_ui.contour_editor.constants import EDIT_MODE, RECTANGLE_SELECT_MODE, DRAG_MODE, PICKUP_POINT_MODE, \
     MULTI_SELECT_MODE

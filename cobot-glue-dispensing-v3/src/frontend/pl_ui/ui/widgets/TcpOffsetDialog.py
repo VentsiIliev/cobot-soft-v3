@@ -32,7 +32,7 @@ class TcpOffsetDialog(QDialog):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         # From pl_ui/ui/widgets/, go up 3 levels to project root
         project_root = os.path.join(current_dir, '..', '..', '..')
-        self.config_file = os.path.join(project_root, 'GlueDispensingApplication', 'storage', 'settings', 'robot_config.json')
+        self.config_file = os.path.join(project_root, 'system', 'storage', 'settings', 'robot_config.json')
         
         self.init_ui()
         self.load_current_values()

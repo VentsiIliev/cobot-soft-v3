@@ -6,7 +6,7 @@ from modules.glueSprayService.motorControl.utils import split_into_16bit
 from modules.modbusCommunication.ModbusController import ModbusController
 from modules.glueSprayService.motorControl.errorCodes import MotorErrorCode
 
-from src.backend.GlueDispensingApplication.utils.custom_logging import setup_logger,log_if_enabled, LoggingLevel
+from src.backend.system.utils.custom_logging import setup_logger,log_if_enabled, LoggingLevel
 
 ENABLE_LOGGING = True
 motor_control_logger = setup_logger("MotorControl")

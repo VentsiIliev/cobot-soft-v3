@@ -1,6 +1,6 @@
 from modules.shared.MessageBroker import MessageBroker
-from src.backend.GlueDispensingApplication.SystemStatePublisherThread import SystemStatePublisherThread
-from src.backend.GlueDispensingApplication.utils.custom_logging import log_if_enabled, LoggingLevel
+from src.backend.system.SystemStatePublisherThread import SystemStatePublisherThread
+from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
 
 
 class StateManager:
