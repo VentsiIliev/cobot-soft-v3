@@ -657,7 +657,8 @@ class GlueCellsManager:
 
 class GlueCellsManagerSingleton:
     _manager_instance = None
-    STORAGE_PATH = Path(__file__).parent.parent / "storage"
+    STORAGE_PATH = Path(
+        "/home/plp/cobot-soft-v3/cobot-soft-v3/cobot-glue-dispensing-v3/src/backend/robot_application/glue_dispensing_application/storage")
     CONFIG_PATH = STORAGE_PATH / "glueCells" / "glue_cell_config.json"
 
     @staticmethod

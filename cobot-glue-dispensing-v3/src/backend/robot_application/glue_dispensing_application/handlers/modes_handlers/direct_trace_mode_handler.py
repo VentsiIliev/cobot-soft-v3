@@ -1,11 +1,12 @@
 import time
 
-from src.backend.system.handlers.spraying_handler import publish_robot_trajectory, \
+from src.backend.robot_application.glue_dispensing_application.handlers.spraying_handler import publish_robot_trajectory, \
     start_path_execution
+from src.frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import default_settings
 
 def handle_direct_tracing_mode(application):
     # from src.frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import default_settings
-    from src.frontend.pl_ui.contour_editor.SegmentSettingsWidget import default_settings
+
     # application.clean_nozzle()
     application.move_to_spray_capture_position()
     application.message_publisher.publish_brightness_region(region="spray")

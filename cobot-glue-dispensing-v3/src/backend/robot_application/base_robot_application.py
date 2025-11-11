@@ -24,8 +24,7 @@ class ApplicationType(Enum):
     """Enum defining available robot application types"""
     GLUE_DISPENSING = "glue_dispensing"
     PAINT_APPLICATION = "paint_application"
-    PICK_AND_PLACE = "pick_and_place"
-    WELDING = "welding"
+
 
 
 class ApplicationState(Enum):

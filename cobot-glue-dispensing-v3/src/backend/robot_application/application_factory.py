@@ -16,8 +16,8 @@ from src.backend.system.vision.VisionService import _VisionService
 from src.backend.system.settings.SettingsService import SettingsService
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
 from src.backend.system.robot.robotService.RobotService import RobotService
-
-
+from src.backend.robot_application.glue_dispensing_application.GlueDispensingApplication import GlueSprayingApplication
+from src.backend.robot_application.example_painting_application.application import PaintingApplication
 logger = logging.getLogger(__name__)
 
 
@@ -70,7 +70,7 @@ class ApplicationFactory:
         
         # Application instances cache (for quick switching)
         self._application_cache: Dict[ApplicationType, RobotApplicationInterface] = {}
-        
+
         # Whether to cache application instances
         self._use_cache = True
         
@@ -387,12 +387,22 @@ def auto_register_applications(factory: ApplicationFactory) -> None:
     
     try:
         # Register Glue Dispensing Application
-        from src.backend.robot_application.glue_dispensing_application.GlueDispensingApplication import GlueSprayingApplication
         factory.register_application(ApplicationType.GLUE_DISPENSING, GlueSprayingApplication)
         logger.info("Registered GlueDispensingApplication")
     except ImportError as e:
         logger.warning(f"Could not register GlueDispensingApplication: {e}")
-    
+    except Exception as e:
+        logger.warning(f"Error registering GlueDispensingApplication: {e}")
+
+    try:
+        # Register Painting Application
+        factory.register_application(ApplicationType.PAINT_APPLICATION, PaintingApplication)
+        logger.info("Registered PaintingApplication")
+    except ImportError as e:
+        logger.warning(f"Could not register PaintingApplication: {e}")
+    except Exception as e:
+        logger.warning(f"Error registering PaintingApplication: {e}")
+
     # TODO: Add other applications as they become available
     # try:
     #     from src.backend.robot_application.paint_application.PaintApplication import PaintApplication

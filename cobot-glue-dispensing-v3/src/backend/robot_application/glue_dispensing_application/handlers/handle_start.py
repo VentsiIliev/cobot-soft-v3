@@ -1,8 +1,9 @@
 # Action functions
 
 from src.backend.robot_application.glue_dispensing_application.GlueDispensingApplicationState import GlueSprayApplicationState
-from src.backend.system.handlers.modes_handlers import contour_matching_mode_handler
-from src.backend.system.handlers.modes_handlers import direct_trace_mode_handler
+from src.backend.robot_application.glue_dispensing_application.handlers.modes_handlers import \
+    contour_matching_mode_handler, direct_trace_mode_handler
+
 from src.backend.system.robot.robotService.enums.RobotServiceState import RobotServiceState
 
 

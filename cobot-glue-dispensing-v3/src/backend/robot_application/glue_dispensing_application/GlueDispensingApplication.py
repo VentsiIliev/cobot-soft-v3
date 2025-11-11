@@ -1,38 +1,36 @@
-import threading
+import datetime
 from typing import Dict, Any, List, Optional
-from datetime import datetime
 
-from src.backend.system.handlers.camera_calibration_handler import calibrate_camera
-from src.backend.system.handlers.clean_nozzle_handler import clean_nozzle
-from src.backend.system.handlers.create_workpiece_handler import  CreateWorkpieceHandler
-from src.backend.system.handlers.handle_start import start
-from src.backend.system.handlers.match_workpiece_handler import WorkpieceMatcher
-from src.backend.system.handlers.robot_calibration_handler import calibrate_robot
-from src.backend.system.handlers.temp_handlers.execute_from_gallery_handler import execute_from_gallery
-from src.backend.system.handlers.workpieces_to_spray_paths_handler import WorkpieceToSprayPathsGenerator
-from src.backend.robot_application.glue_dispensing_application.glue_dispensing.glue_dispensing_operation import GlueDispensingOperation
-from src.backend.system.robot.robotService.enums.RobotServiceState import RobotServiceState
-
-from src.backend.system.settings.SettingsService import SettingsService
-
-from modules.shared.MessageBroker import MessageBroker
-from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
-from src.backend.system.robot.robotService.RobotService import RobotService
-from src.backend.system.vision.VisionService import _VisionService
-from src.backend.system.tools.GlueCell import GlueCellsManagerSingleton
-from src.backend.robot_application.glue_dispensing_application.GlueDispensingApplicationState import GlueSprayApplicationState
-from src.backend.system.SystemStatePublisherThread import SystemStatePublisherThread
 from modules.VisionSystem.VisionSystem import VisionSystemState
-from src.backend.system.handlers import nesting_handler
-from src.backend.system.handlers import spraying_handler
-
+from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
 # Import base classes
 from src.backend.robot_application.base_robot_application import BaseRobotApplication, ApplicationType, ApplicationState
+from src.backend.robot_application.glue_dispensing_application.GlueDispensingApplicationStateManager import \
+    GlueDispensingApplicationStateManager
+from src.backend.robot_application.glue_dispensing_application.GlueDispensingMessagePublisher import \
+    GlueDispensingMessagePublisher
+from src.backend.robot_application.glue_dispensing_application.GlueDispensingSubscriptionManager import \
+    GlueDispensingSubscriptionManager
+from src.backend.robot_application.glue_dispensing_application.glue_dispensing.glue_dispensing_operation import \
+    GlueDispensingOperation
 from src.backend.robot_application.robot_application_interface import (
-    RobotApplicationInterface, OperationMode, CalibrationStatus, 
-    WorkpieceProcessingResult, OperationResult
+    RobotApplicationInterface, OperationMode, CalibrationStatus
 )
-from modules.shared.v1.topics import VisionTopics, RobotTopics, GlueTopics
+from src.backend.robot_application.glue_dispensing_application.handlers import nesting_handler
+from src.backend.robot_application.glue_dispensing_application.handlers.handle_start import start
+from src.backend.robot_application.glue_dispensing_application.handlers import spraying_handler
+from src.backend.robot_application.glue_dispensing_application.handlers.camera_calibration_handler import calibrate_camera
+from src.backend.robot_application.glue_dispensing_application.handlers.clean_nozzle_handler import clean_nozzle
+from src.backend.robot_application.glue_dispensing_application.handlers.create_workpiece_handler import CreateWorkpieceHandler
+from src.backend.robot_application.glue_dispensing_application.handlers.match_workpiece_handler import WorkpieceMatcher
+from src.backend.robot_application.glue_dispensing_application.handlers.robot_calibration_handler import calibrate_robot
+from src.backend.robot_application.glue_dispensing_application.handlers.temp_handlers.execute_from_gallery_handler import execute_from_gallery
+from src.backend.robot_application.glue_dispensing_application.handlers.workpieces_to_spray_paths_handler import WorkpieceToSprayPathsGenerator
+from src.backend.system.robot.robotService.RobotService import RobotService
+from src.backend.system.robot.robotService.enums.RobotServiceState import RobotServiceState
+from src.backend.system.settings.SettingsService import SettingsService
+from src.backend.system.tools.GlueCell import GlueCellsManagerSingleton
+from src.backend.system.vision.VisionService import _VisionService
 
 """
 ENDPOINTS
@@ -44,125 +42,6 @@ ENDPOINTS
 
 """
 
-class GlueDispensingApplicationStateManager:
-    """Extended state manager for glue dispensing specific state handling"""
-    
-    def __init__(self, base_state_manager):
-        self.base_state_manager = base_state_manager
-        self.visonServiceState = None
-        self.robotServiceState = None
-    
-    def __getattr__(self, name):
-        # Delegate all other attributes to the base state manager
-        return getattr(self.base_state_manager, name)
-    
-    def onRobotServiceStateUpdate(self, state):
-        """Handle robot service state updates with glue dispensing specific logic"""
-        # print(f"[GlueDispensingStateManager] Robot service state: {state}, Vision state: {self.visonServiceState}")
-        self.robotServiceState = state
-        self.base_state_manager.on_robot_service_state_update(state)
-
-        # Map robot service states to application states
-        if self.robotServiceState in [RobotServiceState.INITIALIZING, RobotServiceState.ERROR]:
-            # print(f"[GlueDispensingStateManager] Setting app state to INITIALIZING")
-            self.base_state_manager.update_state(ApplicationState.INITIALIZING)
-        elif self.robotServiceState == RobotServiceState.IDLE and self.visonServiceState == VisionSystemState.RUNNING:
-            # print(f"[GlueDispensingStateManager] Both services ready - Setting app state to IDLE")
-            self.base_state_manager.update_state(ApplicationState.IDLE)
-        elif self.robotServiceState in [RobotServiceState.STARTING, RobotServiceState.MOVING_TO_FIRST_POINT,
-                                        RobotServiceState.EXECUTING_PATH,
-                                        RobotServiceState.TRANSITION_BETWEEN_PATHS] and self.visonServiceState == VisionSystemState.RUNNING:
-            # print(f"[GlueDispensingStateManager] Robot active and vision ready - Setting app state to RUNNING")
-            self.base_state_manager.update_state(ApplicationState.RUNNING)
-        else:
-            pass
-            # print(f"[GlueDispensingStateManager] Staying in current state - waiting for both services to be ready")
-
-    def onVisonSystemStateUpdate(self, state):
-        """Handle vision system state updates with glue dispensing specific logic"""
-        # print(f"[GlueDispensingStateManager] Vision system state: {state}, Robot state: {self.robotServiceState}")
-        self.visonServiceState = state
-        self.base_state_manager.on_vision_system_state_update(state)
-        
-        if self.visonServiceState == VisionSystemState.RUNNING and self.robotServiceState == RobotServiceState.IDLE:
-            # print(f"[GlueDispensingStateManager] Both services ready (via vision update) - Setting app state to IDLE")
-            self.base_state_manager.update_state(ApplicationState.IDLE)
-        else:
-            # print(f"[GlueDispensingStateManager] Vision update - staying in current state")
-            pass
-class GlueDispensingMessagePublisher:
-    """Extended message publisher for glue dispensing specific messages"""
-    
-    def __init__(self, base_publisher):
-        self.base_publisher = base_publisher
-        self.broker = base_publisher.broker
-        self.brightness_region_topic = VisionTopics.BRIGHTNESS_REGION
-        self.robot_trajectory_image_topic = RobotTopics.TRAJECTORY_UPDATE_IMAGE
-        self.trajectory_start_topic = RobotTopics.TRAJECTORY_START
-    
-    def __getattr__(self, name):
-        # Delegate all other attributes to the base publisher
-        return getattr(self.base_publisher, name)
-
-    def publish_brightness_region(self, region):
-        self.broker.publish(self.brightness_region_topic, {"region": region})
-
-    def publish_trajectory_image(self, image):
-        self.broker.publish(self.robot_trajectory_image_topic, {"image": image})
-
-    def publish_trajectory_start(self):
-        self.broker.publish(self.trajectory_start_topic, "")
-
-class GlueDispensingSubscriptionManager:
-    """Extended subscription manager for glue dispensing specific subscriptions"""
-    
-    def __init__(self, glue_application, base_subscription_manager):
-        self.glue_application = glue_application
-        self.base_subscription_manager = base_subscription_manager
-        self.broker = base_subscription_manager.broker
-        self.glue_specific_subscriptions = {}
-    
-    def __getattr__(self, name):
-        # Delegate all other attributes to the base subscription manager
-        return getattr(self.base_subscription_manager, name)
-    
-    def subscribe_all(self):
-        # Subscribe to robot and vision topics with glue-specific callbacks
-        self.subscribe_robot_service_topics()
-        self.subscribe_vision_topics()
-        # Add glue-specific subscriptions
-        self.subscribe_mode_change()
-    
-    def subscribe_robot_service_topics(self):
-        """Subscribe to robot service topics with glue-specific callback"""
-        topic = self.glue_application.robotService.state_topic
-        callback = self.glue_application.state_manager.onRobotServiceStateUpdate
-        self.broker.subscribe(topic, callback)
-        self.base_subscription_manager.subscriptions[topic] = callback
-        print(f"Subscribed to robot service topic: {topic} with callback: {callback}")
-    
-    def subscribe_vision_topics(self):
-        """Subscribe to vision service topics with glue-specific callback"""
-        topic = self.glue_application.visionService.stateTopic
-        callback = self.glue_application.state_manager.onVisonSystemStateUpdate
-        self.broker.subscribe(topic, callback)
-        self.base_subscription_manager.subscriptions[topic] = callback
-        print(f"Subscribed to vision service topic: {topic} with callback: {callback}")
-    
-    def subscribe_mode_change(self):
-        topic = GlueTopics.MODE_CHANGE
-        callback = self.glue_application.changeMode
-        self.broker.subscribe(topic, callback)
-        self.glue_specific_subscriptions[topic] = callback
-    
-    def unsubscribe_all(self):
-        # Unsubscribe glue-specific topics
-        for topic, callback in self.glue_specific_subscriptions.items():
-            self.broker.unsubscribe(topic, callback)
-        self.glue_specific_subscriptions.clear()
-        
-        # Call base unsubscribe
-        self.base_subscription_manager.unsubscribe_all()
 
 
 Z_OFFSET_FOR_CALIBRATION_PATTERN = -4 # MM
@@ -250,7 +129,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
             }
 
     def start_nesting(self, debug=True):
-        return nesting_handler.start_nesting(self,self.get_workpieces())
+        return nesting_handler.start_nesting(self, self.get_workpieces())
 
     def start_spraying(self,workpieces, debug=True):
         return spraying_handler.start_spraying(self,workpieces,debug)
@@ -319,7 +198,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         """Move robot to home position"""
         try:
             # Use robot service to move to home position
-            result = self.robotService.home()
+            result = self.robotService.moveToStartPosition()
             return {
                 "success": True,
                 "message": "Robot moved to home position",

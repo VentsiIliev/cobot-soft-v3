@@ -524,8 +524,8 @@ Handler testing should cover:
 
 ## Related Documentation
 
-- [GlueDispensingApplication/README.md](./README.md)
-- [Main README](../README.md)
+- [GlueDispensingApplication/README.md](README.md)
+- [Main README](../../../system/README.md)
 
 ---
 
