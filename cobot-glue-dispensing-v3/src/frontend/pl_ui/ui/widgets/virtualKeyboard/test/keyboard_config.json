@@ -1,0 +1,68 @@
+{
+  "screen_categories": {
+    "mobile": {
+      "width_threshold": 600,
+      "keyboard_width_percent": 0.95,
+      "keyboard_height_percent": 0.4,
+      "button_height": 35,
+      "font_size": 12,
+      "spacing": 3,
+      "margins": 4,
+      "border_radius": 4,
+      "border_width": 1
+    },
+    "tablet": {
+      "width_threshold": 1024,
+      "keyboard_width_percent": 0.8,
+      "keyboard_height_percent": 0.45,
+      "button_height": 40,
+      "font_size": 14,
+      "spacing": 6,
+      "margins": 8,
+      "border_radius": 6,
+      "border_width": 2
+    },
+    "desktop": {
+      "keyboard_width_max": 1200,
+      "keyboard_width_percent": 0.7,
+      "keyboard_height_percent": 0.5,
+      "button_height": 45,
+      "font_size": 16,
+      "spacing": 8,
+      "margins": 12,
+      "border_radius": 8,
+      "border_width": 3
+    }
+  },
+  "colors": {
+    "background": "#FFFFFF",
+    "border": "#999999",
+    "button_text": "#905BA9",
+    "button_border": "#905BA9",
+    "button_background": "#FFFFFF",
+    "button_hover_background": "#905BA9",
+    "button_hover_text": "#FFFFFF",
+    "button_pressed_background": "#905BA9",
+    "button_pressed_text": "#FFFFFF",
+    "hide_button_background": "#905BA9",
+    "hide_button_hover": "#7A4A8A",
+    "hide_button_pressed": "#6A3A7A",
+    "hide_button_text": "#FFFFFF"
+  },
+  "style": {
+    "font_weight": "bold",
+    "button_border_radius_offset": 2,
+    "hide_button_font_size_offset": 2
+  },
+  "shadow": {
+    "blur_radius": 20,
+    "x_offset": 0,
+    "y_offset": 2,
+    "color": "rgba(0, 0, 0, 80)"
+  },
+  "animation": {
+    "slide_duration": 300,
+    "slide_curve_in": "InCubic",
+    "slide_curve_out": "OutCubic"
+  }
+}

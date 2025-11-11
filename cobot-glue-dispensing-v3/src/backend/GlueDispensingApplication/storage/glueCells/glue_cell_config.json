@@ -1,0 +1,82 @@
+{
+  "GLUE_CELL_CAPACITY": 10000,
+  "BASE_URL": "http://192.168.222.143",
+  "WEIGHTS_ENDPOINT": "/weights",
+  "FETCH_TIMEOUT": 5,
+  "DATA_FETCH_INTERVAL_MS": 100,
+  "UI_UPDATE_INTERVAL_MS": 500,
+  "AVAILABLE_GLUE_TYPES": [
+    "TypeA",
+    "TypeB",
+    "TypeC",
+    "TypeD"
+  ],
+  "DEFAULT_CALIBRATION": {
+    "zero_offset": 0.0,
+    "scale_factor": 1.0
+  },
+  "DEFAULT_MEASUREMENT": {
+    "sampling_rate": 10,
+    "filter_cutoff": 5.0,
+    "averaging_samples": 5,
+    "min_weight_threshold": 0.1
+  },
+  "CELL_CONFIG": [
+    {
+      "id": 1,
+      "type": "TypeD",
+      "url": "http://192.168.222.143/weight1",
+      "capacity": 10000,
+      "fetch_timeout": 1,
+      "calibration": {
+        "zero_offset": 2370.96,
+        "scale_factor": 222.0
+      },
+      "measurement": {
+        "sampling_rate": 10,
+        "filter_cutoff": 5.0,
+        "averaging_samples": 5,
+        "min_weight_threshold": 0.1
+      }
+    },
+    {
+      "id": 2,
+      "type": "TypeA",
+      "url": "http://192.168.222.143/weight2",
+      "capacity": 10000,
+      "fetch_timeout": 5,
+      "calibration": {
+        "zero_offset": 23.14,
+        "scale_factor": 0.98,
+        "temperature_compensation": true
+      },
+      "measurement": {
+        "sampling_rate": 20,
+        "filter_cutoff": 8.0,
+        "averaging_samples": 3,
+        "min_weight_threshold": 0.2,
+        "max_weight_threshold": 10000.0
+      }
+    },
+    {
+      "id": 3,
+      "type": "TypeB",
+      "url": "http://192.168.222.143/weight3",
+      "capacity": 10000,
+      "fetch_timeout": 5,
+      "calibration": {
+        "zero_offset": 7.89,
+        "scale_factor": 1.02,
+        "temperature_compensation": false
+      },
+      "measurement": {
+        "sampling_rate": 15,
+        "filter_cutoff": 6.0,
+        "averaging_samples": 4,
+        "min_weight_threshold": 0.15,
+        "max_weight_threshold": 10000.0
+      }
+    }
+  ],
+  "MODE": "production"
+}

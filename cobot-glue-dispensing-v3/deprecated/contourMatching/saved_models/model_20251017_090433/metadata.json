@@ -1,0 +1,72 @@
+{
+  "model_info": {
+    "model_id": "model_20251017_090433",
+    "model_name": "SGD Online (Default)",
+    "accuracy": 0.9862514029180696,
+    "timestamp": "20251017_090433",
+    "filename": "SGD_Online_(Default)_acc0.986.pkl",
+    "training_date": "2025-10-17 09:04:34"
+  },
+  "feature_extraction": {
+    "feature_extraction_version": "2.0",
+    "total_features": 51,
+    "curvature_bins": 16,
+    "feature_groups": {
+      "area_features": 5,
+      "shape_similarity_features": 3,
+      "geometric_features": 3,
+      "global_features": 15,
+      "perimeter_features": 2,
+      "local_features": 16,
+      "convexity_features": 2,
+      "corner_features": 5
+    },
+    "feature_group_descriptions": {
+      "area_features": "Area, perimeter, scale-sensitive measurements",
+      "shape_similarity_features": "Shape matching, convexity, Hausdorff distance",
+      "geometric_features": "Solidity, extent, aspect ratio",
+      "global_features": "Hu moments (7) + Fourier descriptors (8)",
+      "perimeter_features": "Circularity and compactness",
+      "local_features": "Curvature histogram with 16 bins",
+      "convexity_features": "Convexity defects and convex hull differences",
+      "corner_features": "Harris corner detection: count, density, response stats"
+    },
+    "new_in_v2": [
+      "corner_features"
+    ],
+    "corner_detection_params": {
+      "img_size": 100,
+      "block_size": 2,
+      "k_param": 0.04,
+      "threshold": 0.02,
+      "optimizations": [
+        "vectorized_nms",
+        "early_termination",
+        "no_blur"
+      ]
+    }
+  },
+  "dataset_info": {
+    "pairs_generated": true,
+    "pairs_file": "newly_generated",
+    "dataset_generation_params": {
+      "n_shapes": 22,
+      "n_scales": 6,
+      "n_variants": 6,
+      "n_noisy": 6,
+      "include_hard_negatives": true
+    },
+    "total_training_pairs": 166320,
+    "feature_extraction_version": "2.0"
+  },
+  "training_config": {
+    "test_split": 0.3,
+    "random_state": 42,
+    "model_type": "SGD Online (Default)"
+  },
+  "compatibility": {
+    "required_features": 51,
+    "feature_version": "2.0",
+    "curvature_bins": 16
+  }
+}

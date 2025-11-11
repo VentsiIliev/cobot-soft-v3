@@ -1,0 +1,37 @@
+# GUI Framework
+PyQt6>=6.6.0,<7.0.0
+
+# File Format Manipulation
+ezdxf>=1.1.0,<2.0.0
+
+# Concurrency and File Locking
+filelock>=3.13.0,<4.0.0
+
+# Data Analysis and Manipulation
+pandas>=2.1.0,<3.0.0
+numpy>=1.26.0,<2.0.0
+
+# Computer Vision and Image Processing
+opencv-python>=4.9.0,<5.0.0
+Pillow>=10.0.0,<11.0.0
+pyzbar>=0.1.9
+
+# HTTP and Web
+requests>=2.31.0,<3.0.0
+flask>=3.0.0,<4.0.0
+
+# Industrial Communication
+minimalmodbus>=2.1.0,<3.0.0
+
+# Data Visualization
+matplotlib>=3.8.0,<4.0.0
+pyqtgraph>=0.13.0,<1.0.0
+
+# QR Code and Barcode
+qrcode>=7.4.0,<8.0.0
+
+# Geometric Operations
+shapely>=2.0.0,<3.0.0
+
+# Data Validation
+pydantic>=2.5.0,<3.0.0

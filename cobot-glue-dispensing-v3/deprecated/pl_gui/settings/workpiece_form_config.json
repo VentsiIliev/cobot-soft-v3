@@ -1,0 +1,50 @@
+{
+  "workpieceId": {
+    "visible": true,
+    "mandatory": true
+  },
+  "name": {
+    "visible": true,
+    "mandatory": false
+  },
+  "description": {
+    "visible": true,
+    "mandatory": false
+  },
+  "offset": {
+    "visible": true,
+    "mandatory": false
+  },
+  "height": {
+    "visible": true,
+    "mandatory": false
+  },
+  "glue_qty": {
+    "visible": true,
+    "mandatory": false
+  },
+  "spray_width": {
+    "visible": true,
+    "mandatory": false
+  },
+  "toolId": {
+    "visible": true,
+    "mandatory": false
+  },
+  "gripperId": {
+    "visible": true,
+    "mandatory": false
+  },
+  "glueType": {
+    "visible": true,
+    "mandatory": false
+  },
+  "program": {
+    "visible": true,
+    "mandatory": false
+  },
+  "material": {
+    "visible": true,
+    "mandatory": false
+  }
+}

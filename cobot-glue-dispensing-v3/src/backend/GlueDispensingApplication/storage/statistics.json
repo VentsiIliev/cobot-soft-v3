@@ -1,0 +1,18 @@
+{
+  "generator_on_seconds": 18378.099234000005,
+  "pump_on_seconds": {
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
+  },
+  "pump_rpm": {
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
+  },
+  "pump_on_seconds_1": 0,
+  "pump_rpm_1": 0,
+  "started_at": "2025-09-09T10:27:11Z"
+}

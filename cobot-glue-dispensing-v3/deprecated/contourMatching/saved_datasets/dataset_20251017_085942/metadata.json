@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-10-17 08:59:42",
+  "dataset_id": "dataset_20251017_085942",
+  "total_pairs": 166320,
+  "positive_pairs": 83160,
+  "negative_pairs": 83160,
+  "feature_extraction": {
+    "feature_extraction_version": "2.0",
+    "total_features": 51,
+    "curvature_bins": 16,
+    "feature_groups": {
+      "area_features": 5,
+      "shape_similarity_features": 3,
+      "geometric_features": 3,
+      "global_features": 15,
+      "perimeter_features": 2,
+      "local_features": 16,
+      "convexity_features": 2,
+      "corner_features": 5
+    },
+    "feature_group_descriptions": {
+      "area_features": "Area, perimeter, scale-sensitive measurements",
+      "shape_similarity_features": "Shape matching, convexity, Hausdorff distance",
+      "geometric_features": "Solidity, extent, aspect ratio",
+      "global_features": "Hu moments (7) + Fourier descriptors (8)",
+      "perimeter_features": "Circularity and compactness",
+      "local_features": "Curvature histogram with 16 bins",
+      "convexity_features": "Convexity defects and convex hull differences",
+      "corner_features": "Harris corner detection: count, density, response stats"
+    },
+    "new_in_v2": [
+      "corner_features"
+    ],
+    "corner_detection_params": {
+      "img_size": 100,
+      "block_size": 2,
+      "k_param": 0.04,
+      "threshold": 0.02,
+      "optimizations": [
+        "vectorized_nms",
+        "early_termination",
+        "no_blur"
+      ]
+    }
+  },
+  "dataset_info": {
+    "curvature_bins": 16,
+    "expected_features_per_pair": 51,
+    "pair_generation_method": "balanced_positive_negative",
+    "hard_negatives_included": true
+  }
+}

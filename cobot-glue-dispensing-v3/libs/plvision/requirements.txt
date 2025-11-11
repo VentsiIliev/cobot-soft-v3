@@ -1,0 +1,5 @@
+opencv-python~=4.9.0.80
+numpy~=1.26.4
+PLVision~=0.1
+mediapipe~=0.10.14
+setuptools~=68.2.0

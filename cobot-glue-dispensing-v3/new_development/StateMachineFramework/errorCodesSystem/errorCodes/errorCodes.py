@@ -1,0 +1,106 @@
+from enum import Enum, IntEnum
+
+# ============================================================================
+# ERROR CODE DEFINITIONS
+# ============================================================================
+
+class ErrorSeverity(IntEnum):
+    """Error severity levels"""
+    INFO = 1
+    WARNING = 2
+    ERROR = 3
+    CRITICAL = 4
+    FATAL = 5
+
+
+class ErrorCategory(Enum):
+    """Error categories for classification"""
+    SYSTEM = "SYSTEM"
+    STATE_MACHINE = "STATE_MACHINE"
+    HARDWARE = "HARDWARE"
+    COMMUNICATION = "COMMUNICATION"
+    VALIDATION = "VALIDATION"
+    OPERATION = "OPERATION"
+    CONFIGURATION = "CONFIGURATION"
+    SAFETY = "SAFETY"
+    TIMEOUT = "TIMEOUT"
+    RECOVERY = "RECOVERY"
+
+
+class SystemErrorCode(IntEnum):
+    """System-level error codes (1000-1999)"""
+    # General System Errors (1000-1099)
+    SYSTEM_INITIALIZATION_FAILED = 1001
+    SYSTEM_SHUTDOWN_FAILED = 1002
+    SYSTEM_RESOURCE_EXHAUSTED = 1003
+    SYSTEM_DEPENDENCY_MISSING = 1004
+    SYSTEM_CONFIGURATION_INVALID = 1005
+
+    # Memory/Resource Errors (1100-1199)
+    MEMORY_ALLOCATION_FAILED = 1101
+    FILE_ACCESS_DENIED = 1102
+    DISK_SPACE_INSUFFICIENT = 1103
+    THREAD_CREATION_FAILED = 1104
+    RESOURCE_LOCK_TIMEOUT = 1105
+
+
+class StateMachineErrorCode(IntEnum):
+    """State machine specific error codes (2000-2999)"""
+    # State Errors (2000-2099)
+    STATE_NOT_FOUND = 2001
+    STATE_TRANSITION_INVALID = 2002
+    STATE_ENTRY_FAILED = 2003
+    STATE_EXIT_FAILED = 2004
+    STATE_ALREADY_ACTIVE = 2005
+    CONTEXT_CALLBACK_MISSING = 2006
+
+    # Event Errors (2100-2199)
+    EVENT_NOT_HANDLED = 2101
+    EVENT_QUEUE_FULL = 2102
+    EVENT_PROCESSING_FAILED = 2103
+    EVENT_TIMEOUT = 2104
+    EVENT_INVALID_DATA = 2105
+
+    # Configuration Errors (2200-2299)
+    CONFIG_PARSE_FAILED = 2201
+    CONFIG_VALIDATION_FAILED = 2202
+    CONFIG_STATE_MISSING = 2203
+    CONFIG_TRANSITION_INVALID = 2204
+    CONFIG_CALLBACK_MISSING = 2205
+
+    # Context Errors (2300-2399)
+    CONTEXT_DATA_INVALID = 2301
+    CONTEXT_CALLBACK_FAILED = 2302
+    CONTEXT_DEPENDENCY_MISSING = 2303
+
+class CommunicationErrorCode(IntEnum):
+    """Communication error codes (4000-4999)"""
+    CONNECTION_TIMEOUT = 4001
+    CONNECTION_REFUSED = 4002
+    CONNECTION_LOST = 4003
+    PROTOCOL_ERROR = 4004
+    MESSAGE_FORMAT_INVALID = 4005
+    AUTHENTICATION_FAILED = 4006
+    NETWORK_UNREACHABLE = 4007
+
+
+class ValidationErrorCode(IntEnum):
+    """Validation error codes (5000-5999)"""
+    PARAMETER_INVALID = 5001
+    PARAMETER_OUT_OF_RANGE = 5002
+    PARAMETER_MISSING = 5003
+    PRECONDITION_FAILED = 5004
+    POSTCONDITION_FAILED = 5005
+    SAFETY_CHECK_FAILED = 5006
+    BUSINESS_RULE_VIOLATED = 5007
+
+
+class OperationErrorCode(IntEnum):
+    """Operation error codes (6000-6999)"""
+    OPERATION_FAILED = 6001
+    OPERATION_TIMEOUT = 6002
+    OPERATION_CANCELLED = 6003
+    OPERATION_NOT_SUPPORTED = 6004
+    OPERATION_ALREADY_RUNNING = 6005
+    OPERATION_PREREQUISITES_NOT_MET = 6006
+

@@ -1,0 +1,6 @@
+EDIT_MODE = "edit"
+RULER_MODE = "ruler"
+DRAG_MODE = "drag"
+PICKUP_MODE = "pickup"
+MULTI_SELECT_MODE = "multi_select"
+ZOOM_MODE = "zoom"

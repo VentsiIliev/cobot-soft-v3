@@ -1,0 +1,174 @@
+{
+  "AXIS_ANGLE_ARC_COLOR": {
+    "a": 180,
+    "b": 100,
+    "g": 200,
+    "r": 100
+  },
+  "AXIS_ARC_RADIUS": 40,
+  "AXIS_LABEL_BG_COLOR": {
+    "a": 220,
+    "b": 255,
+    "g": 255,
+    "r": 255
+  },
+  "AXIS_LABEL_BORDER_RADIUS": 3,
+  "AXIS_LABEL_FONT_SIZE": 8,
+  "AXIS_LABEL_PADDING_X": 3,
+  "AXIS_LABEL_PADDING_Y": 2,
+  "AXIS_LINE_THICKNESS": 2,
+  "AXIS_VECTOR_LINE_COLOR": {
+    "a": 100,
+    "b": 150,
+    "g": 150,
+    "r": 150
+  },
+  "AXIS_VECTOR_LINE_THICKNESS": 1,
+  "AXIS_X_COLOR": {
+    "a": 180,
+    "b": 200,
+    "g": 100,
+    "r": 0
+  },
+  "AXIS_Y_COLOR": {
+    "a": 180,
+    "b": 0,
+    "g": 100,
+    "r": 200
+  },
+  "CLUSTER_DISTANCE_PX": 6,
+  "CROSSHAIR_CIRCLE_RADIUS": 8,
+  "CROSSHAIR_COLOR": {
+    "a": 255,
+    "b": 156,
+    "g": 61,
+    "r": 129
+  },
+  "CROSSHAIR_CONNECTOR_COLOR": {
+    "a": 100,
+    "b": 0,
+    "g": 0,
+    "r": 255
+  },
+  "CROSSHAIR_CONNECTOR_THICKNESS": 1,
+  "CROSSHAIR_LINE_STYLE": "solid",
+  "CROSSHAIR_LINE_THICKNESS": 2,
+  "CROSSHAIR_OFFSET_Y": -50,
+  "CROSSHAIR_SIZE": 20,
+  "CROSSHAIR_STYLE": "circle",
+  "DRAG_THRESHOLD_PX": 10,
+  "DRAG_UPDATE_INTERVAL_MS": 16,
+  "HIGHLIGHTED_LINE_COLOR": {
+    "a": 200,
+    "b": 0,
+    "g": 165,
+    "r": 255
+  },
+  "HIGHLIGHTED_LINE_THICKNESS": 4,
+  "OVERLAY_BUTTON_BORDER_WIDTH": 2,
+  "OVERLAY_BUTTON_CANCEL_COLOR": {
+    "a": 255,
+    "b": 102,
+    "g": 102,
+    "r": 102
+  },
+  "OVERLAY_BUTTON_CANCEL_HOVER": {
+    "a": 255,
+    "b": 136,
+    "g": 136,
+    "r": 136
+  },
+  "OVERLAY_BUTTON_DELETE_COLOR": {
+    "a": 255,
+    "b": 82,
+    "g": 82,
+    "r": 255
+  },
+  "OVERLAY_BUTTON_DELETE_HOVER": {
+    "a": 255,
+    "b": 102,
+    "g": 102,
+    "r": 255
+  },
+  "OVERLAY_BUTTON_PRIMARY_COLOR": {
+    "a": 255,
+    "b": 164,
+    "g": 80,
+    "r": 103
+  },
+  "OVERLAY_BUTTON_PRIMARY_HOVER": {
+    "a": 255,
+    "b": 180,
+    "g": 96,
+    "r": 120
+  },
+  "OVERLAY_BUTTON_SELECTED_BORDER": {
+    "a": 255,
+    "b": 0,
+    "g": 215,
+    "r": 255
+  },
+  "OVERLAY_BUTTON_SELECTED_BORDER_WIDTH": 3,
+  "OVERLAY_BUTTON_SELECTED_COLOR": {
+    "a": 255,
+    "b": 0,
+    "g": 165,
+    "r": 255
+  },
+  "OVERLAY_BUTTON_SET_LENGTH_COLOR": {
+    "a": 255,
+    "b": 243,
+    "g": 150,
+    "r": 33
+  },
+  "OVERLAY_BUTTON_SET_LENGTH_HOVER": {
+    "a": 255,
+    "b": 245,
+    "g": 165,
+    "r": 66
+  },
+  "OVERLAY_BUTTON_SIZE": 50,
+  "OVERLAY_RADIUS": 70,
+  "PIXELS_PER_MM": 0.985,
+  "POINT_HANDLE_COLOR": {
+    "a": 180,
+    "b": 255,
+    "g": 170,
+    "r": 170
+  },
+  "POINT_HANDLE_RADIUS": 10,
+  "POINT_HANDLE_SELECTED_COLOR": {
+    "a": 220,
+    "b": 0,
+    "g": 255,
+    "r": 0
+  },
+  "POINT_HIT_RADIUS_PX": 10,
+  "POINT_INFO_HOLD_DURATION_MS": 500,
+  "POINT_MIN_DISPLAY_SCALE": 1.0,
+  "PRESS_HOLD_MOVEMENT_THRESHOLD_PX": 5,
+  "SEGMENT_LENGTH_BG_COLOR": {
+    "a": 200,
+    "b": 255,
+    "g": 255,
+    "r": 255
+  },
+  "SEGMENT_LENGTH_COLOR": {
+    "a": 255,
+    "b": 0,
+    "g": 200,
+    "r": 0
+  },
+  "SEGMENT_LENGTH_FONT_SIZE": 9,
+  "SEGMENT_LENGTH_LINE_THICKNESS": 1,
+  "SEGMENT_LENGTH_OFFSET_DISTANCE": 25,
+  "SEGMENT_LENGTH_TICK_SIZE": 5,
+  "SHOW_ANCHOR_POINTS": true,
+  "SHOW_ANGLE_ON_DRAG": true,
+  "SHOW_ANGLE_ON_OVERLAY": true,
+  "SHOW_AXES_ON_DRAG": true,
+  "SHOW_AXES_ON_OVERLAY": true,
+  "SHOW_CONTROL_POINTS": true,
+  "SHOW_LENGTH_ON_DRAG": true,
+  "SHOW_LENGTH_ON_OVERLAY": true
+}

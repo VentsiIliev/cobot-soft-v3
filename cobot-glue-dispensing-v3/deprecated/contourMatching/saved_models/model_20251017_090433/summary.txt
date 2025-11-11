@@ -1,0 +1,8 @@
+Model Summary
+=============
+Model: SGD Online (Default)
+Accuracy: 0.986
+Trained: 2025-10-17 09:04:34
+Features: 51 (version 2.0)
+Dataset: newly_generated
+Training pairs: 166320

@@ -1,0 +1,112 @@
+QLineEdit {
+    border: 2px solid #905BA9;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: white;
+    color: black;
+}
+
+QComboBox {
+    border: 2px solid #905BA9;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+QComboBox QAbstractItemView {
+    border: 2px solid #905BA9;
+    background-color: white;
+    selection-background-color: #E8D8F0;
+    selection-color: black;
+    color: black;
+}
+
+QComboBox::drop-down {
+    border: none;
+}
+
+QComboBox QAbstractItemView::item:hover {
+    background-color: #E8D8F0;
+    color: black;
+}
+
+QCheckBox {
+    spacing: 6px;
+    padding: 4px;
+    border: 2px solid #905BA9;
+    border-radius: 4px;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #905BA9;
+    border: 1px solid #905BA9;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: white;
+    border: 1px solid #905BA9;
+}
+
+QPushButton {
+    border: none;
+    background: transparent;
+    padding: 0px;
+}
+
+QDateEdit, QDateEdit::drop-down {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+QDateEdit, QDateEdit::drop-down {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+QDateEdit::drop-down {
+    background-color: #905BA9;  /* Change the drop-down button color if needed */
+    color: white
+}
+
+QCheckBox {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+}
+
+QCheckBox:checked {
+    color: #800080;  /* Purple color */
+}
+
+QTreeView {
+    border: 2px solid #905BA9;
+    border-radius: 4px;
+    padding: 0px;
+    background-color: white;
+    color: black;
+}
+
+QTreeView::item {
+
+    padding: 0px;
+    background-color: white;
+    color: black;
+}
+
+QTreeView::item:selected {
+    background-color: #E8D8F0;
+    color: black;
+}
+
+QTreeView::item:hover {
+    background-color: #E8D8F0;
+    color: black;
+}
+
+

@@ -1,0 +1,9 @@
+Dataset Summary
+===============
+Created: 2025-10-18 14:57:20
+Total pairs: 166,320
+Positive pairs: 83,160
+Negative pairs: 83,160
+Features per pair: 51
+Feature version: 2.0
+Curvature bins: 16

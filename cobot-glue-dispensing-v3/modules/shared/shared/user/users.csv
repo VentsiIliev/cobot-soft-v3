@@ -1,0 +1,6 @@
+ID,FIRST_NAME,LAST_NAME,PASSWORD,ROLE,EMAIL
+1,Operator,Operator,pass,Operator,
+2,Admin,Admin,pass,Admin,
+3,Service,Service,pass,Role.SERVICE,
+4,Ventsislav,Iliev,pass,Admin,ventsislav.iliew@gmail.com
+5,Miroslav,Roydev,pass,Admin,miroslav.roydev@plproject.net

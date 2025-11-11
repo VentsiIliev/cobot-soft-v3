@@ -1,0 +1,49 @@
+# Example usage of the extended CameraSettings class
+
+# Your nested JSON configuration
+config_data = {
+    "Index": 0,
+    "Width": 1280,
+    "Height": 720,
+    "Skip frames": 30,
+
+    "Threshold": 100,
+    "Epsilon": 0.004,
+
+    "Contour detection": True,
+    "Draw contours": True,
+
+    "Preprocessing": {
+        "Gaussian blur": True,
+        "Blur kernel size": 5,
+        "Threshold type": "binary_inv",
+        "Dilate enabled": True,
+        "Dilate kernel size": 3,
+        "Dilate iterations": 2,
+        "Erode enabled": True,
+        "Erode kernel size": 3,
+        "Erode iterations": 4
+    },
+
+    "Calibration": {
+        "Chessboard width": 32,
+        "Chessboard height": 20,
+        "Square size (mm)": 25,
+        "Skip frames": 30
+    },
+
+    "Brightness Control": {
+        "Enable auto adjust": True,
+        "Kp": 0.7,
+        "Ki": 0.2,
+        "Kd": 0.05,
+        "Target brightness": 128
+    },
+
+    "Aruco": {
+        "Enable detection": False,
+        "Dictionary": "DICT_4X4_1000",
+        "Flip image": False
+    }
+}
+
