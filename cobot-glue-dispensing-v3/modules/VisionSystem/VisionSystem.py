@@ -1,3 +1,5 @@
+import threading
+
 import cv2
 import numpy as np
 from enum import Enum
@@ -13,6 +15,7 @@ from modules.VisionSystem.message_publisher import MessagePublisher
 from modules.VisionSystem.settings_manager import SettingsManager
 from modules.VisionSystem.state_manager import StateManager
 from modules.VisionSystem.subscribtion_manager import SubscriptionManager
+from modules.VisionSystem.QRcodeScanner import detect_and_decode_barcode
 
 # Vision System handlers
 from modules.VisionSystem.handlers.aruco_detection_handler import detect_aruco_markers
@@ -254,7 +257,6 @@ class VisionSystem:
         """
         Detect and decode QR codes in the raw image.
         """
-        from VisionSystem.QRcodeScanner import detect_and_decode_barcode
         data = detect_and_decode_barcode(self.rawImage)
         return data
 
@@ -313,19 +315,6 @@ class VisionSystem:
     def perspectiveMatrix(self, value):
         self._perspectiveMatrix = value
 
-
-if __name__ == "__main__":
-    vision_system = VisionSystem()
-
-    while True:
-        contours, corrected_image, _ = vision_system.run()
-        if contours is not None:
-            print(f"Detected {len(contours)} contours")
-        if corrected_image is None:
-            continue
-
-
-        cv2.imshow("Corrected Image", corrected_image)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    cv2.destroyAllWindows()
+    def start_system_thread(self):
+        self.cameraThread = threading.Thread(target=self.run, daemon=True)
+        self.cameraThread.start()

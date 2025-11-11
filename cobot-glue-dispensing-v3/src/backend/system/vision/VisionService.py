@@ -116,18 +116,7 @@ class _VisionService(VisionSystem):
                 last_publish_time = now
             if frame is None:
                 continue
-            # if self.contours is not None:
 
-                # if self.workAreaCorners is None:
-                #     self.setWorkpiecePickupArea()
-
-                # self.applyWorkAreaFilter(frame)
-
-            # if self.frameQueue.qsize() >= self.MAX_QUEUE_SIZE:
-            #     self.frameQueue.get()  # Remove the oldest frame
-            # self.frameQueue.put(frame)
-
-            # update latest_frame safely
             with self.frame_lock:
                 self.latest_frame = frame
 
@@ -140,18 +129,6 @@ class _VisionService(VisionSystem):
             Returns:
                 numpy.ndarray or None: The most recent frame, or None if the queue is empty.
             """
-        # if not hasattr(self, "_getLatestFrame_call_count"):
-        #     self._getLatestFrame_call_count = 0
-        #     self._getLatestFrame_last_time = time.time()
-        #
-        # self._getLatestFrame_call_count += 1
-        # now = time.time()
-        # elapsed = now - self._getLatestFrame_last_time
-        # if elapsed >= 1.0:  # print every second
-        #     print(
-        #         f"[DEBUG] getLatestFrame called {self._getLatestFrame_call_count} times in the last {elapsed:.2f} seconds")
-        #     self._getLatestFrame_call_count = 0
-        #     self._getLatestFrame_last_time = now
 
         with self.frame_lock:
             if self.latest_frame is None:
@@ -253,112 +230,7 @@ class _VisionService(VisionSystem):
         image = super().captureImage()
         return image
 
-    def setWorkpiecePickupArea(self):
-        """
-              Identifies the workpieces pickup area by detecting specific ArUco markers.
 
-              The method will attempt to detect enough ArUco markers (4 specific ones) and define the pickup
-              area based on their locations.
-
-              Returns:
-                  tuple: A boolean indicating success or failure, a message, and the captured image.
-              """
-        maxAttempts = 30
-        while maxAttempts > 0:
-            # print("Aruco Attempt: ", maxAttempts)
-            arucoCorners, arucoIds, image = self.detectArucoMarkers()
-            # print("ids: ", arucoIds)
-            if arucoIds is not None and len(arucoIds) >= 9:
-                break  # Stop retrying if enough markers are detected
-            maxAttempts -= 1
-
-        if arucoIds is None or len(arucoIds) == 0:
-            # print("No ArUco markers found")
-            message = "No ArUco markers found"
-            return False, message, image
-
-        # Dictionary to store corners for each ID
-        id_to_corners = {}
-        for i, aruco_id in enumerate(arucoIds.flatten()):
-            id_to_corners[aruco_id] = arucoCorners[i][0]  # Store all 4 corners of this ID
-
-        required_ids = {26, 27, 28, 29}
-        if not required_ids.issubset(id_to_corners.keys()):
-            message = "Missing ArUco markers"
-            # print(message)
-            return False, message, image
-
-        # Assign corners based on IDs
-        top_left = id_to_corners[26][0]
-        top_right = id_to_corners[27][0]
-        bottom_right = id_to_corners[28][0]
-        bottom_left = id_to_corners[29][0]
-
-        # Save corners to workAreaCorners.txt
-        self.workAreaCorners = {
-            "top_left": top_left.tolist(),
-            "top_right": top_right.tolist(),
-            "bottom_right": bottom_right.tolist(),
-            "bottom_left": bottom_left.tolist(),
-        }
-        with open("workAreaCorners.txt", "w") as file:
-            file.write(str(self.workAreaCorners))
-
-        # print("Workpiece pickup area corners saved successfully.")
-        return True, "Corners saved successfully", image
-
-    def applyWorkAreaFilter(self,frame):
-        """
-            Filters the detected contours based on the defined work area.
-
-            The work area is defined by the coordinates stored in `workAreaCorners`. Only contours within
-            this area are kept for further processing.
-
-            Args:
-                frame (numpy.ndarray): The current camera frame to apply the filter on.
-
-            Returns:
-                list: A list of filtered contours within the work area.
-            """
-        if self.workAreaCorners is None:
-
-            return []
-
-        if self.contours is None:
-            return []
-
-        # Get bounding rectangle from corners
-        x_coords = [
-            self.workAreaCorners["top_left"][0],
-            self.workAreaCorners["top_right"][0],
-            self.workAreaCorners["bottom_right"][0],
-            self.workAreaCorners["bottom_left"][0],
-        ]
-        y_coords = [
-            self.workAreaCorners["top_left"][1],
-            self.workAreaCorners["top_right"][1],
-            self.workAreaCorners["bottom_right"][1],
-            self.workAreaCorners["bottom_left"][1],
-        ]
-
-        min_x, max_x = min(x_coords), max(x_coords)
-        min_y, max_y = min(y_coords), max(y_coords)
-
-        self.filteredContours = []
-        for cnt in self.contours:
-            # cv2.drawContours(frame, [cnt], -1, (255, 0, 255), 2)
-            cnt = cnt.reshape(-1, 2)  # Flatten to (N,2)
-
-            # Check if all points of contour are inside the bounding box
-            if np.all((cnt[:, 0] >= min_x) & (cnt[:, 0] <= max_x) &
-                      (cnt[:, 1] >= min_y) & (cnt[:, 1] <= max_y)):
-                self.filteredContours.append(cnt.reshape(-1, 1, 2).astype(np.float32))  # Reshape back to contour format
-                # Draw the filtered contour with purple color
-                cv2.drawContours(frame, [cnt], -1, (255, 0, 255), 1)
-            # Draw the bounding box area for debugging (optional)
-        # cv2.rectangle(frame, (int(min_x), int(min_y)), (int(max_x), int(max_y)), (0, 255, 255), 2)
-
-        return self.filteredContours
 
     def detectQrCode(self):
         return super().detectQrCode()

@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional
 from enum import Enum
 
-from .base_robot_application import ApplicationType, ApplicationState
+from src.robot_application.base_robot_application import ApplicationType, ApplicationState
 
 
 class OperationMode(Enum):

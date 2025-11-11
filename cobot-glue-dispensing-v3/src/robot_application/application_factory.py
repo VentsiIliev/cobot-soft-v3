@@ -10,7 +10,7 @@ from typing import Dict, Any, Optional, Type, List
 import logging
 
 from .base_robot_application import BaseRobotApplication, ApplicationType
-from .robot_application_interface import RobotApplicationInterface
+from src.robot_application.interfaces.robot_application_interface import RobotApplicationInterface
 from src.backend.system.vision.VisionService import _VisionService
 from src.backend.system.settings.SettingsService import SettingsService
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService

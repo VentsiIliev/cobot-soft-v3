@@ -8,7 +8,7 @@ from src.robot_application.glue_dispensing_application.GlueDispensingMessagePubl
     GlueDispensingMessagePublisher
 from src.robot_application.glue_dispensing_application.GlueDispensingSubscriptionManager import \
     GlueDispensingSubscriptionManager
-from src.robot_application.robot_application_interface import RobotApplicationInterface, CalibrationStatus
+from src.robot_application.interfaces.robot_application_interface import RobotApplicationInterface, CalibrationStatus
 from src.backend.system.robot.robotService.RobotService import RobotService
 from src.backend.system.settings.SettingsService import SettingsService
 from src.backend.system.vision.VisionService import _VisionService

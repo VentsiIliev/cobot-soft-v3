@@ -18,6 +18,9 @@ from src.backend.system.robot.robotService.RobotService import RobotService
 from src.backend.system.vision.VisionService import _VisionService
 from src.backend.system.settings.SettingsService import SettingsService
 from src.backend.system.SystemStatePublisherThread import SystemStatePublisherThread
+from src.backend.system.system_handlers.robot_calibration_handler import calibrate_robot
+from src.backend.system.system_handlers.camera_calibration_handler import calibrate_camera
+
 
 
 class ApplicationType(Enum):
@@ -293,7 +296,6 @@ class BaseRobotApplication(ABC):
         Calibrate the robot system.
         Default implementation - can be overridden by specific applications.
         """
-        from src.backend.system.handlers.robot_calibration_handler import calibrate_robot
         return calibrate_robot(self)
     
     def calibrate_camera(self) -> Dict[str, Any]:
@@ -301,16 +303,8 @@ class BaseRobotApplication(ABC):
         Calibrate the camera system.
         Default implementation - can be overridden by specific applications.
         """
-        from src.backend.system.handlers.camera_calibration_handler import calibrate_camera
         return calibrate_camera(self)
-    
-    def clean_nozzle(self) -> Dict[str, Any]:
-        """
-        Clean the robot nozzle.
-        Default implementation - can be overridden by specific applications.
-        """
-        from src.backend.system.handlers.clean_nozzle_handler import clean_nozzle
-        return clean_nozzle(self.robotService)
+
     
     def get_workpieces(self) -> List[Any]:
         """

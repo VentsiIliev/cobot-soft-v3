@@ -14,14 +14,14 @@ from src.robot_application.glue_dispensing_application.GlueDispensingSubscriptio
 from src.robot_application.glue_dispensing_application.glue_dispensing.glue_dispensing_operation import \
     GlueDispensingOperation
 from src.robot_application.glue_dispensing_application.handlers import spraying_handler, nesting_handler
-from src.robot_application.glue_dispensing_application.handlers.camera_calibration_handler import \
+from src.backend.system.system_handlers.camera_calibration_handler import \
     calibrate_camera
 from src.robot_application.glue_dispensing_application.handlers.clean_nozzle_handler import clean_nozzle
 from src.robot_application.glue_dispensing_application.handlers.create_workpiece_handler import \
     CreateWorkpieceHandler
 from src.robot_application.glue_dispensing_application.handlers.handle_start import start
 from src.robot_application.glue_dispensing_application.handlers.match_workpiece_handler import WorkpieceMatcher
-from src.robot_application.glue_dispensing_application.handlers.robot_calibration_handler import calibrate_robot
+from src.backend.system.system_handlers.robot_calibration_handler import calibrate_robot
 from src.robot_application.glue_dispensing_application.handlers.temp_handlers.execute_from_gallery_handler import \
     execute_from_gallery
 from src.robot_application.glue_dispensing_application.handlers.workpieces_to_spray_paths_handler import \
@@ -30,7 +30,7 @@ from src.robot_application.glue_dispensing_application.settings.GlueSettings imp
 from src.robot_application.glue_dispensing_application.settings.GlueSettingsHandler import GlueSettingsHandler
 from src.robot_application.glue_dispensing_application.tools.GlueCell import GlueCellsManagerSingleton
 from src.robot_application.interfaces.application_settings_interface import settings_registry
-from src.robot_application.robot_application_interface import (
+from src.robot_application.interfaces.robot_application_interface import (
     RobotApplicationInterface, OperationMode, CalibrationStatus
 )
 from src.backend.system.robot.robotService.RobotService import RobotService
@@ -156,12 +156,19 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         return self.robotService.move_to_spray_capture_position(z_offset)
 
     # ========== Tool and Hardware Control ==========
-    
+
+    def clean_nozzle(self) -> Dict[str, Any]:
+        """
+        Clean the robot nozzle.
+        Default implementation - can be overridden by specific applications.
+        """
+        return clean_nozzle(self.robotService)
+
     def clean_tool(self, tool_id: str) -> Dict[str, Any]:
         """Clean a specific tool (e.g., nozzle cleaning)"""
         try:
             if tool_id == "nozzle":
-                result = clean_nozzle(self.robotService)
+                result = self.clean_nozzle()
                 return {
                     "success": True,
                     "message": f"Tool {tool_id} cleaned successfully",
