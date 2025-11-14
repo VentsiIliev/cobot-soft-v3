@@ -1,8 +1,9 @@
 from PyQt6.QtCore import Qt, QEvent, pyqtSignal
 from PyQt6.QtWidgets import QWidget, QGridLayout
 
-from src.frontend.pl_ui.contour_editor.Ruler import Ruler
-from src.frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditor import ContourEditor
+from frontend.pl_ui.contour_editor.Ruler import Ruler
+from frontend.pl_ui.contour_editor.Ruler import Ruler
+from frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditor import ContourEditor
 
 
 class ContourEditorWithRulers(QWidget):

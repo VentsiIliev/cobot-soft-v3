@@ -1,12 +1,12 @@
 from PyQt6.QtWidgets import QWidget
 
 from modules.shared.MessageBroker import MessageBroker
-from src.frontend.pl_ui.Endpoints import UPDATE_CAMERA_FEED, HOME_ROBOT, CALIBRATE_ROBOT, SAVE_ROBOT_CALIBRATION_POINT, RAW_MODE_ON, \
+from frontend.pl_ui.Endpoints import UPDATE_CAMERA_FEED, HOME_ROBOT, CALIBRATE_ROBOT, SAVE_ROBOT_CALIBRATION_POINT, RAW_MODE_ON, \
     GO_TO_CALIBRATION_POS, JOG_ROBOT, CALIBRATE_CAMERA, CAPTURE_CALIBRATION_IMAGE, CALIBRATE, TEST_CALIBRATION, \
     SAVE_WORK_AREA_POINTS
 
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
-from src.frontend.pl_ui.ui.windows.settings.CalibrationSettingsTab import CalibrationServiceTabLayout
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from frontend.pl_ui.ui.windows.settings.CalibrationSettingsTab import CalibrationServiceTabLayout
 
 
 class CalibrationAppWidget(AppWidget):

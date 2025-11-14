@@ -15,11 +15,11 @@ from modules.shared.MessageBroker import MessageBroker
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
 from modules.shared.v1.topics import SystemTopics
 from modules.robot.robotService.RobotService import RobotService
-from src.backend.system.vision.VisionService import _VisionService
-from src.backend.system.settings.SettingsService import SettingsService
-from src.backend.system.SystemStatePublisherThread import SystemStatePublisherThread
-from src.backend.system.system_handlers.robot_calibration_handler import calibrate_robot
-from src.backend.system.system_handlers.camera_calibration_handler import calibrate_camera
+from backend.system.vision.VisionService import _VisionService
+from backend.system.settings.SettingsService import SettingsService
+from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
+from backend.system.system_handlers.robot_calibration_handler import calibrate_robot
+from backend.system.system_handlers.camera_calibration_handler import calibrate_camera
 
 
 

@@ -11,10 +11,10 @@ from PyQt6.QtWidgets import (
     QGraphicsDropShadowEffect, QSizePolicy
 )
 
-from src.frontend.pl_ui.ui.windows.mainWindow.MenuIcon import MenuIcon
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.ExpandedViewManager import ExpandedViewManager
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.FloatingIconManager import FloatingIconManager
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.OverlayManager import OverlayManager
+from frontend.pl_ui.ui.windows.mainWindow.MenuIcon import MenuIcon
+from frontend.pl_ui.ui.windows.mainWindow.managers.ExpandedViewManager import ExpandedViewManager
+from frontend.pl_ui.ui.windows.mainWindow.managers.FloatingIconManager import FloatingIconManager
+from frontend.pl_ui.ui.windows.mainWindow.managers.OverlayManager import OverlayManager
 
 
 @dataclass

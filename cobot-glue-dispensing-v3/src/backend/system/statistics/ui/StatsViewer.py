@@ -20,8 +20,8 @@ from PyQt6.QtGui import QFont, QColor
 
 # Import the pure shared v2 statistics components
 try:
-    from src.backend.system.statistics.ui.PureApiV2StatisticsRequestSender import PureApiV2StatisticsRequestSender
-    from src.backend.system.statistics.api.StatisticsAPI import StatisticsAPI
+    from backend.system.statistics.ui.PureApiV2StatisticsRequestSender import PureApiV2StatisticsRequestSender
+    from backend.system.statistics.api.StatisticsAPI import StatisticsAPI
     from modules.shared.v2.constants.ApiEndpoints import ApiEndpoints, EndpointGroups
 except ImportError as e:
     print(f"Warning: Could not import statistics components: {e}")

@@ -5,8 +5,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt, QSize
 import os
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.utils.styles.globalStyles import FONT
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.utils.styles.globalStyles import FONT
 INFO_MESSAGE = "info"
 WARNING_MESSAGE = "warning"
 ERROR_MESSAGE = "error"

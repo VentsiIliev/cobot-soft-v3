@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QEvent
 
-from src.frontend.pl_ui.contour_editor.handlers.gesture_handler import handle_gesture_event
-from src.frontend.pl_ui.contour_editor.handlers.mouse_event_handler import (
+from frontend.pl_ui.contour_editor.handlers.gesture_handler import handle_gesture_event
+from frontend.pl_ui.contour_editor.handlers.mouse_event_handler import (
     mousePressEvent, mouseMoveEvent, mouseReleaseEvent, mouseDoubleClickEvent
 )
 

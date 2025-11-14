@@ -7,12 +7,12 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QIcon, QFont
 
-from src.frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import SegmentSettingsWidget
+from frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import SegmentSettingsWidget
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
 from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
-from src.frontend.pl_ui.utils.enums.GlueType import GlueType
-from src.frontend.pl_ui.contour_editor.widgets.LayerButtonsWidget import LayerButtonsWidget
-from src.frontend.pl_ui.contour_editor.widgets.SegmentButtonsAndComboWidget import SegmentButtonsAndComboWidget
+from frontend.pl_ui.utils.enums.GlueType import GlueType
+from frontend.pl_ui.contour_editor.widgets.LayerButtonsWidget import LayerButtonsWidget
+from frontend.pl_ui.contour_editor.widgets.SegmentButtonsAndComboWidget import SegmentButtonsAndComboWidget
 from PyQt6.QtWidgets import QApplication
 
 RESOURCE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..","icons")

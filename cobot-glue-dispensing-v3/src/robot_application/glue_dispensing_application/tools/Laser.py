@@ -5,7 +5,7 @@ Class not in use as moved to depth camera.
 from modules.modbusCommunication.ModbusClient import ModbusClient
 import platform
 from modules.shared.utils import linuxUtils
-from src.backend.system.SensorPublisher import SENSOR_STATE_ERROR
+from backend.system.SensorPublisher import SENSOR_STATE_ERROR
 from modules.modbusCommunication.ModbusClientSingleton import ModbusClientSingleton
 
 

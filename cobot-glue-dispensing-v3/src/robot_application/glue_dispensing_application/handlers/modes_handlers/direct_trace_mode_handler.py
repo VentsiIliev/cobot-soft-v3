@@ -1,8 +1,8 @@
 import time
 
-from src.robot_application.glue_dispensing_application.handlers.spraying_handler import publish_robot_trajectory, \
+from robot_application.glue_dispensing_application.handlers.spraying_handler import publish_robot_trajectory, \
     start_path_execution
-from src.frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import default_settings
+from frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import default_settings
 
 def handle_direct_tracing_mode(application):
     # from src.frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import default_settings

@@ -1,9 +1,9 @@
 from PyQt6.QtCore import Qt
 
-from src.frontend.pl_ui.contour_editor.constants import EDIT_MODE, RECTANGLE_SELECT_MODE, DRAG_MODE, PICKUP_POINT_MODE, MULTI_SELECT_MODE
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.MultiPointSelectMode import MultiPointSelectMode
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PanMode import PanMode
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PointDragMode import PointDragMode
+from frontend.pl_ui.contour_editor.constants import EDIT_MODE, RECTANGLE_SELECT_MODE, DRAG_MODE, PICKUP_POINT_MODE, MULTI_SELECT_MODE
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.MultiPointSelectMode import MultiPointSelectMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PanMode import PanMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PointDragMode import PointDragMode
 
 
 class ModeManager:

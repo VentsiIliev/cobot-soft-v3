@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QSizePolicy
 
-from src.frontend.pl_ui.localization import get_app_translator
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox, FocusSpinBox
+from frontend.pl_ui.localization import get_app_translator
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox, FocusSpinBox
 
 
 class BaseSettingsTabLayout:

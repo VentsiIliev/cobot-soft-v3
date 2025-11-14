@@ -2,11 +2,11 @@ from PyQt6.QtCore import QThread
 from modules.shared.v1.Response import Response
 from modules.shared.v1 import Constants
 from modules.shared.shared.settings.conreateSettings.CameraSettings import CameraSettings
-from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
 from modules.shared.shared.settings.conreateSettings.RobotSettings import RobotSettings
 
 from .RequestWorker import RequestWorker
-from src.frontend.pl_ui.ui.widgets.FeedbackProvider import FeedbackProvider
+from frontend.pl_ui.ui.widgets.FeedbackProvider import FeedbackProvider
 
 # Import new structured endpoints
 from modules.shared.v1.endpoints import (
@@ -18,17 +18,17 @@ from modules.shared.v1.endpoints import (
     settings_endpoints
 )
 # Import glue application constants
-from src.robot_application.glue_dispensing_application.settings.GlueConstants import (
+from robot_application.glue_dispensing_application.settings.GlueConstants import (
     REQUEST_RESOURCE_GLUE,
     SETTINGS_GLUE_GET,
     SETTINGS_GLUE_SET
 )
-from src.robot_application.glue_dispensing_application.workpiece import Workpiece
+from robot_application.glue_dispensing_application.workpiece import Workpiece
 
-from src.frontend.pl_ui.ui.windows.settings.CameraSettingsTabLayout import CameraSettingsTabLayout
-from src.frontend.pl_ui.ui.windows.settings.ContourSettingsTabLayout import ContourSettingsTabLayout
-from src.frontend.pl_ui.ui.windows.settings.RobotSettingsTabLayout import RobotSettingsTabLayout
-from src.frontend.pl_ui.ui.windows.settings.GlueSettingsTabLayout import GlueSettingsTabLayout
+from frontend.pl_ui.ui.windows.settings.CameraSettingsTabLayout import CameraSettingsTabLayout
+from frontend.pl_ui.ui.windows.settings.ContourSettingsTabLayout import ContourSettingsTabLayout
+from frontend.pl_ui.ui.windows.settings.RobotSettingsTabLayout import RobotSettingsTabLayout
+from frontend.pl_ui.ui.windows.settings.GlueSettingsTabLayout import GlueSettingsTabLayout
 
 import logging
 

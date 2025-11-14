@@ -3,8 +3,8 @@ from PyQt6.QtWidgets import QComboBox, QVBoxLayout
 from PyQt6.QtWidgets import QFrame
 
 from modules.shared.MessageBroker import MessageBroker
-from src.frontend.pl_ui.ui.windows.dashboard.widgets.GlueMeterWidget import GlueMeterWidget
-from src.frontend.pl_ui.utils.enums.GlueType import GlueType
+from frontend.pl_ui.ui.windows.dashboard.widgets.GlueMeterWidget import GlueMeterWidget
+from frontend.pl_ui.utils.enums.GlueType import GlueType
 
 
 class GlueMeterCard(QFrame):

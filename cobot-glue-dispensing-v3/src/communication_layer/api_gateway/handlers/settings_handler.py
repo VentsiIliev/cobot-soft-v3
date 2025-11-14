@@ -46,10 +46,12 @@ class SettingsHandler:
         print(f"SettingsHandler: Handling request: {request} with parts: {parts}")
         
         # Handle both new RESTful endpoints and legacy endpoints
+        # Robot settings
         if request in [settings_endpoints.SETTINGS_ROBOT_GET, settings_endpoints.SETTINGS_ROBOT_GET_LEGACY]:
             return self.handle_robot_settings(parts, request, data)
         elif request in [settings_endpoints.SETTINGS_ROBOT_SET, settings_endpoints.SETTINGS_ROBOT_SET_LEGACY]:
             return self.handle_robot_settings(parts, request, data)
+        # Camera settings
         elif request in [settings_endpoints.SETTINGS_CAMERA_GET, settings_endpoints.SETTINGS_CAMERA_GET_LEGACY]:
             return self.handle_camera_settings(parts, request, data)
         elif request in [settings_endpoints.SETTINGS_CAMERA_SET, settings_endpoints.SETTINGS_CAMERA_SET_LEGACY]:
@@ -95,6 +97,8 @@ class SettingsHandler:
             dict: Response with camera settings data or operation result
         """
         print(f"SettingsHandler: Handling camera settings: {request}")
+        print(f"SettingsHandler: Data received: {data}")
+        print(f"SettingsHandler: Data type: {type(data)}")
         
         return self.settingsController.handle(request, parts, data)
     

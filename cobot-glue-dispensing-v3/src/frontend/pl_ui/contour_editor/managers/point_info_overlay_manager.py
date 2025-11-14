@@ -1,8 +1,8 @@
 from PyQt6.QtCore import QEventLoop, QPointF
 from PyQt6.QtWidgets import QDialog
 
-from src.frontend.pl_ui.contour_editor import constants
-from src.frontend.pl_ui.contour_editor.widgets.PointInfoOverlay import PointInfoOverlay
+from frontend.pl_ui.contour_editor import constants
+from frontend.pl_ui.contour_editor.widgets.PointInfoOverlay import PointInfoOverlay
 
 def setup_point_info_overlay(editor):
         point_info_overlay = PointInfoOverlay(editor)

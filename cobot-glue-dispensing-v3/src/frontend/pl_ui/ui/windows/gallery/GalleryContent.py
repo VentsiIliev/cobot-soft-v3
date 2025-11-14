@@ -7,12 +7,12 @@ from PyQt6.QtWidgets import QHBoxLayout, QDateEdit, QPushButton, QSizePolicy, QS
     QFrame
 from PyQt6.QtWidgets import QScroller
 
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableMixin
-from src.frontend.pl_ui.ui.widgets.FloatingToggleButton import FloatingToggleButton
-from src.frontend.pl_ui.ui.windows.gallery.FilterPanel import FilterPanel  # Import our new filter panel
-from src.frontend.pl_ui.ui.windows.gallery.SelectionActionBar import SelectionActionBar
-from src.frontend.pl_ui.ui.windows.gallery.ThumbnailWidget import ThumbnailWidget
-from src.frontend.pl_ui.utils.IconLoader import GALLERY_PLACEHOLDER_ICON, GALLERY_APPLY_BUTTON_ICON, GALLERY_REMOVE_BUTTON_ICON, \
+from frontend.pl_ui.localization import TranslationKeys, TranslatableMixin
+from frontend.pl_ui.ui.widgets.FloatingToggleButton import FloatingToggleButton
+from frontend.pl_ui.ui.windows.gallery.FilterPanel import FilterPanel  # Import our new filter panel
+from frontend.pl_ui.ui.windows.gallery.SelectionActionBar import SelectionActionBar
+from frontend.pl_ui.ui.windows.gallery.ThumbnailWidget import ThumbnailWidget
+from frontend.pl_ui.utils.IconLoader import GALLERY_PLACEHOLDER_ICON, GALLERY_APPLY_BUTTON_ICON, GALLERY_REMOVE_BUTTON_ICON, \
     GALLERY_SELECT_BUTTON_ICON
 
 # Define the resource directory and placeholder image path
@@ -33,7 +33,7 @@ class GalleryContent(QFrame, TranslatableMixin):
         if self.thumbnails is None:
             self.thumbnails = []
             if workpieces is not None and len(workpieces) != 0:
-                from src.frontend.pl_ui.ui.windows.gallery.utils import create_thumbnail_widget_from_workpiece
+                from frontend.pl_ui.ui.windows.gallery.utils import create_thumbnail_widget_from_workpiece
                 self.thumbnails = []
                 for wp in workpieces:
                     thumbnail = create_thumbnail_widget_from_workpiece(wp, wp.workpieceId, "default")
@@ -667,7 +667,7 @@ class GalleryContent(QFrame, TranslatableMixin):
         if workpiece:
             # Show visual workpiece dialog
             try:
-                from src.frontend.pl_ui.ui.windows.gallery.WorkpieceVisualizationDialog import WorkpieceVisualizationDialog
+                from frontend.pl_ui.ui.windows.gallery.WorkpieceVisualizationDialog import WorkpieceVisualizationDialog
                 dialog = WorkpieceVisualizationDialog(workpiece, self)
                 dialog.exec()
             except Exception as e:

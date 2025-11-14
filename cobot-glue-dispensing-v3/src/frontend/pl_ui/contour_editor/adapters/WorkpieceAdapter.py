@@ -12,7 +12,7 @@ independent of workpiece concepts.
 from typing import Dict, Any, Optional
 import numpy as np
 
-from src.frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
+from frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
 from modules.shared.shared.contour_editor.BezierSegmentManager import Segment, Layer
 
 

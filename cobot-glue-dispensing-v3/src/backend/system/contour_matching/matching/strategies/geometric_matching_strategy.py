@@ -15,7 +15,7 @@ class GeometricMatchingStrategy:
     def find_best_match(
         self, workpieces: list[Any], contour: Contour
     ) -> BestMatchResult:
-        from src.backend.system.contour_matching.alignment.difference_calculator import _calculateDifferences
+        from backend.system.contour_matching.alignment.difference_calculator import _calculateDifferences
 
         best = BestMatchResult(workpiece=None, confidence=0.0, result="DIFFERENT")
 

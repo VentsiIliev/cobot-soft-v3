@@ -9,11 +9,11 @@ from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QApplication, QHBoxLa
 
 from robot_application.glue_dispensing_application.tools.GlueCell import UPDATE_SCALE_ENDPOINT, GET_CONFIG_ENDPOINT, \
     GlueCellsManagerSingleton, GlueDataFetcher, UPDATE_OFFSET_ENDPOINT, TARE_ENDPOINT
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.localization import get_app_translator
-from src.frontend.pl_ui.ui.widgets.SwitchButton import QToggle
-from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
-from src.frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.localization import get_app_translator
+from frontend.pl_ui.ui.widgets.SwitchButton import QToggle
+from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
+from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
 
 import random
 import json

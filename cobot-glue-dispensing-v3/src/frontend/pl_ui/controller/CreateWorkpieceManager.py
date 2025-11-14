@@ -1,4 +1,4 @@
-from src.frontend.pl_ui.Endpoints import SAVE_WORKPIECE, CREATE_WORKPIECE_TOPIC
+from frontend.pl_ui.Endpoints import SAVE_WORKPIECE, CREATE_WORKPIECE_TOPIC
 
 class CreateWorkpieceManager:
 
@@ -46,6 +46,6 @@ class CreateWorkpieceManager:
 
     def via_camera_failure(self, req, msg):
         print("via_camera_failure called with message:", msg)
-        from src.frontend.pl_ui.ui.widgets.FeedbackProvider import FeedbackProvider
+        from frontend.pl_ui.ui.widgets.FeedbackProvider import FeedbackProvider
         FeedbackProvider.showMessage(msg)
 

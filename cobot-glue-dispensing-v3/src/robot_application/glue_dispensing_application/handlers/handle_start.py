@@ -1,10 +1,10 @@
 # Action functions
 
-from src.robot_application.glue_dispensing_application.GlueDispensingApplicationState import GlueSprayApplicationState
-from src.robot_application.glue_dispensing_application.handlers.modes_handlers import \
+from robot_application.glue_dispensing_application.GlueDispensingApplicationState import GlueSprayApplicationState
+from robot_application.glue_dispensing_application.handlers.modes_handlers import \
     contour_matching_mode_handler, direct_trace_mode_handler
 
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
 
 
 def start(application, contourMatching=True,nesting= False, debug=False):

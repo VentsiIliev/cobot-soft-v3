@@ -6,8 +6,8 @@ from PyQt6.QtGui import QIcon, QPixmap, QPainter
 # import QSizePolicy
 from PyQt6.QtWidgets import QVBoxLayout
 
-from src.frontend.pl_ui.Endpoints import HOME_ROBOT, GO_TO_LOGIN_POS, GO_TO_CALIBRATION_POS, ROBOT_EXECUTE_NOZZLE_CLEAN, GET_SETTINGS
-from src.frontend.pl_ui.ui.widgets.CustomWidgets import CustomTabWidget, BackgroundTabPage
+from frontend.pl_ui.Endpoints import HOME_ROBOT, GO_TO_LOGIN_POS, GO_TO_CALIBRATION_POS, ROBOT_EXECUTE_NOZZLE_CLEAN, GET_SETTINGS
+from frontend.pl_ui.ui.widgets.CustomWidgets import CustomTabWidget, BackgroundTabPage
 from .CameraSettingsTabLayout import CameraSettingsTabLayout
 from .GlueSettingsTabLayout import GlueSettingsTabLayout
 from PyQt6.QtWidgets import QVBoxLayout, QSizePolicy
@@ -80,7 +80,7 @@ class SettingsContent(BackgroundWidget):
         self.cameraSettingsTabLayout.update_camera_feed_signal.connect(lambda: self.update_camera_feed_requested.emit())
 
         # self.robotSettingsTabLayout = RobotSettingsTabLayout(self.robotSettingsTab)
-        from src.frontend.pl_ui.ui.windows.settings.RobotConfigUI import RobotConfigController,RobotConfigUI
+        from frontend.pl_ui.ui.windows.settings.RobotConfigUI import RobotConfigController,RobotConfigUI
         robotConfigController = RobotConfigController(self.controller.requestSender)
         self.robotSettingsTabLayout = RobotConfigUI(self, robotConfigController)
         # self.contourSettingsTabLayout = ContourSettingsTabLayout(self.contourSettingsTab)

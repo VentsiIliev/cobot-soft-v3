@@ -1,7 +1,7 @@
 # contour_editor/modes/ruler_mode.py
 from PyQt6.QtCore import Qt
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
-from src.frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space, calculate_distance
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
+from frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space, calculate_distance
 
 class RulerMode(BaseMode):
     name = "ruler"

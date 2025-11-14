@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget
 from PyQt6.QtCore import Qt
-from src.frontend.pl_ui.ui.widgets.PlSlider import PlSlider
+from frontend.pl_ui.ui.widgets.PlSlider import PlSlider
 from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
 from .BaseSettingsTabLayout import BaseSettingsTabLayout
 

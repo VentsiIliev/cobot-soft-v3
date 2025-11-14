@@ -6,7 +6,7 @@ from PyQt6.QtGui import QFont, QColor, QIcon
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLabel, QGridLayout, QPushButton, QGraphicsDropShadowEffect)
 
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
+from frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
 
 
 class MenuIcon(QPushButton):

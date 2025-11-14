@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout
 from PyQt6.QtGui import QPainter, QImage, QPen, QPixmap
 from PyQt6.QtCore import QSize, QPointF, Qt
 # from shared.shared.workpiece.WorkpieceService import WorkpieceService
-from src.frontend.pl_ui.ui.windows.gallery.ThumbnailWidget import ThumbnailWidget
+from frontend.pl_ui.ui.windows.gallery.ThumbnailWidget import ThumbnailWidget
 from PyQt6.QtGui import QPixmap
 from datetime import datetime
 

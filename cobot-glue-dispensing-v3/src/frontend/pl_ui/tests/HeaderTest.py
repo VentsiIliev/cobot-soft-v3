@@ -3,7 +3,7 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from src.frontend.pl_ui.ui.widgets.Header import Header
+from frontend.pl_ui.ui.widgets.Header import Header
 
 if __name__ == "__main__":
     app: QApplication = QApplication(sys.argv)

@@ -1,5 +1,5 @@
 
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import VirtualKeyboardSingleton
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import VirtualKeyboardSingleton
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QComboBox,
     QSizePolicy, QPushButton, QScrollArea, QGroupBox
@@ -10,7 +10,7 @@ from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import
 from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
 # import qt DoubleSpinBox
 from PyQt6.QtWidgets import QDoubleSpinBox
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
 import json
 import os
 default_settings = {
@@ -351,7 +351,7 @@ initialize_default_settings()
 if __name__ == "__main__":
     from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
     from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
-    from src.frontend.pl_ui.utils.enums.GlueType import GlueType
+    from frontend.pl_ui.utils.enums.GlueType import GlueType
 
     from PyQt6.QtWidgets import QApplication
     import sys

@@ -6,12 +6,12 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (
     QHBoxLayout, QPushButton, QFrame
 )
-from src.frontend.pl_ui.utils.styles.ComboBoxStyle import ComboBoxStyle
-from src.frontend.pl_ui.utils.IconLoader import ACCOUNT_BUTTON_SQUARE
+from frontend.pl_ui.utils.styles.ComboBoxStyle import ComboBoxStyle
+from frontend.pl_ui.utils.IconLoader import ACCOUNT_BUTTON_SQUARE
 
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.v1.topics import UITopics
-from src.frontend.pl_ui.ui.widgets.LanguageSelectorWidget import LanguageSelectorWidget
+from frontend.pl_ui.ui.widgets.LanguageSelectorWidget import LanguageSelectorWidget
 
 # Resource paths
 RESOURCE_DIR: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources")

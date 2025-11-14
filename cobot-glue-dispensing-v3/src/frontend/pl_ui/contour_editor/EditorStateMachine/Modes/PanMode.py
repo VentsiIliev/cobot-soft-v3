@@ -1,6 +1,6 @@
 # pl_ui/contour_editor/EditorStateMachine/Modes/PanMode.py
 from PyQt6.QtCore import Qt
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
 
 class PanMode(BaseMode):
     name = "pan"

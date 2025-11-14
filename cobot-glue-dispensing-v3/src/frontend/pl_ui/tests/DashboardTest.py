@@ -2,7 +2,7 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from src.frontend.pl_ui.ui.windows.dashboard.DashboardWidget import DashboardWidget
+from frontend.pl_ui.ui.windows.dashboard.DashboardWidget import DashboardWidget
 
 if __name__ == "__main__":
     def updateCameraFeedCallback():

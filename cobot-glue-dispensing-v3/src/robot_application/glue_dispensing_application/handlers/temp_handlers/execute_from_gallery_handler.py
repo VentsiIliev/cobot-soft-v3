@@ -1,7 +1,7 @@
 import numpy as np
 
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-from src.backend.system.utils import utils
+from backend.system.utils import utils
 
 
 def execute_from_gallery(application,workpiece,z_offset_for_calibration_pattern):

@@ -1,9 +1,9 @@
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget, QGridLayout
 
-from src.frontend.pl_ui.contour_editor.constants import EDIT_MODE, DRAG_MODE
-from src.frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditorWithRulers import ContourEditorWithRulers
-from src.frontend.pl_ui.contour_editor.widgets.BottomToolBar import BottomToolBar
+from frontend.pl_ui.contour_editor.constants import EDIT_MODE, DRAG_MODE
+from frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditorWithRulers import ContourEditorWithRulers
+from frontend.pl_ui.contour_editor.widgets.BottomToolBar import BottomToolBar
 
 
 class ContourEditorWithBottomToolBar(QWidget):

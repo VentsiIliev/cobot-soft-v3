@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-from src.frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import SegmentSettingsWidget
+from frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import SegmentSettingsWidget
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
 from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
-from src.frontend.pl_ui.utils.enums.GlueType import GlueType
+from frontend.pl_ui.utils.enums.GlueType import GlueType
 
 class GlobalSettingsDialog(QDialog):
     def __init__(self, point_manager_widget, parent=None):

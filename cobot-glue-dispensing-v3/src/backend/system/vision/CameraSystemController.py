@@ -11,7 +11,7 @@ class CameraSystemController:
     from shared.v1.endpoints.camera_endpoints.
     """
 
-    def __init__(self, cameraService: 'CameraService'):
+    def __init__(self, cameraService):
         self.cameraService = cameraService
 
     def handle(self, request, parts, data=None):

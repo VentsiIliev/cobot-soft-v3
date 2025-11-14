@@ -1,4 +1,4 @@
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
 
 import os
 
@@ -23,7 +23,7 @@ class UserManagementAppWidget(AppWidget):
 
         # Replace the content with actual UserManagementWidget if available
         try:
-            from src.frontend.pl_ui.ui.windows.userManagement.UserDashboard import UserManagementWidget
+            from frontend.pl_ui.ui.windows.userManagement.UserDashboard import UserManagementWidget
             # Remove the placeholder content
             content_widget = UserManagementWidget(csv_file_path=csv_file_path)
 

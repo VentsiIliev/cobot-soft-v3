@@ -1,8 +1,8 @@
-# from src.backend.system.tools.Trolly import Trolly
+
 import logging
 import os
 
-from src.frontend.pl_ui.localization import setup_localization
+from frontend.pl_ui.localization import setup_localization
 
 setup_localization()
 
@@ -10,23 +10,23 @@ setup_localization()
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
 from modules.shared.v1.DomesticRequestSender import DomesticRequestSender
-from src.robot_application.application_factory import create_application_factory
-from src.robot_application.base_robot_application import ApplicationType
-from src.backend.system.SensorPublisher import SensorPublisher
+from robot_application.application_factory import create_application_factory
+from robot_application.base_robot_application import ApplicationType
+from backend.system.SensorPublisher import SensorPublisher
 
 from modules.robot.RobotController import RobotController
 from modules.robot.robotService.RobotService import RobotService
 # IMPORT CONTROLLERS
-from src.backend.system.settings.SettingsController import SettingsController
-# from src.backend.system.RequestHandler import RequestHandler
+from backend.system.settings.SettingsController import SettingsController
+
 # IMPORT SERVICES
-from src.backend.system.settings.SettingsService import SettingsService
+from backend.system.settings.SettingsService import SettingsService
 
 
-from src.backend.system.vision.CameraSystemController import CameraSystemController
-from src.backend.system.vision.VisionService import VisionServiceSingleton
-from src.robot_application.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
-from src.backend.system.utils import PathResolver
+from backend.system.vision.CameraSystemController import CameraSystemController
+from backend.system.vision.VisionService import VisionServiceSingleton
+from robot_application.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
+from backend.system.utils import PathResolver
 
 
 if os.environ.get("WAYLAND_DISPLAY"):
@@ -45,7 +45,7 @@ API_VERSION = 1
 newGui = True
 testRobot = False
 if newGui:
-    from src.frontend.pl_ui.runPlUi import PlGui
+    from frontend.pl_ui.runPlUi import PlGui
 else:
     pass
 
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     # INIT REQUEST HANDLER
     if API_VERSION == 1:
 
-        from src.communication_layer.api_gateway.handlers.request_handler import RequestHandler
+        from communication_layer.api_gateway.handlers.request_handler import RequestHandler
         requestHandler = RequestHandler(current_application, settingsController, cameraSystemController,
                                         workpieceController, robotController, application_factory)
 
@@ -117,13 +117,13 @@ if __name__ == "__main__":
     # INIT MAIN WINDOW
 
     if API_VERSION == 1:
-        from src.frontend.pl_ui.controller.Controller import Controller
+        from frontend.pl_ui.controller.Controller import Controller
         controller = Controller(domesticRequestSender)
     else:
         raise ValueError("Unsupported API_VERSION. Please set to 1")
 
 
-    from src.frontend.pl_ui.runPlUi import PlGui
+    from frontend.pl_ui.runPlUi import PlGui
     gui = PlGui(controller=controller)
     gui.start()
 

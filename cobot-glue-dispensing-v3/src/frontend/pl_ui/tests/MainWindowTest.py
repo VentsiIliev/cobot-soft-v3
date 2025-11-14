@@ -4,15 +4,15 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 from modules.shared.shared.settings.conreateSettings.CameraSettings import CameraSettings
-from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
 from modules.shared.shared.settings.conreateSettings.RobotSettings import RobotSettings
 from modules.shared.shared.user import User
 from modules.shared.shared.user.CSVUsersRepository import CSVUsersRepository
 from modules.shared.shared.user.Session import SessionManager
 from modules.shared.shared.user.User import UserField
 from modules.shared.shared.user.UserService import UserService
-from src.frontend.pl_ui.Endpoints import GET_SETTINGS
-from src.frontend.pl_ui.ui.windows.mainWindow.MainWindow import MainWindow
+from frontend.pl_ui.Endpoints import GET_SETTINGS
+from frontend.pl_ui.ui.windows.mainWindow.MainWindow import MainWindow
 
 
 class MockController:

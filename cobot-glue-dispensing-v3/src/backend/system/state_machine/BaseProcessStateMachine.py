@@ -13,7 +13,7 @@ from enum import Enum
 from typing import Dict, Set, List, Callable, Any, Optional, Union
 
 from modules.shared.MessageBroker import MessageBroker
-from src.backend.system.utils.custom_logging import log_debug_message, log_info_message, log_error_message, \
+from backend.system.utils.custom_logging import log_debug_message, log_info_message, log_error_message, \
     LoggerContext
 from .ProcessMessageTopics import ProcessStateTopics, ProcessControlTopics, MessageFormats
 from .ProcessStateMachineInterface import ProcessStateMachineInterface, StateTransition, StateHandler

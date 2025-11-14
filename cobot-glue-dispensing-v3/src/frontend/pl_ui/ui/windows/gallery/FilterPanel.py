@@ -1,8 +1,8 @@
 from PyQt6.QtCore import Qt, QPropertyAnimation, QRect, pyqtSignal
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt6.QtGui import QPainter, QColor
-from src.frontend.pl_ui.ui.widgets.Drawer import Drawer
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
+from frontend.pl_ui.ui.widgets.Drawer import Drawer
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
 
 class FilterPanel(Drawer,QWidget):
     # Signals to communicate with parent

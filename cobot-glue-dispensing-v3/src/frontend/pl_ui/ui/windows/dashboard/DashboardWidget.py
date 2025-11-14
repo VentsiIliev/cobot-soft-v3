@@ -5,14 +5,14 @@ from PyQt6.QtWidgets import (
     QWidget, QGridLayout, QSizePolicy
 )
 
-from src.frontend.pl_ui.localization import TranslatableWidget, TranslationKeys
-from src.frontend.pl_ui.ui.windows.dashboard.widgets.ControlButtonsWidget import ControlButtonsWidget
-from src.frontend.pl_ui.ui.windows.dashboard.widgets.RobotTrajectoryWidget import RobotTrajectoryWidget
-from src.frontend.pl_ui.ui.windows.dashboard.config.dashboard_styles import DashboardConfig
-from src.frontend.pl_ui.ui.windows.dashboard.factories.GlueCardFactory import GlueCardFactory
-from src.frontend.pl_ui.ui.windows.dashboard.managers.DashboardLayoutManager import DashboardLayoutManager
-from src.frontend.pl_ui.ui.windows.dashboard.managers.DashboardMessageManager import DashboardMessageManager
-from src.frontend.pl_ui.ui.windows.dashboard.widgets.DashboardCard import DashboardCard
+from frontend.pl_ui.localization import TranslatableWidget, TranslationKeys
+from frontend.pl_ui.ui.windows.dashboard.widgets.ControlButtonsWidget import ControlButtonsWidget
+from frontend.pl_ui.ui.windows.dashboard.widgets.RobotTrajectoryWidget import RobotTrajectoryWidget
+from frontend.pl_ui.ui.windows.dashboard.config.dashboard_styles import DashboardConfig
+from frontend.pl_ui.ui.windows.dashboard.factories.GlueCardFactory import GlueCardFactory
+from frontend.pl_ui.ui.windows.dashboard.managers.DashboardLayoutManager import DashboardLayoutManager
+from frontend.pl_ui.ui.windows.dashboard.managers.DashboardMessageManager import DashboardMessageManager
+from frontend.pl_ui.ui.windows.dashboard.widgets.DashboardCard import DashboardCard
 
 
 class CardContainer(QWidget):
@@ -117,7 +117,7 @@ class DashboardWidget(TranslatableWidget):
         self.control_buttons.stop_clicked.connect(self.stop_requested.emit)
         self.control_buttons.pause_clicked.connect(self.pause_requested.emit)
 
-        from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+        from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
         self.clean_button = MaterialButton("Clean", font_size=20)
         self.clean_button.clicked.connect(self.clean_requested.emit)
 

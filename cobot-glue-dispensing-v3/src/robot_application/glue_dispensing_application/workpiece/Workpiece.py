@@ -2,10 +2,10 @@ import numpy as np
 from modules.shared.shared.workpiece.Workpiece import BaseWorkpiece
 from modules.shared.shared.interfaces.JsonSerializable import JsonSerializable
 from modules.shared.shared.workpiece.Workpiece import WorkpieceField
-from src.robot_application.glue_dispensing_application.tools.enums.Program import Program
-from src.robot_application.glue_dispensing_application.tools.enums.ToolID import ToolID
-from src.robot_application.glue_dispensing_application.tools.GlueCell import GlueType
-from src.robot_application.glue_dispensing_application.tools.enums.Gripper import Gripper
+from robot_application.glue_dispensing_application.tools.enums.Program import Program
+from robot_application.glue_dispensing_application.tools.enums.ToolID import ToolID
+from robot_application.glue_dispensing_application.tools.GlueCell import GlueType
+from robot_application.glue_dispensing_application.tools.enums.Gripper import Gripper
 
 class Workpiece(BaseWorkpiece, JsonSerializable):
     """

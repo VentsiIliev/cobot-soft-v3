@@ -26,11 +26,11 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QIcon
 
 from modules.shared.shared.user.Session import SessionManager
-from src.frontend.pl_ui.ui.widgets.Drawer import Drawer
-from src.frontend.pl_ui.utils.IconLoader import LOGOUT_BUTTON_ICON_PATH
+from frontend.pl_ui.ui.widgets.Drawer import Drawer
+from frontend.pl_ui.utils.IconLoader import LOGOUT_BUTTON_ICON_PATH
 
 # Update the import
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableDrawer
+from frontend.pl_ui.localization import TranslationKeys, TranslatableDrawer
 
 
 class SessionInfoWidget(TranslatableDrawer):

@@ -2,8 +2,8 @@ import numpy as np
 
 from modules.shared.shared.Contour import Contour
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-from src.backend.system.utils import utils
-from src.backend.system.utils.contours import flatten_and_convert_to_list
+from backend.system.utils import utils
+from backend.system.utils.contours import flatten_and_convert_to_list
 
 class WorkpieceToSprayPathsGenerator:
     def __init__(self, application):

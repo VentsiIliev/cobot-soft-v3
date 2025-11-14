@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QGridLayout, QGroupBox, QMessageBox
 )
 from PyQt6.QtCore import Qt, pyqtSignal
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
 import json
 import os
 from modules.shared.shared.settings.robotConfig.robotConfigModel import RobotConfig, get_default_config

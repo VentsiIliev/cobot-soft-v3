@@ -1,5 +1,5 @@
 from modules.shared.shared.ContourStandartized import Contour
-from src.backend.system.utils.contours import calculate_mask_overlap
+from backend.system.utils.contours import calculate_mask_overlap
 
 
 def _refine_alignment_with_mask(workpiece_contour, target_contour):

@@ -1,8 +1,10 @@
-from src.backend.system.statistics.backend.StatsService import StatsService
-from src.backend.system.statistics.backend.StatisticsController import Controller
+from backend.system.statistics.backend.StatsService import StatsService
+from backend.system.statistics.backend.StatisticsController import Controller
 from typing import Dict, Any, Optional
 
-from src.backend.system.statistics.ui.PureApiV2StatisticsRequestSender import PureApiV2StatisticsRequestSender
+
+class PureApiV2StatisticsRequestSender:
+    pass
 
 
 class StatisticsAPI:

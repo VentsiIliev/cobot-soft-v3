@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
 from PyQt6.QtCore import Qt
 from typing import List
 
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 
 
 class DashboardLayoutManager:

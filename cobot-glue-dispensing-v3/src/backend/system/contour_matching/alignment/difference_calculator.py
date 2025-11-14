@@ -1,6 +1,6 @@
 import numpy as np
 from modules.shared.shared.ContourStandartized import Contour
-from src.backend.system.contour_matching.debug.plot_generator import get_similarity_debug_plot
+from backend.system.contour_matching.debug.plot_generator import get_similarity_debug_plot
 from pathlib import Path
 
 def _calculateDifferences(workpieceContour: Contour, contour: Contour, debug: bool = False):

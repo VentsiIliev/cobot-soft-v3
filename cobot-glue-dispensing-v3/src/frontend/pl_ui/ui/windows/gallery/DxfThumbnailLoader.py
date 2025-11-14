@@ -1,4 +1,4 @@
-from src.frontend.pl_ui.ui.windows.gallery.GalleryContent import  ThumbnailWidget
+from frontend.pl_ui.ui.windows.gallery.GalleryContent import  ThumbnailWidget
 import os
 import time
 import threading

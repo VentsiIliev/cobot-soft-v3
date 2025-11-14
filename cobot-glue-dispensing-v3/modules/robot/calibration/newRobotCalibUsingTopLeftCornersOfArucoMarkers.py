@@ -17,7 +17,9 @@ from modules.robot.calibration.logging import get_log_timing_summary, construct_
     construct_aruco_state_log_message, construct_compute_offsets_log_message, construct_align_robot_log_message, \
     construct_iterative_alignment_log_message, construct_calibration_completion_log_message
 from modules.robot.calibration.robot_controller import CalibrationRobotController
-from src.backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
+from modules.robot.calibration.states.initializing import handle_initializing_state
+from modules.robot.calibration.states.robot_calibration_states import RobotCalibrationStates
+from backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
     setup_logger, log_debug_message, log_info_message, log_error_message, LoggerContext
 
 ENABLE_LOGGING = True
@@ -27,19 +29,7 @@ robot_calibration_logger = setup_logger("RobotCalibrationService") if ENABLE_LOG
 
 
 
-class RobotCalibrationStates(Enum):
-    INITIALIZING = auto()
-    AXIS_MAPPING = auto()
-    LOOKING_FOR_CHESSBOARD = auto()
-    CHESSBOARD_FOUND = auto()
-    ALIGN_TO_CHESSBOARD_CENTER = auto()
-    LOOKING_FOR_ARUCO_MARKERS = auto()
-    ALL_ARUCO_FOUND = auto()
-    COMPUTE_OFFSETS = auto()
-    ALIGN_ROBOT = auto()
-    ITERATE_ALIGNMENT = auto()
-    DONE = auto()
-    ERROR = auto()
+
 
 class RobotCalibrationContext:
     def __init__(self):
@@ -282,15 +272,11 @@ class RobotCalibrationPipeline:
             self.start_state_timer(self.current_state)
             
             if self.current_state == RobotCalibrationStates.INITIALIZING:
-                if init_frame is None:
-                    log_if_enabled(ENABLE_LOGGING, robot_calibration_logger, LoggingLevel.INFO,
-                                   "Waiting for camera to initialize...",
-                                   broadcast_to_ui=self.broadcast_events, topic=self.BROADCAST_TOPIC)
+                result = handle_initializing_state(init_frame,self.logger_context)
+                if not result.success:
                     continue
-                else:
-                    log_if_enabled(ENABLE_LOGGING, robot_calibration_logger, LoggingLevel.INFO, "System initialized ✅",
-                                   broadcast_to_ui=self.broadcast_events, topic=self.BROADCAST_TOPIC)
-                    self.current_state = RobotCalibrationStates.AXIS_MAPPING
+
+                self.current_state = result.next_state
 
             elif self.current_state == RobotCalibrationStates.AXIS_MAPPING:
                 print(f"Performing axis mapping...")

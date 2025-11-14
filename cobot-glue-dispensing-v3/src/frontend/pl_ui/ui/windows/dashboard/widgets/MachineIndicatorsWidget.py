@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
 )
 
 from modules.shared.MessageBroker import MessageBroker
-from src.frontend.pl_ui.ui.widgets.LanguageSelectorWidget import LanguageSelectorWidget
+from frontend.pl_ui.ui.widgets.LanguageSelectorWidget import LanguageSelectorWidget
 from modules.shared.v1.topics import VisionTopics
 
 class MachineState(Enum):

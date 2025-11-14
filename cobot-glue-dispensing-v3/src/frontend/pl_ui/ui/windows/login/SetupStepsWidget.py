@@ -1,13 +1,16 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, TYPE_CHECKING
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QPixmap
 from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget
 
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
-from src.frontend.pl_ui.utils.IconLoader import MACHINE_BUTTONS_IMAGE
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.utils.styles.globalStyles import FONT
+from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
+
+if TYPE_CHECKING:
+    from frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
+from frontend.pl_ui.utils.IconLoader import MACHINE_BUTTONS_IMAGE
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.utils.styles.globalStyles import FONT
 class SetupStepsWidget(TranslatableWidget):
     """Initial setup steps widget."""
 
@@ -90,10 +93,9 @@ class SetupStepsWidget(TranslatableWidget):
 
     def user_confirmed_blue_button(self) -> None:
         """Handle confirmation of blue button press."""
-        from src.frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
 
         parent: Optional[QWidget] = self.parentWidget()
-        while parent and not isinstance(parent, LoginWindow):
+        while parent and parent.__class__.__name__ != "LoginWindow":
             parent = parent.parentWidget()
 
         if parent and hasattr(parent, "right_stack") and hasattr(parent, "tabs_widget"):

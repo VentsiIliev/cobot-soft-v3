@@ -3,11 +3,11 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 # Initialize localization system
-from src.frontend.pl_ui.localization import setup_localization
+from frontend.pl_ui.localization import setup_localization
 
 # from pl_gui.main_application.NewMainWindow import ApplicationMainWindow
-from src.frontend.pl_ui.ui.windows.mainWindow.MainWindow import MainWindow
-from src.frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
+from frontend.pl_ui.ui.windows.mainWindow.MainWindow import MainWindow
+from frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
 
 CONFIG_FILE = "pl_gui/pl_gui_config.json"
 

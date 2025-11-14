@@ -5,7 +5,7 @@ for precise point placement.
 from PyQt6.QtCore import Qt, QPointF, QRectF, QPoint, QTimer
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPainter, QPen, QColor, QBrush, QImage
-from src.frontend.pl_ui.contour_editor.rendering.renderer import draw_segments, draw_ruler, draw_pickup_point
+from frontend.pl_ui.contour_editor.rendering.renderer import draw_segments, draw_ruler, draw_pickup_point
 
 
 class MagnifierWidget(QWidget):

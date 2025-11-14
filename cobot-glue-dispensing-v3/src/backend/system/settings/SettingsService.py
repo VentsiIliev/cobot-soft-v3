@@ -9,7 +9,7 @@ from modules.shared.shared.settings.conreateSettings.enums.CameraSettingKey impo
 from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
 import logging
 
-from src.robot_application.interfaces.application_settings_interface import settings_registry
+from robot_application.interfaces.application_settings_interface import settings_registry
 
 
 class SettingsService:
@@ -41,6 +41,16 @@ class SettingsService:
         self.settings_file_paths = settings_file_paths
         self.robot_config_file_path = settings_file_paths.get("robot_config")
         self.logger = logging.getLogger(self.__class__.__name__)
+        
+        # Initialize settings directory from the first file path
+        if settings_file_paths:
+            first_path = next(iter(settings_file_paths.values()))
+            if first_path:
+                self.settings_dir = os.path.dirname(first_path)
+            else:
+                self.settings_dir = "settings"
+        else:
+            self.settings_dir = "settings"
         # Initialize a dictionary to store core settings objects
         self.settings_objects = {}
 
@@ -104,7 +114,7 @@ class SettingsService:
         resource_map = {
             "Glue": "glue",
             "Paint": "paint", 
-            "Weld": "weld"
+
         }
         
         settings_type = resource_map.get(key, key.lower())
@@ -158,10 +168,12 @@ class SettingsService:
         """Load all settings from their respective JSON files. Use default values if file doesn't exist."""
         for key, settings_obj in self.settings_objects.items():
             filename = self.settings_file_paths.get(key)
+            self.logger.info(f"Loading {key} settings from path: {filename}")
             if filename and os.path.exists(filename):
+                self.logger.info(f"File exists, loading settings from: {filename}")
                 self.load_settings_from_json(filename, settings_obj)
             else:
-                self.logger.debug(f"{filename} not found. Using default values for {key} settings.")
+                self.logger.info(f"{filename} not found. Using default values for {key} settings.")
                 # Automatically save default settings to the missing file
                 self.save_settings_to_json(filename, settings_obj)
 
@@ -209,8 +221,12 @@ class SettingsService:
                   settings_obj (CameraSettings or RobotSettings): The object to serialize.
               """
         try:
-            # Create the settings directory if it doesn't exist
-            os.makedirs(self.settings_dir, exist_ok=True)
+            # Create the directory for the JSON file if it doesn't exist
+            if json_file:
+                os.makedirs(os.path.dirname(json_file), exist_ok=True)
+            else:
+                self.logger.error("json_file path is None or empty")
+                return
 
             settings_data = {}
             if isinstance(settings_obj, CameraSettings):
@@ -233,6 +249,8 @@ class SettingsService:
 
         except Exception as e:
             self.logger.error(f"Error saving settings to {json_file}: {e}")
+            import traceback
+            traceback.print_exc()
 
     def updateSettings(self, settings: dict):
         """
@@ -244,19 +262,30 @@ class SettingsService:
                Raises:
                    ValueError: If the "header" key is missing or invalid.
                """
+        print(f"SettingsService.updateSettings called with: {settings}")
+        print(f"Settings keys: {list(settings.keys()) if isinstance(settings, dict) else 'Not a dict'}")
+        
+        if 'header' not in settings:
+            print(f"ERROR: No 'header' key found in settings: {settings}")
+            raise ValueError("Settings dictionary must contain a 'header' key")
+            
         header = settings['header']
+        print(f"Header value: '{header}' (type: {type(header)})")
+        print(f"Constants.REQUEST_RESOURCE_CAMERA: '{Constants.REQUEST_RESOURCE_CAMERA}' (type: {type(Constants.REQUEST_RESOURCE_CAMERA)})")
+        print(f"Header == Constants.REQUEST_RESOURCE_CAMERA: {header == Constants.REQUEST_RESOURCE_CAMERA}")
 
         # Handle core settings
         if header == Constants.REQUEST_RESOURCE_ROBOT:
             self.updateRobotSettings(settings)
+            return
         elif header == Constants.REQUEST_RESOURCE_CAMERA:
             self.updateCameraSettings(settings)
+            return
         
         # Handle application-specific settings through registry
         # Convert resource names to lowercase for registry lookup
         resource_map = {
             "Glue": "glue",
-            "Paint": "paint",
             "Weld": "weld"
         }
         
@@ -306,7 +335,9 @@ class SettingsService:
               """
         # Handle both flat and nested input formats
         self._update_camera_settings_from_data(settings)
-        self.save_settings_to_json(self.settings_file_paths.get("camera"), self.camera_settings)
+        camera_path = self.settings_file_paths.get("camera")
+        self.logger.info(f"Saving camera settings to path: {camera_path}")
+        self.save_settings_to_json(camera_path, self.camera_settings)
 
     def _update_camera_settings_from_data(self, settings: dict):
         """

@@ -1,10 +1,10 @@
 from PyQt6.QtCore import Qt, QPointF
 
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.MultiPointSelectMode import MultiPointSelectMode
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PointDragMode import PointDragMode
-from src.frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space, calculate_distance
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.RulerMode import RulerMode
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PanMode import PanMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.MultiPointSelectMode import MultiPointSelectMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PointDragMode import PointDragMode
+from frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space, calculate_distance
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.RulerMode import RulerMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.PanMode import PanMode
 
 
 

@@ -9,8 +9,8 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QFont, QImage, QPixmap
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame, QSizePolicy
 
-from src.frontend.pl_ui.utils.IconLoader import LOGO
-from src.frontend.pl_ui.utils.IconLoader import CAMERA_PREVIEW_PLACEHOLDER
+from frontend.pl_ui.utils.IconLoader import LOGO
+from frontend.pl_ui.utils.IconLoader import CAMERA_PREVIEW_PLACEHOLDER
 
 
 class CompactTimeMetric(QWidget):

@@ -9,16 +9,16 @@ from PyQt6.QtWidgets import (
     QTabWidget, QLabel, QDialog
 )
 
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableDialog
+from frontend.pl_ui.localization import TranslationKeys, TranslatableDialog
 
-from src.frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
-from src.frontend.pl_ui.ui.widgets.Header import Header
-from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
-from src.frontend.pl_ui.ui.windows.login.LoginController import LoginController
-from src.frontend.pl_ui.ui.windows.login.LoginTab import LoginTab
-from src.frontend.pl_ui.ui.windows.login.QRLoginTab import QRLoginTab
-from src.frontend.pl_ui.ui.windows.login.SetupStepsWidget import SetupStepsWidget
-from src.frontend.pl_ui.utils.IconLoader import LOGIN_BUTTON, LOGIN_QR_BUTTON, LOGO
+from frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
+from frontend.pl_ui.ui.widgets.Header import Header
+from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
+from frontend.pl_ui.ui.windows.login.LoginController import LoginController
+from frontend.pl_ui.ui.windows.login.LoginTab import LoginTab
+from frontend.pl_ui.ui.windows.login.QRLoginTab import QRLoginTab
+from frontend.pl_ui.ui.windows.login.SetupStepsWidget import SetupStepsWidget
+from frontend.pl_ui.utils.IconLoader import LOGIN_BUTTON, LOGIN_QR_BUTTON, LOGO
 from modules.shared.utils.jsonUtils import load_json_file
 
 # Suppress specific DeprecationWarning

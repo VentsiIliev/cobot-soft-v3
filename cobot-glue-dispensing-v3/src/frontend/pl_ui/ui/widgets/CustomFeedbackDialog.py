@@ -5,8 +5,8 @@ from PyQt6.QtWidgets import (
     QDialog, QLabel, QVBoxLayout, QHBoxLayout,
     QGraphicsDropShadowEffect, QFrame, QWidget, QApplication
 )
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.utils.styles.globalStyles import FONT
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.utils.styles.globalStyles import FONT
 
 from enum import Enum
 

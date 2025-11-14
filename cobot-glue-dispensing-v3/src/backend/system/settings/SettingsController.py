@@ -4,12 +4,11 @@ from modules.shared.v1 import Constants
 from modules.shared.v1.Response import Response
 import modules.shared.v1.endpoints.settings_endpoints as settings_endpoints
 
-from src.backend.system.settings.SettingsService import SettingsService
-from src.backend.system.vision.VisionService import VisionServiceSingleton
-from src.robot_application.interfaces.application_settings_interface import settings_registry
+from backend.system.settings.SettingsService import SettingsService
+from backend.system.vision.VisionService import VisionServiceSingleton
+from robot_application.interfaces.application_settings_interface import settings_registry
 
 
-# from src.robot_application.application_factory import settings_registry
 
 
 class SettingsController:
@@ -183,6 +182,7 @@ class SettingsController:
         Set/update settings for a given domain.
         """
         try:
+            print(f"SettingsController._handleSet: resource={resource}, data={data}")
             self.settingsService.updateSettings(data)
 
             # Update camera settings separately

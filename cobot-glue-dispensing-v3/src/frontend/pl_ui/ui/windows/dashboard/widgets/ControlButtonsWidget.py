@@ -3,9 +3,9 @@ from PyQt6.QtCore import Qt, pyqtSignal, QMetaObject, pyqtSlot
 
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.v1.topics import SystemTopics
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
-from src.robot_application.base_robot_application import ApplicationState
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
+from robot_application.base_robot_application import ApplicationState
 
 
 class ControlButtonsWidget(TranslatableWidget):

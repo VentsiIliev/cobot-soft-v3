@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from PyQt6.QtGui import QColor
-from src.frontend.pl_ui.utils.styles.ComboBoxStyle import ComboBoxStyle
+from frontend.pl_ui.utils.styles.ComboBoxStyle import ComboBoxStyle
 
 
 

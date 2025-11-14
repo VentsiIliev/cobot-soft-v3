@@ -4,11 +4,11 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 from modules.shared.localization.enums.Message import Message
-from src.frontend.pl_ui.localization.container import get_app_translator
-from src.frontend.pl_ui.ui.widgets.FeedbackWindow import FeedbackWindow, INFO_MESSAGE, WARNING_MESSAGE, ERROR_MESSAGE
+from frontend.pl_ui.localization.container import get_app_translator
+from frontend.pl_ui.ui.widgets.FeedbackWindow import FeedbackWindow, INFO_MESSAGE, WARNING_MESSAGE, ERROR_MESSAGE
 
-from src.frontend.pl_ui.utils.IconLoader import PLACE_CHESSBOARD_ICON
-from src.frontend.pl_ui.utils.IconLoader import MOVE_CHESSBOARD_ICON
+from frontend.pl_ui.utils.IconLoader import PLACE_CHESSBOARD_ICON
+from frontend.pl_ui.utils.IconLoader import MOVE_CHESSBOARD_ICON
 
 class FeedbackProvider:
     def __init__(self):

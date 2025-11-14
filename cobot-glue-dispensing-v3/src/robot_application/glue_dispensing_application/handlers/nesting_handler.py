@@ -1,5 +1,5 @@
 def start_nesting(application,workpieces):
-    from src.robot_application.glue_dispensing_application.pick_and_place.nesting import start_nesting
+    from robot_application.glue_dispensing_application.pick_and_place.nesting import start_nesting
     return start_nesting(
                   visionService=application.visionService,
                   robotService=application.robotService,

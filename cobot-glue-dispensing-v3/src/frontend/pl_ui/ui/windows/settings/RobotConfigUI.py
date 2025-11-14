@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (
     QListWidget, QListWidgetItem, QMessageBox, QInputDialog, QFrame,
     QSizePolicy, QSpacerItem, QSlider, QComboBox, QDialog, QDialogButtonBox
 )
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit,FocusSpinBox,FocusDoubleSpinBox
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit,FocusSpinBox,FocusDoubleSpinBox
 from PyQt6.QtCore import QObject, pyqtSignal, Qt, QTimer
 import sys
 import json
@@ -20,8 +20,8 @@ from modules.shared.v1.Constants import ROBOT_MOVE_TO_HOME_POS, ROBOT_MOVE_TO_LO
 from modules.shared.v1.Constants import ROBOT_MOVE_TO_POSITION
 from modules.shared.v1.Constants import ROBOT_SLOT_1_DROP,ROBOT_SLOT_1_PICKUP, ROBOT_SLOT_4_DROP,ROBOT_SLOT_4_PICKUP
 from modules.shared.v1.Constants import ROBOT_UPDATE_CONFIG
-from src.frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
-from src.frontend.pl_ui.localization import TranslationKeys, get_app_translator
+from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
+from frontend.pl_ui.localization import TranslationKeys, get_app_translator
 class RequestHandler:
 
     def handleRequest(self,request,data):

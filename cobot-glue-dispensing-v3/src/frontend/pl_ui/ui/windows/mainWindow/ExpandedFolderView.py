@@ -11,9 +11,9 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont, QColor
 
-from src.frontend.pl_ui.localization.mixins import TranslatableQFrame
-from src.frontend.pl_ui.localization import TranslationKeys
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
+from frontend.pl_ui.localization.mixins import TranslatableQFrame
+from frontend.pl_ui.localization import TranslationKeys
+from frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
 
 
 class ExpandedFolderView(TranslatableQFrame):

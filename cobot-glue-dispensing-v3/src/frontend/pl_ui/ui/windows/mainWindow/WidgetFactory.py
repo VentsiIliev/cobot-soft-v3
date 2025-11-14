@@ -1,7 +1,7 @@
 from enum import Enum
 
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.GalleryAppWidget import GalleryAppWidget
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.GalleryAppWidget import GalleryAppWidget
 
 
 class WidgetType(Enum):
@@ -56,42 +56,42 @@ class WidgetFactory:
 
     def __create_user_management_widget(self, *args, **kwargs):
         print("Creating User Management Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.UserManagementAppWidget import UserManagementAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.UserManagementAppWidget import UserManagementAppWidget
         return UserManagementAppWidget(*args, **kwargs)
 
     def __create_settings_widget(self, *args, **kwargs):
         print("Creating Settings Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.SettingsAppWidget import SettingsAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.SettingsAppWidget import SettingsAppWidget
         return SettingsAppWidget(controller = self.controller)
 
     def __create_workpiece_options_widget(self, *args, **kwargs):
         print("Creating Workpiece Options Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.CreateWorkpieceOptionsAppWidget import CreateWorkpieceOptionsAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.CreateWorkpieceOptionsAppWidget import CreateWorkpieceOptionsAppWidget
         return CreateWorkpieceOptionsAppWidget(controller = self.controller)
 
     def __create_contour_editor_widget(self, *args, **kwargs):
         print("Creating Contour Editor Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.ContourEditorAppWidget import ContourEditorAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.ContourEditorAppWidget import ContourEditorAppWidget
         return ContourEditorAppWidget(parent=self.main_window,controller=self.controller)
 
     def __create_dashboard_widget(self, *args, **kwargs):
         print("Creating Dashboard Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.DashboardAppWidget import DashboardAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.DashboardAppWidget import DashboardAppWidget
         return DashboardAppWidget(controller=self.controller)
 
     def __create_gallery_widget(self, *args, **kwargs):
         print("Creating Gallery Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.GalleryAppWidget import GalleryAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.GalleryAppWidget import GalleryAppWidget
         return GalleryAppWidget(controller=self.controller)
 
     def __create_calibration_widget(self, *args, **kwargs):
         print("Creating Calibration Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.CalibrationAppWidget import CalibrationAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.CalibrationAppWidget import CalibrationAppWidget
         return CalibrationAppWidget(controller=self.controller)
 
     def __create_glue_weight_cell_settings_widget(self, *args, **kwargs):
         print("Creating Glue Weight Cell Settings Widget")
-        from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.GlueWeightCellSettingsAppWidget import GlueWeightCellSettingsAppWidget
+        from frontend.pl_ui.ui.windows.mainWindow.appWidgets.GlueWeightCellSettingsAppWidget import GlueWeightCellSettingsAppWidget
         return GlueWeightCellSettingsAppWidget(parent = self.main_window,controller=None)
 
     def __create_dxf_browser_widget(self, *args, **kwargs):

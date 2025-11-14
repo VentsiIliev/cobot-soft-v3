@@ -1,7 +1,7 @@
-from src.frontend.pl_ui.Endpoints import UPDATE_CAMERA_FEED, CREATE_WORKPIECE_STEP_2, SAVE_WORKPIECE, GET_LATEST_IMAGE
-from src.frontend.pl_ui.localization import TranslationKeys
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
-from src.frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
+from frontend.pl_ui.Endpoints import UPDATE_CAMERA_FEED, CREATE_WORKPIECE_STEP_2, SAVE_WORKPIECE, GET_LATEST_IMAGE
+from frontend.pl_ui.localization import TranslationKeys
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
 
 
 class ContourEditorAppWidget(AppWidget):
@@ -18,7 +18,7 @@ class ContourEditorAppWidget(AppWidget):
 
         # Replace the content with actual UserManagementWidget if available
         try:
-            from src.frontend.pl_ui.contour_editor.ContourEditor import MainApplicationFrame
+            from frontend.pl_ui.contour_editor.ContourEditor import MainApplicationFrame
             # Remove the placeholder content
             self.content_widget = MainApplicationFrame(parent=self.parent)
             self.content_widget.capture_requested.connect(self.on_camera_capture_requested)
@@ -82,7 +82,7 @@ class ContourEditorAppWidget(AppWidget):
 
         # Use CaptureDataHandler to load capture data into editor
         # This ensures we go through ContourEditorData instead of raw dicts
-        from src.frontend.pl_ui.contour_editor.services.CaptureDataHandler import CaptureDataHandler
+        from frontend.pl_ui.contour_editor.services.CaptureDataHandler import CaptureDataHandler
 
         editor_data = CaptureDataHandler.handle_capture_data(
             workpiece_manager=self.content_widget.contourEditor.workpiece_manager,
@@ -103,7 +103,7 @@ class ContourEditorAppWidget(AppWidget):
         Uses SaveWorkpieceHandler to ensure consistent data flow through
         ContourEditorData and WorkpieceAdapter.
         """
-        from src.frontend.pl_ui.contour_editor.services.SaveWorkpieceHandler import SaveWorkpieceHandler
+        from frontend.pl_ui.contour_editor.services.SaveWorkpieceHandler import SaveWorkpieceHandler
 
         # Use the centralized handler
         success, message = SaveWorkpieceHandler.save_workpiece(

@@ -6,14 +6,14 @@ from PyQt6.QtWidgets import QScroller
 from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QApplication, QHBoxLayout,
                              QSizePolicy, QComboBox,
                              QScrollArea, QGroupBox, QGridLayout)
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.localization import TranslationKeys, get_app_translator
-from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.localization import TranslationKeys, get_app_translator
+from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
 from modules.glueSprayService.GlueSprayService import GlueSprayService
-from src.frontend.pl_ui.ui.widgets.SwitchButton import QToggle
-from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
-from src.frontend.pl_ui.utils.enums.GlueType import GlueType
-from src.frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
+from frontend.pl_ui.ui.widgets.SwitchButton import QToggle
+from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
+from frontend.pl_ui.utils.enums.GlueType import GlueType
+from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
 # from BaseSettingsTabLayout import BaseSettingsTabLayout
 
 
@@ -1093,15 +1093,15 @@ class GlueSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
 # Run this file to launch the settings tab layout in a PyQt6 application window.
 
 if __name__ == "__main__":
-    from src.backend.system.settings.SettingsService import SettingsService
+    from backend.system.settings.SettingsService import SettingsService
     from modules.robot import FairinoRobot
     from modules.robot.robotService.RobotService import RobotService
     settingsService = SettingsService()
     # Get glue settings through the new registry system
     try:
-        from src.robot_application import settings_registry
-        from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
-        from src.robot_application import GlueSettingsHandler
+        from robot_application import settings_registry
+        from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+        from robot_application import GlueSettingsHandler
         
         # Register glue settings for testing
         glue_settings_obj = GlueSettings()
@@ -1112,7 +1112,7 @@ if __name__ == "__main__":
         glueSettings = glue_handler.get_settings_object()
     except Exception as e:
         print(f"Failed to get glue settings: {e}")
-        from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+        from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
         glueSettings = GlueSettings()
 
     robot_config = settingsService.robot_config

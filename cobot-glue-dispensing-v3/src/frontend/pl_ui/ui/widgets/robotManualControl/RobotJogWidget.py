@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QMessageBox, QSizePolicy, QSpacerItem
 )
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
-from src.frontend.pl_ui.ui.widgets.robotManualControl.JogSlider import JogSlider
+from frontend.pl_ui.ui.widgets.robotManualControl.JogSlider import JogSlider
 
 
 class RobotJogWidget(QFrame):

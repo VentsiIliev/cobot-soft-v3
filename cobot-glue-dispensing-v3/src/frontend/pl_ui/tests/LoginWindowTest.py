@@ -3,8 +3,8 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 
-from src.frontend.pl_ui.tests.mocks import MockController
-from src.frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
+from frontend.pl_ui.tests.mocks import MockController
+from frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
 
 
 def on_log_event():

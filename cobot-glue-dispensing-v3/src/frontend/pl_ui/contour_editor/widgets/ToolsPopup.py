@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QApplication, QDialog, QLabel, QVBoxLayout, QGridLayout
 )
 from PyQt6.QtCore import Qt, pyqtSignal
-from src.frontend.pl_ui.contour_editor.widgets.ToolIconWidget import ToolIconWidget
+from frontend.pl_ui.contour_editor.widgets.ToolIconWidget import ToolIconWidget
 
 RESOURCE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "icons")
 print(f"Resource directory: {RESOURCE_DIR}")

@@ -3,20 +3,20 @@ from PyQt6.QtGui import QPainter
 from PyQt6.QtWidgets import QFrame
 
 from modules.shared.shared.contour_editor.BezierSegmentManager import BezierSegmentManager
-from src.robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
-from src.frontend.pl_ui.contour_editor import constants
-from src.frontend.pl_ui.contour_editor.controllers.SegmentActionController import SegmentActionController
-from src.frontend.pl_ui.contour_editor.controllers.viewport_controller import ViewportController
-from src.frontend.pl_ui.contour_editor.managers.selection_manager import SelectionManager
-from src.frontend.pl_ui.contour_editor.managers.tool_manager import ToolManager
-from src.frontend.pl_ui.contour_editor.managers.mode_manager import ModeManager
-from src.frontend.pl_ui.contour_editor.managers.overlay_manager import OverlayManager
-from src.frontend.pl_ui.contour_editor.managers.settings_manager import SettingsManager
-from src.frontend.pl_ui.contour_editor.managers.data_export_manager import DataExportManager
-from src.frontend.pl_ui.contour_editor.managers.event_manager import EventManager
-from src.frontend.pl_ui.contour_editor.managers.layer_manager import LayerManager
-from src.frontend.pl_ui.contour_editor.managers.workpiece_manager import WorkpieceManager
-from src.frontend.pl_ui.contour_editor.rendering.editor_renderer import EditorRenderer
+from robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
+from frontend.pl_ui.contour_editor import constants
+from frontend.pl_ui.contour_editor.controllers.SegmentActionController import SegmentActionController
+from frontend.pl_ui.contour_editor.controllers.viewport_controller import ViewportController
+from frontend.pl_ui.contour_editor.managers.selection_manager import SelectionManager
+from frontend.pl_ui.contour_editor.managers.tool_manager import ToolManager
+from frontend.pl_ui.contour_editor.managers.mode_manager import ModeManager
+from frontend.pl_ui.contour_editor.managers.overlay_manager import OverlayManager
+from frontend.pl_ui.contour_editor.managers.settings_manager import SettingsManager
+from frontend.pl_ui.contour_editor.managers.data_export_manager import DataExportManager
+from frontend.pl_ui.contour_editor.managers.event_manager import EventManager
+from frontend.pl_ui.contour_editor.managers.layer_manager import LayerManager
+from frontend.pl_ui.contour_editor.managers.workpiece_manager import WorkpieceManager
+from frontend.pl_ui.contour_editor.rendering.editor_renderer import EditorRenderer
 
 class ContourEditor(QFrame):
     pointsUpdated = pyqtSignal()

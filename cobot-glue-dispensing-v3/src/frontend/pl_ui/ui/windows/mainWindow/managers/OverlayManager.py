@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QTimer
 
-from src.frontend.pl_ui.ui.windows.mainWindow.FolderOverlay import FolderOverlay
+from frontend.pl_ui.ui.windows.mainWindow.FolderOverlay import FolderOverlay
 
 
 class OverlayManager:

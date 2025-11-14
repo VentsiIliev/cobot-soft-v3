@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPainter
 
-from src.frontend.pl_ui.contour_editor.rendering.renderer import (
+from frontend.pl_ui.contour_editor.rendering.renderer import (
     draw_ruler, draw_rectangle_selection, draw_pickup_point,
     draw_selection_status, draw_segments, draw_drag_crosshair, 
     draw_highlighted_line_segment

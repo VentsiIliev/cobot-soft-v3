@@ -6,15 +6,15 @@ from PyQt6.QtWidgets import QScroller
 from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QHBoxLayout,
                              QSizePolicy, QComboBox, QScrollArea, QGroupBox, QGridLayout, QPushButton)
 
-from src.frontend.pl_ui.ui.widgets.ClickableLabel import ClickableLabel
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.ui.widgets.ClickableLabel import ClickableLabel
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 from modules.shared.shared.settings.conreateSettings.CameraSettings import CameraSettings
 from modules.shared.shared.settings.conreateSettings.enums.CameraSettingKey import CameraSettingKey
-from src.frontend.pl_ui.ui.widgets.SwitchButton import QToggle
-from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
-from src.frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
+from frontend.pl_ui.ui.widgets.SwitchButton import QToggle
+from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
+from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
 import cv2
-from src.frontend.pl_ui.localization import TranslationKeys, get_app_translator
+from frontend.pl_ui.localization import TranslationKeys, get_app_translator
 from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.v1.topics import VisionTopics

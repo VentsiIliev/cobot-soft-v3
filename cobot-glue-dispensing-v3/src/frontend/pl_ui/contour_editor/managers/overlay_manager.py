@@ -1,8 +1,8 @@
 from PyQt6.QtCore import QTimer
 
-from src.frontend.pl_ui.contour_editor import constants
-from src.frontend.pl_ui.contour_editor.managers.point_info_overlay_manager import remove_selected_points, setup_point_info_overlay, update_point_info_overlay
-from src.frontend.pl_ui.contour_editor.managers.segment_click_overlay_manager import setup_segment_click_overlay
+from frontend.pl_ui.contour_editor import constants
+from frontend.pl_ui.contour_editor.managers.point_info_overlay_manager import remove_selected_points, setup_point_info_overlay, update_point_info_overlay
+from frontend.pl_ui.contour_editor.managers.segment_click_overlay_manager import setup_segment_click_overlay
 
 
 class OverlayManager:

@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QPointF
 
-from src.frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space
+from frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space
 
 
 def zoom_in(contour_editor):

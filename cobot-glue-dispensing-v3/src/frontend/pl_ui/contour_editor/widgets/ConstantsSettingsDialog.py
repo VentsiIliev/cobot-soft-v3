@@ -7,10 +7,10 @@ from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QTabWidget,
                               QLabel, QSpinBox, QDoubleSpinBox, QCheckBox,
                               QPushButton, QWidget, QGridLayout, QGroupBox,
                               QColorDialog, QScrollArea, QComboBox)
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusSpinBox,FocusDoubleSpinBox
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusSpinBox,FocusDoubleSpinBox
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QColor, QKeySequence, QShortcut
-from src.frontend.pl_ui.contour_editor.ConstantsManager import ConstantsManager
+from frontend.pl_ui.contour_editor.ConstantsManager import ConstantsManager
 
 
 class ColorButton(QPushButton):

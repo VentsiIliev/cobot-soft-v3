@@ -1,4 +1,4 @@
-from src.frontend.pl_ui.ui.windows.mainWindow.MenuIcon import MenuIcon
+from frontend.pl_ui.ui.windows.mainWindow.MenuIcon import MenuIcon
 
 
 class ExpandedViewManager:
@@ -12,7 +12,7 @@ class ExpandedViewManager:
         if self.expanded_view:
             self._cleanup()
         # print(f"ExpandedViewManager: Creating expanded view for folder '{folder_name}' with overlay parent '{overlay_parent}'")
-        from src.frontend.pl_ui.ui.windows.mainWindow.ExpandedFolderView import ExpandedFolderView
+        from frontend.pl_ui.ui.windows.mainWindow.ExpandedFolderView import ExpandedFolderView
         self.expanded_view = ExpandedFolderView(folder_name, overlay_parent)
         self.expanded_view.close_requested.connect(on_close)
         self.expanded_view.app_selected.connect(on_app_selected)

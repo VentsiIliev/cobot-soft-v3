@@ -15,10 +15,10 @@ from PyQt6.QtGui import QFont, QPalette, QColor
 from modules.shared.shared.user.User import User, Role, UserField
 from modules.shared.shared.user.UserService import UserService
 from modules.shared.shared.user.CSVUsersRepository import CSVUsersRepository
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableWidget, TranslatableDialog
-from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget, TranslatableDialog
+from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 
 
 class UserTableModel:
@@ -799,8 +799,8 @@ class UserManagementWidget(TranslatableWidget):
             QMessageBox.warning(self, "No Email", "User does not have an email address.")
             return
 
-        from src.frontend.pl_ui.utils.AccessCard import create_complete_access_package2 , PassConfig
-        from src.frontend.pl_ui.utils.IconLoader import LOGO
+        from frontend.pl_ui.utils.AccessCard import create_complete_access_package2 , PassConfig
+        from frontend.pl_ui.utils.IconLoader import LOGO
         from modules.shared.shared.email.emailSender import EmailSenderService, get_email_template, get_default_email_config
         # Custom configuration with logo
         config = PassConfig(

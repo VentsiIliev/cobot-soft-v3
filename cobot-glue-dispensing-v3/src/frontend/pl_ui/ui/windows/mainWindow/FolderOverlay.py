@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, Qt, QPropertyAnimation, QEasingCurve
 from PyQt6.QtWidgets import QWidget
 
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
+from frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
 
 
 class FolderOverlay(QWidget):

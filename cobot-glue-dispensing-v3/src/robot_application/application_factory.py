@@ -10,13 +10,13 @@ from typing import Dict, Any, Optional, Type, List
 import logging
 
 from .base_robot_application import BaseRobotApplication, ApplicationType
-from src.robot_application.interfaces.robot_application_interface import RobotApplicationInterface
-from src.backend.system.vision.VisionService import _VisionService
-from src.backend.system.settings.SettingsService import SettingsService
+from robot_application.interfaces.robot_application_interface import RobotApplicationInterface
+from backend.system.vision.VisionService import _VisionService
+from backend.system.settings.SettingsService import SettingsService
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
 from modules.robot.robotService.RobotService import RobotService
-from src.robot_application.glue_dispensing_application.GlueDispensingApplication import GlueSprayingApplication
-from src.robot_application.example_painting_application.application import PaintingApplication
+from robot_application.glue_dispensing_application.GlueDispensingApplication import GlueSprayingApplication
+from robot_application.example_painting_application.application import PaintingApplication
 logger = logging.getLogger(__name__)
 
 
@@ -359,7 +359,7 @@ def auto_register_applications(factory: ApplicationFactory) -> None:
 
     # TODO: Add other applications as they become available
     # try:
-    #     from src.backend.robot_application.paint_application.PaintApplication import PaintApplication
+    #     from backend.robot_application.paint_application.PaintApplication import PaintApplication
     #     factory.register_application(ApplicationType.PAINT_APPLICATION, PaintApplication)
     #     logger.info("Registered PaintApplication")
     # except ImportError as e:

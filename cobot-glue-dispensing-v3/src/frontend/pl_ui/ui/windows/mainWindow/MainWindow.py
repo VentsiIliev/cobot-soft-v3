@@ -7,23 +7,23 @@ from PyQt6.QtWidgets import (QVBoxLayout, QApplication)
 from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QMessageBox
 
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
+from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
 from modules.shared.shared.user.Session import SessionManager
-from src.frontend.pl_ui.Endpoints import SAVE_WORKPIECE, START, STOP, PAUSE, ROBOT_EXECUTE_NOZZLE_CLEAN, ROBOT_RESET_ERRORS, \
+from frontend.pl_ui.Endpoints import SAVE_WORKPIECE, START, STOP, PAUSE, ROBOT_EXECUTE_NOZZLE_CLEAN, ROBOT_RESET_ERRORS, \
     RUN_REMO, STOP_DEMO, CREATE_WORKPIECE_STEP_1
-from src.frontend.pl_ui.ui.widgets.Header import Header
-from src.frontend.pl_ui.ui.windows.folders_page.FoldersPage import FoldersPage, FolderConfig
-from src.frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
-from src.frontend.pl_ui.ui.windows.mainWindow.WidgetFactory import WidgetFactory, WidgetType
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.CreateWorkpieceManager import CreateWorkpieceManager
-from src.frontend.pl_ui.utils.DxfThumbnailLoader import DXFThumbnailLoader
-from src.frontend.pl_ui.utils.IconLoader import (DASHBOARD_ICON, CREATE_WORKPIECE_ICON, GALLERY_ICON,
+from frontend.pl_ui.ui.widgets.Header import Header
+from frontend.pl_ui.ui.windows.folders_page.FoldersPage import FoldersPage, FolderConfig
+from frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
+from frontend.pl_ui.ui.windows.mainWindow.WidgetFactory import WidgetFactory, WidgetType
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from frontend.pl_ui.ui.windows.mainWindow.managers.CreateWorkpieceManager import CreateWorkpieceManager
+from frontend.pl_ui.utils.DxfThumbnailLoader import DXFThumbnailLoader
+from frontend.pl_ui.utils.IconLoader import (DASHBOARD_ICON, CREATE_WORKPIECE_ICON, GALLERY_ICON,
                                     SETTINGS_ICON, CALIBRATION_ICON, USER_MANAGEMENT_ICON,
                                     GLUE_WEIGHT_CELL_ICON)
-from src.frontend.pl_ui.authorization.authorizationService import AuthorizationService , Permission
-from src.frontend.pl_ui.utils.FilePaths import DXF_DIRECTORY
-from src.frontend.pl_ui.Endpoints import ROBOT_UPDATE_CONFIG
+from frontend.pl_ui.authorization.authorizationService import AuthorizationService , Permission
+from frontend.pl_ui.utils.FilePaths import DXF_DIRECTORY
+from frontend.pl_ui.Endpoints import ROBOT_UPDATE_CONFIG
 
 
 class MainWindow(TranslatableWidget):
@@ -440,12 +440,12 @@ class MainWindow(TranslatableWidget):
     def onDxfBrowserSubmit(self, file_name, thumbnail):
         if not file_name:
             return
-        from src.frontend.pl_ui.utils.FilePaths import DXF_DIRECTORY
+        from frontend.pl_ui.utils.FilePaths import DXF_DIRECTORY
         print("DXF_DIRECTORY:", DXF_DIRECTORY)
         print(f"DXF file selected: {file_name}")
         from modules.shared.shared.dxf.DxfParser import DXFPathExtractor
         from modules.shared.shared.dxf.utils import scale_contours
-        from src.frontend.pl_ui.contour_editor.utils.utils import qpixmap_to_cv, create_light_gray_pixmap
+        from frontend.pl_ui.contour_editor.utils.utils import qpixmap_to_cv, create_light_gray_pixmap
 
         file_name = file_name  # Assume single select for now
         extractor = DXFPathExtractor(os.path.join(DXF_DIRECTORY, file_name))
@@ -553,7 +553,7 @@ class MainWindow(TranslatableWidget):
         """Toggle the session info drawer with proper state management"""
         # Create drawer on first use
         if not hasattr(self, 'session_info_drawer') or self.session_info_drawer is None:
-            from src.frontend.pl_ui.ui.widgets.SessionInfoWidget import SessionInfoWidget
+            from frontend.pl_ui.ui.widgets.SessionInfoWidget import SessionInfoWidget
             self.session_info_drawer = SessionInfoWidget(self, onLogoutCallback=self.onLogout)
             self.session_info_drawer.setFixedWidth(300)
             self.session_info_drawer.heightOffset = self.header.height()  # Account for header height
@@ -580,7 +580,7 @@ class MainWindow(TranslatableWidget):
     def show_tcp_offset_dialog(self):
         """Show the TCP offset configuration dialog"""
         try:
-            from src.frontend.pl_ui.ui.widgets.TcpOffsetDialog import show_tcp_offset_dialog
+            from frontend.pl_ui.ui.widgets.TcpOffsetDialog import show_tcp_offset_dialog
             
             # Show the dialog with this window as parent
             dialog = show_tcp_offset_dialog(self)

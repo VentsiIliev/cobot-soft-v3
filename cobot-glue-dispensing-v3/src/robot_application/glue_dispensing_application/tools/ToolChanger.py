@@ -1,4 +1,4 @@
-from src.robot_application.glue_dispensing_application.tools.enums.Gripper import Gripper
+from robot_application.glue_dispensing_application.tools.enums.Gripper import Gripper
 
 
 class ToolChanger():

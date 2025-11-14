@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QApplication
-from src.frontend.pl_ui.utils.IconLoader import BACKGROUND
+from frontend.pl_ui.utils.IconLoader import BACKGROUND
 
-from src.frontend.pl_ui.ui.widgets.CameraFeed import CameraFeed,CameraFeedConfig
+from frontend.pl_ui.ui.widgets.CameraFeed import CameraFeed,CameraFeedConfig
 
 
 def update_callback():

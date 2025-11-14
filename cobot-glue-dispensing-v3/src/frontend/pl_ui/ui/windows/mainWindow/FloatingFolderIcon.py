@@ -9,8 +9,8 @@ from PyQt6.QtGui import QFont, QColor, QPixmap, QPalette, QIcon
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtCore import QSize
 
-from src.frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
-from src.frontend.pl_ui.utils.IconLoader import MENU_ICON_PATH
+from frontend.pl_ui.ui.windows.mainWindow.managers.AnimationManager import AnimationManager
+from frontend.pl_ui.utils.IconLoader import MENU_ICON_PATH
 
 
 class FloatingFolderIcon(QPushButton):

@@ -9,15 +9,18 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap, QIcon, QPalette, QColor
 from PyQt6.QtWidgets import QFrame, QSizePolicy, QSpacerItem, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton, \
     QCheckBox, QWidget, QMessageBox, QDialog, QScrollArea, QStyleFactory, QListView
+from frontend.pl_ui.utils.styles.CreateWorkpieceStyles import getStyles
+from frontend.pl_ui.utils.styles.CreateWorkpieceStyles import get_input_field_styles
+from frontend.pl_ui.utils.styles.CreateWorkpieceStyles import get_popup_view_styles
 
-from src.frontend.pl_ui.ui.widgets.Drawer import Drawer
-from src.frontend.pl_ui.utils.enums.GlueType import GlueType
-from src.frontend.pl_ui.utils.enums.Gripper import Gripper
-from src.frontend.pl_ui.utils.enums.Program import Program
-from src.frontend.pl_ui.utils.enums.ToolID import ToolID
-from src.frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
-from src.frontend.pl_ui.utils.IconLoader import WORKPIECE_ID_ICON_PATH, WORKPIECE_NAME_ICON_PATH, DESCRIPTION_ICON_PATH, OFFSET_ICON_PATH, \
+from frontend.pl_ui.ui.widgets.Drawer import Drawer
+from frontend.pl_ui.utils.enums.GlueType import GlueType
+from frontend.pl_ui.utils.enums.Gripper import Gripper
+from frontend.pl_ui.utils.enums.Program import Program
+from frontend.pl_ui.utils.enums.ToolID import ToolID
+from frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
+from frontend.pl_ui.utils.IconLoader import WORKPIECE_ID_ICON_PATH, WORKPIECE_NAME_ICON_PATH, DESCRIPTION_ICON_PATH, OFFSET_ICON_PATH, \
     HEIGHT_ICON_PATH, TOOL_ID_ICON_PATH, GRIPPER_ID_ICON_PATH, GLUE_TYPE_ICON_PATH, PROGRAM_ICON_PATH, MATERIAL_ICON_PATH, ACCEPT_BUTTON_ICON_PATH, \
     CANCEL_BUTTON_ICON_PATH, GLUE_QTY_ICON_PATH, SPRAY_WIDTH_ICON_PATH
 # Assuming the path to stylesheets
@@ -340,7 +343,6 @@ class CreateWorkpieceForm(Drawer,QFrame):
                     widget.setCurrentText(str(value))
 
     def apply_stylesheet(self):
-        from src.frontend.pl_ui.utils.styles.CreateWorkpieceStyles import getStyles
         styles = getStyles()
         self.setStyleSheet(styles)
 
@@ -428,7 +430,6 @@ class CreateWorkpieceForm(Drawer,QFrame):
         self.settingsLayout.addItem(spacer)
 
     def add_input_field(self, label, placeholder, icon_path):
-        from src.frontend.pl_ui.utils.styles.CreateWorkpieceStyles import get_input_field_styles
         """Helper method to add a label, icon, and input field"""
         # Create a container frame for consistent sizing/alignment when embedded
         container = QFrame()
@@ -475,7 +476,6 @@ class CreateWorkpieceForm(Drawer,QFrame):
 
         # Force the popup to use a QListView (prevents native popup on some platforms) and style it
         try:
-            from src.frontend.pl_ui.utils.styles.CreateWorkpieceStyles import get_popup_view_styles
             dropdown.setView(QListView())
             popup_view = dropdown.view()  # QListView/QAbstractItemView
             pal = popup_view.palette()

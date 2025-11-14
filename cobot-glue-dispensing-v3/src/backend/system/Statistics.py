@@ -2,7 +2,12 @@
 import json
 import os
 import datetime
+import sys
 from enum import Enum
+
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableWidgetItem, \
+    QApplication, QTableWidget
 
 STATISTICS_PATH = os.path.join(os.path.dirname(__file__), "storage", "statistics.json")
 STARTED_AT_KEY = "started_at"
@@ -188,14 +193,7 @@ class Statistics:
 
 
 
-# python
-import sys
-from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QLabel, QPushButton, QTableWidget, QTableWidgetItem
-)
-from PyQt6.QtCore import QTimer, Qt
-from src.backend.system.Statistics import Statistics
+
 
 
 class StatisticsViewer(QMainWindow):

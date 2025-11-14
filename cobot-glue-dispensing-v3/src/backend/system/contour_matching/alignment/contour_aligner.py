@@ -7,9 +7,9 @@ import numpy as np
 from backend.system.contour_matching.debug.plot_generator import plot_contour_alignment
 from backend.system.contour_matching.matching.match_info import MatchInfo
 from modules.shared.shared.ContourStandartized import Contour
-from src.backend.system.contour_matching.alignment.mask_refinement import _refine_alignment_with_mask
-from src.backend.system.contour_matching.alignment.workpiece_update import update_workpiece_data
-from src.backend.system.contour_matching.matching_config import REFINEMENT_THRESHOLD
+from backend.system.contour_matching.alignment.mask_refinement import _refine_alignment_with_mask
+from backend.system.contour_matching.alignment.workpiece_update import update_workpiece_data
+from backend.system.contour_matching.matching_config import REFINEMENT_THRESHOLD
 
 
 def apply_rotation(contours, angle, pivot):
@@ -158,7 +158,7 @@ def _alignContours(matched: List[MatchInfo], debug: bool = False) -> Dict[str, L
 
         transformed_pickup_point = None
         if hasattr(workpiece, "pickupPoint"):
-            from src.backend.system.contour_matching.alignment.alignment_utils import transform_pickup_point
+            from backend.system.contour_matching.alignment.alignment_utils import transform_pickup_point
             transformed_pickup_point = transform_pickup_point(
                 workpiece, rotation_diffs[i], translation_diffs[i], contourObj.getCentroid()
             )

@@ -1,4 +1,4 @@
-from src.frontend.pl_ui.contour_editor.widgets.SegmentClickOverlay import SegmentClickOverlay
+from frontend.pl_ui.contour_editor.widgets.SegmentClickOverlay import SegmentClickOverlay
 
 
 def setup_segment_click_overlay(editor):

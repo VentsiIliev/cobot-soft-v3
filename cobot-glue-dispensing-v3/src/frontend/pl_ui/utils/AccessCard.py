@@ -1198,7 +1198,7 @@ def main():
     """
     Demonstration of creating access passes for different user roles.
     """
-    from src.frontend.pl_ui.utils.IconLoader import LOGO
+    from frontend.pl_ui.utils.IconLoader import LOGO
     
     try:
         # Create users with different roles

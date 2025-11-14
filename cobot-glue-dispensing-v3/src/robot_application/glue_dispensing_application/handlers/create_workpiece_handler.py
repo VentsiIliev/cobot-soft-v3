@@ -1,6 +1,6 @@
 import cv2
 
-from src.robot_application.base_robot_application import ApplicationState
+from robot_application.base_robot_application import ApplicationState
 from modules.VisionSystem.VisionSystem import VisionSystemState
 
 class CreateWorkpieceHandler:

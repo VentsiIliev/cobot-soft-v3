@@ -11,12 +11,12 @@ from PyQt6.QtWidgets import (QSizePolicy, QScrollArea, QPushButton,
                              QTextEdit, QProgressBar)
 
 from backend.system.utils import PathResolver
-from src.frontend.pl_ui.ui.widgets.ClickableLabel import ClickableLabel
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.ui.widgets.ClickableLabel import ClickableLabel
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 from modules.shared.MessageBroker import MessageBroker
-from src.frontend.pl_ui.ui.widgets.robotManualControl.RobotJogWidget import RobotJogWidget
-from src.frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
+from frontend.pl_ui.ui.widgets.robotManualControl.RobotJogWidget import RobotJogWidget
+from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
 from modules.shared.v1.topics import VisionTopics , RobotTopics
 
 

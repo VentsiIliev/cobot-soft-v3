@@ -3,7 +3,7 @@ import platform
 import logging
 import time
 
-from src.backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
+from backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
     setup_logger, LoggerContext, log_info_message, log_error_message, log_debug_message
 
 if platform.system() == "Windows":

@@ -8,7 +8,7 @@ and workflow steps.
 
 from enum import Enum, auto
 from typing import Dict, Set
-from src.backend.system.state_machine.ProcessStateType import ProcessStateType, ProcessStateCategory
+from backend.system.state_machine.ProcessStateType import ProcessStateType, ProcessStateCategory
 
 
 class GlueProcessState(Enum):

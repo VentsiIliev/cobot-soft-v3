@@ -1,6 +1,6 @@
 # Mock classes for testing
 from modules.shared.v1 import Constants
-from src.frontend.pl_ui.Endpoints import QR_LOGIN,GO_TO_LOGIN_POS,UPDATE_CAMERA_FEED
+from frontend.pl_ui.Endpoints import QR_LOGIN,GO_TO_LOGIN_POS,UPDATE_CAMERA_FEED
 
 
 class MockCameraService:

@@ -1,12 +1,12 @@
 from PyQt6.QtCore import Qt, QPointF
 from PyQt6.QtGui import QCursor
 
-from src.frontend.pl_ui.contour_editor.constants import EDIT_MODE, RECTANGLE_SELECT_MODE
-from src.frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space
-from src.frontend.pl_ui.contour_editor.widgets.ToolsPopup import ToolsPopup
-from src.frontend.pl_ui.contour_editor.widgets.MagnifierWidget import MagnifierWidget
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.RulerMode import RulerMode
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.RectangleSelectMode import RectangleSelectMode
+from frontend.pl_ui.contour_editor.constants import EDIT_MODE, RECTANGLE_SELECT_MODE
+from frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space
+from frontend.pl_ui.contour_editor.widgets.ToolsPopup import ToolsPopup
+from frontend.pl_ui.contour_editor.widgets.MagnifierWidget import MagnifierWidget
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.RulerMode import RulerMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.RectangleSelectMode import RectangleSelectMode
 
 class ToolManager:
     def __init__(self, editor):

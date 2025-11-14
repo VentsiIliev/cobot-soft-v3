@@ -7,9 +7,9 @@ It supports both:
 2. Loading/exporting domain-agnostic ContourEditorData
 """
 
-from src.frontend.pl_ui.contour_editor.services.workpiece_loader import load_workpiece
-from src.frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
-from src.frontend.pl_ui.contour_editor.adapters.WorkpieceAdapter import WorkpieceAdapter
+from frontend.pl_ui.contour_editor.services.workpiece_loader import load_workpiece
+from frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
+from frontend.pl_ui.contour_editor.adapters.WorkpieceAdapter import WorkpieceAdapter
 
 
 class WorkpieceManager:

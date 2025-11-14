@@ -1,7 +1,7 @@
 from typing import Any, Tuple
 
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableObject
-from src.frontend.pl_ui.Endpoints import START_CONTOUR_DETECTION
+from frontend.pl_ui.localization import TranslationKeys, TranslatableObject
+from frontend.pl_ui.Endpoints import START_CONTOUR_DETECTION
 
 
 class LoginController(TranslatableObject):

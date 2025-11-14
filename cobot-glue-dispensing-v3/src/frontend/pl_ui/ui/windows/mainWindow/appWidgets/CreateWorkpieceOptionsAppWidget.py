@@ -2,8 +2,8 @@ from PyQt6.QtCore import pyqtSignal
 
 import os
 
-from src.frontend.pl_ui.ui.widgets.WorkpieceOptionsWidget import WorkpieceOptionsWidget
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from frontend.pl_ui.ui.widgets.WorkpieceOptionsWidget import WorkpieceOptionsWidget
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
 
 
 class CreateWorkpieceOptionsAppWidget(AppWidget):

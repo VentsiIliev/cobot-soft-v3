@@ -6,7 +6,7 @@ Uses radial menu for selection.
 from PyQt6.QtCore import Qt, pyqtSignal, QPoint, QEvent
 from PyQt6.QtWidgets import QPushButton
 from PyQt6.QtGui import QFont, QPainter, QColor, QPen, QBrush, QIcon
-from src.frontend.pl_ui.contour_editor.test import RadialMenu
+from frontend.pl_ui.contour_editor.test import RadialMenu
 import math
 import os
 # GET RESOURCES DIRECTORY

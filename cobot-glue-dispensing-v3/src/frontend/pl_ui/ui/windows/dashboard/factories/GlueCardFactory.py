@@ -1,10 +1,10 @@
 from PyQt6.QtWidgets import QComboBox
 
-from src.frontend.pl_ui.ui.windows.dashboard.widgets.DashboardCard import DashboardCard
-from src.frontend.pl_ui.ui.windows.dashboard.widgets.GlueMeterWidget import GlueMeterWidget
-from src.frontend.pl_ui.utils.enums.GlueType import GlueType
-from src.frontend.pl_ui.ui.windows.dashboard.config.dashboard_styles import DashboardConfig
-from src.robot_application.glue_dispensing_application.tools.GlueCell import GlueCellsManagerSingleton
+from frontend.pl_ui.ui.windows.dashboard.widgets.DashboardCard import DashboardCard
+from frontend.pl_ui.ui.windows.dashboard.widgets.GlueMeterWidget import GlueMeterWidget
+from frontend.pl_ui.utils.enums.GlueType import GlueType
+from frontend.pl_ui.ui.windows.dashboard.config.dashboard_styles import DashboardConfig
+from robot_application.glue_dispensing_application.tools.GlueCell import GlueCellsManagerSingleton
 
 
 class GlueCardFactory:

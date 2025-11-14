@@ -1,4 +1,4 @@
-from src.backend.system.SystemStatePublisherThread import SystemStatePublisherThread
+from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
 from modules.robot.robotService.enums.RobotServiceState import RobotServiceState
 from modules.robot.robotService.enums.RobotState import RobotState
 

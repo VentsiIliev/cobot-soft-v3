@@ -6,11 +6,11 @@ from PyQt6.QtWidgets import (
     QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
 )
 
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
-from src.frontend.pl_ui.utils.IconLoader import LOGIN_BUTTON
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.utils.styles.globalStyles import FONT,MATERIAL_BUTTON_PRIMARY_COLOR
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
+from frontend.pl_ui.utils.IconLoader import LOGIN_BUTTON
+from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.utils.styles.globalStyles import FONT,MATERIAL_BUTTON_PRIMARY_COLOR
 
 class LoginTab(TranslatableWidget):
     """Standard username/password login tab"""

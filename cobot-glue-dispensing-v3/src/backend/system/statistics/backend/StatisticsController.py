@@ -1,5 +1,5 @@
 from typing import Dict, Any, List
-from src.backend.system.statistics.backend.StatiscticModel import GeneratorStats, TransducerStats, PumpStats, FanStats, LoadCellStats
+from backend.system.statistics.backend.StatiscticModel import GeneratorStats, TransducerStats, PumpStats, FanStats, LoadCellStats
 
 
 class Controller:

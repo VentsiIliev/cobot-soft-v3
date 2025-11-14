@@ -2,7 +2,7 @@ import sys
 
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
-from src.frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
+from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
 
 if __name__ == "__main__":
     app: QApplication = QApplication(sys.argv)

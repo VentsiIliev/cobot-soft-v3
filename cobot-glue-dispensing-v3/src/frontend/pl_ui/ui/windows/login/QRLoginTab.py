@@ -5,11 +5,11 @@ from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import QLabel, QPushButton, QVBoxLayout
 
 from modules.shared.v1 import Constants
-from src.frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
-from src.frontend.pl_ui.Endpoints import STOP_CONTOUR_DETECTION, UPDATE_CAMERA_FEED, START_CONTOUR_DETECTION, QR_LOGIN
-from src.frontend.pl_ui.ui.widgets.CameraFeed import CameraFeed,CameraFeedConfig
-from src.frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from src.frontend.pl_ui.utils.IconLoader import LOGIN_QR_BUTTON
+from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
+from frontend.pl_ui.Endpoints import STOP_CONTOUR_DETECTION, UPDATE_CAMERA_FEED, START_CONTOUR_DETECTION, QR_LOGIN
+from frontend.pl_ui.ui.widgets.CameraFeed import CameraFeed,CameraFeedConfig
+from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
+from frontend.pl_ui.utils.IconLoader import LOGIN_QR_BUTTON
 
 
 class QRLoginTab(TranslatableWidget):

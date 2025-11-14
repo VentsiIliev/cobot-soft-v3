@@ -5,7 +5,7 @@ showing quick actions as a radial menu.
 from PyQt6.QtCore import Qt, pyqtSignal, QPoint, QRect
 from PyQt6.QtWidgets import QPushButton, QLabel
 from PyQt6.QtGui import QFont, QPainter, QColor, QPen, QBrush
-from src.frontend.pl_ui.contour_editor.test import RadialMenu
+from frontend.pl_ui.contour_editor.test import RadialMenu
 import math
 
 

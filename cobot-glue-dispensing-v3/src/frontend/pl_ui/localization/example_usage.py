@@ -6,7 +6,7 @@ This file demonstrates various usage patterns and migration strategies.
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
 
 from modules.shared.localization.LanguageResourceLoader import LanguageResourceLoader
-from src.frontend.pl_ui.localization import (
+from frontend.pl_ui.localization import (
     setup_localization,
     TranslatableWidget,
     TranslationKeys,
@@ -126,7 +126,7 @@ class NewStyleWidget(TranslatableWidget):
 
 
 # Example 4: Non-widget class with translations
-from src.frontend.pl_ui.localization import TranslatableObject
+from frontend.pl_ui.localization import TranslatableObject
 
 class ServiceWithTranslations(TranslatableObject):
     """Example of non-widget class that needs translations."""

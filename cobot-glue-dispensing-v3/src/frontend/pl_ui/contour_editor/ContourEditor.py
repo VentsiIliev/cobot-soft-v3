@@ -10,16 +10,16 @@ from shapely import Polygon, LineString
 
 from frontend.pl_ui.contour_editor.services.CaptureDataHandler import CaptureDataHandler
 from frontend.pl_ui.contour_editor.services.SaveWorkpieceHandler import SaveWorkpieceHandler
-from src.frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditorWithBottomToolBar import ContourEditorWithBottomToolBar
-from src.robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
-from src.frontend.pl_ui.contour_editor.widgets.LayerAndValueInputDialog import LayerAndValueInputDialog
-from src.frontend.pl_ui.contour_editor.widgets.PointManagerWidget import PointManagerWidget
-from src.frontend.pl_ui.contour_editor.widgets.SlidingPanel import SlidingPanel
-from src.frontend.pl_ui.contour_editor.widgets.TopbarWidget import TopBarWidget
-from src.frontend.pl_ui.contour_editor.utils.utils import shrink_contour_points, generate_spray_pattern
-from src.frontend.pl_ui.ui.widgets.CreateWorkpieceForm import CreateWorkpieceForm
-from src.frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
-from src.frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
+from frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditorWithBottomToolBar import ContourEditorWithBottomToolBar
+from robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
+from frontend.pl_ui.contour_editor.widgets.LayerAndValueInputDialog import LayerAndValueInputDialog
+from frontend.pl_ui.contour_editor.widgets.PointManagerWidget import PointManagerWidget
+from frontend.pl_ui.contour_editor.widgets.SlidingPanel import SlidingPanel
+from frontend.pl_ui.contour_editor.widgets.TopbarWidget import TopBarWidget
+from frontend.pl_ui.contour_editor.utils.utils import shrink_contour_points, generate_spray_pattern
+from frontend.pl_ui.ui.widgets.CreateWorkpieceForm import CreateWorkpieceForm
+from frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
+from frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 class MainApplicationFrame(QFrame):

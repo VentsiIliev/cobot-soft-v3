@@ -17,10 +17,10 @@ from modules.robot.robotService.RobotServiceStateManager import RobotServiceStat
 from modules.robot.robotService.RobotServiceSubscriptionManager import RobotServiceSubscriptionManager
 from modules.robot.robotService.RobotStateManager import RobotStateManager
 from modules.robot.robotService.enums.RobotServiceState import RobotServiceState
-from src.robot_application.glue_dispensing_application.tools.Laser import Laser
-from src.robot_application.glue_dispensing_application.tools.ToolChanger import ToolChanger
-from src.robot_application.glue_dispensing_application.tools.VacuumPump import VacuumPump
-from src.backend.system.utils.custom_logging import setup_logger, \
+from robot_application.glue_dispensing_application.tools.Laser import Laser
+from robot_application.glue_dispensing_application.tools.ToolChanger import ToolChanger
+from robot_application.glue_dispensing_application.tools.VacuumPump import VacuumPump
+from backend.system.utils.custom_logging import setup_logger, \
     LoggerContext, log_info_message, log_debug_message
 
 ENABLE_ROBOT_SERVICE_LOGGING = True

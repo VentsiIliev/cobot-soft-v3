@@ -1,8 +1,8 @@
-from modules.VisionSystem.VisionSystem import VisionSystemState
-from src.robot_application.base_robot_application import ApplicationState
+
+from robot_application.base_robot_application import ApplicationState
 from modules.VisionSystem.VisionSystem import VisionSystemState
 from modules.robot.robotService.enums.RobotServiceState import RobotServiceState
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import \
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import \
     GlueProcessState
 
 

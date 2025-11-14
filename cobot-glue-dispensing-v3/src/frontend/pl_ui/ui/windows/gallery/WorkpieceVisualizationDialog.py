@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 
-from src.frontend.pl_ui.ui.widgets.DraggableLabel import DraggableLabel
+from frontend.pl_ui.ui.widgets.DraggableLabel import DraggableLabel
 
 matplotlib.use('Agg')  # Use non-interactive backend
 from io import BytesIO

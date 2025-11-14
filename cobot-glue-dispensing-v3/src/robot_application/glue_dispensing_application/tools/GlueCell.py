@@ -5,13 +5,13 @@ from collections import deque
 import requests
 import json
 import threading
-from src.backend.system.SensorPublisher import Sensor
+from backend.system.SensorPublisher import Sensor
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.v1.topics import GlueTopics
-from src.backend.system.utils.PathResolver import PathResolver
-from src.backend.system.utils.custom_logging import ColoredFormatter, LoggingLevel
+from backend.system.utils.PathResolver import PathResolver
+from backend.system.utils.custom_logging import ColoredFormatter, LoggingLevel
 from pathlib import Path
-from src.backend.system.utils import PathResolver
+from backend.system.utils import PathResolver
 import time
 import logging
 import inspect

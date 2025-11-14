@@ -12,8 +12,8 @@ from backend.system.contour_matching.matching.strategies.ml_matching_strategy im
 from modules.shapeMatchinModelTraining.modelManager import load_latest_model
 
 from modules.shared.shared.ContourStandartized import Contour
-from src.backend.system.contour_matching.alignment.contour_aligner import _alignContours
-from src.backend.system.contour_matching.matching_config import *
+from backend.system.contour_matching.alignment.contour_aligner import _alignContours
+from backend.system.contour_matching.matching_config import *
 
 
 def get_contour_objects(entries):

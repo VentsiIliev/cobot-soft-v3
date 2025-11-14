@@ -1,6 +1,6 @@
 import json
 from modules.shared.shared.user.User import Role
-from src.frontend.pl_ui.utils.FilePaths import ROLE_VISIBILITY_JSON_PATH
+from frontend.pl_ui.utils.FilePaths import ROLE_VISIBILITY_JSON_PATH
 
 CONFIG_FILE = ROLE_VISIBILITY_JSON_PATH
 

@@ -18,7 +18,7 @@ class FloatingIconManager:
         if not main_window:
             return
 
-        from src.frontend.pl_ui.ui.windows.mainWindow.FloatingFolderIcon import FloatingFolderIcon
+        from frontend.pl_ui.ui.windows.mainWindow.FloatingFolderIcon import FloatingFolderIcon
         self.floating_icon = FloatingFolderIcon(folder_name, main_window)
         self.floating_icon.move(10, 10)
         self.floating_icon.clicked_signal.connect(on_click_callback)

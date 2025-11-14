@@ -1,7 +1,7 @@
 # pl_ui/contour_editor/EditorStateMachine/Modes/RectangleSelectMode.py
 from PyQt6.QtCore import Qt, QPointF, QRectF
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
-from src.frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
+from frontend.pl_ui.contour_editor.utils.coordinate_utils import map_to_image_space
 
 class RectangleSelectMode(BaseMode):
     name = "rectangle_select"

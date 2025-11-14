@@ -10,10 +10,10 @@ import json
 import os
 import logging
 from typing import Dict, Any
-from src.robot_application.interfaces.application_settings_interface import ApplicationSettingsHandler
-from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
-from src.robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
-from src.backend.system.utils import PathResolver
+from robot_application.interfaces.application_settings_interface import ApplicationSettingsHandler
+from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+from robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
+from backend.system.utils import PathResolver
 
 class GlueSettingsHandler(ApplicationSettingsHandler):
     """

@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QGridLayout, QSizePolicy,
 from typing import Callable
 
 # CHANGE: Import the new FolderController system instead of old Folder
-from src.frontend.pl_ui.ui.windows.mainWindow.Folder import FolderWidget, FolderController
+from frontend.pl_ui.ui.windows.mainWindow.Folder import FolderWidget, FolderController
 
 
 @dataclass
@@ -78,7 +78,7 @@ class FoldersPage(QWidget):
         self.__connect_folder_signals()
 
     def __create_folder(self, ID,folder_name, apps,translate_fn):
-        from src.frontend.pl_ui.localization import get_app_translator
+        from frontend.pl_ui.localization import get_app_translator
 
         """Create a folder widget and its controller"""
         # Create folder widget
@@ -187,8 +187,8 @@ class FoldersPage(QWidget):
 
 if __name__ == "__main__":
     import sys
-    from src.frontend.pl_ui.ui.windows.mainWindow.WidgetFactory import WidgetType
-    from src.frontend.pl_ui.utils.IconLoader import (DASHBOARD_ICON, CREATE_WORKPIECE_ICON, GALLERY_ICON,
+    from frontend.pl_ui.ui.windows.mainWindow.WidgetFactory import WidgetType
+    from frontend.pl_ui.utils.IconLoader import (DASHBOARD_ICON, CREATE_WORKPIECE_ICON, GALLERY_ICON,
                                         SETTINGS_ICON, CALIBRATION_ICON, USER_MANAGEMENT_ICON,
                                         PLACEHOLDER_ICON)
 

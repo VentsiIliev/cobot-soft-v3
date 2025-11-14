@@ -6,8 +6,8 @@ It uses the WorkpieceAdapter to convert from domain-specific Workpiece objects
 to the domain-agnostic ContourEditorData format.
 """
 
-from src.frontend.pl_ui.contour_editor.adapters.WorkpieceAdapter import WorkpieceAdapter
-from src.frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
+from frontend.pl_ui.contour_editor.adapters.WorkpieceAdapter import WorkpieceAdapter
+from frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
 
 
 def load_workpiece(workpiece):

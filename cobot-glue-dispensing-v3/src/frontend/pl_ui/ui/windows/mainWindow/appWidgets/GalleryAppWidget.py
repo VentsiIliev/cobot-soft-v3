@@ -1,8 +1,8 @@
 from PyQt6.QtCore import pyqtSignal
 
 from modules.shared.MessageBroker import MessageBroker
-from src.frontend.pl_ui.Endpoints import WORPIECE_GET_ALL
-from src.frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from frontend.pl_ui.Endpoints import WORPIECE_GET_ALL
+from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
 
 
 class GalleryAppWidget(AppWidget):
@@ -31,7 +31,7 @@ class GalleryAppWidget(AppWidget):
 
 
 
-            from src.frontend.pl_ui.ui.windows.gallery.GalleryContent import GalleryContent
+            from frontend.pl_ui.ui.windows.gallery.GalleryContent import GalleryContent
             # Remove the placeholder content
 
             if self.onApplyCallback is None:

@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QSizePolicy,
     QMessageBox, QApplication, QSpacerItem
 )
-from src.frontend.pl_ui.utils.IconLoader import PICKUP_POINT_ICON
+from frontend.pl_ui.utils.IconLoader import PICKUP_POINT_ICON
 
 ICON_WIDTH = 64
 ICON_HEIGHT = 64

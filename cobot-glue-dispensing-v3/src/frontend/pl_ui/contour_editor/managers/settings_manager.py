@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QShortcut, QKeySequence
 
-from src.frontend.pl_ui.contour_editor import constants
+from frontend.pl_ui.contour_editor import constants
 
 
 class SettingsManager:

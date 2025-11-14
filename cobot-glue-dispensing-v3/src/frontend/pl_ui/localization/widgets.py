@@ -2,7 +2,7 @@
 Translatable widget variants for common UI components.
 """
 from typing import Optional
-from src.frontend.pl_ui.ui.widgets.Drawer import Drawer
+from frontend.pl_ui.ui.widgets.Drawer import Drawer
 from .mixins import TranslatableMixin
 from .translator import AppTranslator
 

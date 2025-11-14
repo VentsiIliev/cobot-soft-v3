@@ -1,11 +1,11 @@
 from typing import Dict, Any, List
 from modules.shared.shared.settings.BaseSettings import Settings
-from src.robot_application.interfaces.application_settings_interface import ApplicationSettingsInterface
-from src.robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
-from src.robot_application.glue_dispensing_application.settings.GlueConstants import (
+from robot_application.interfaces.application_settings_interface import ApplicationSettingsInterface
+from robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
+from robot_application.glue_dispensing_application.settings.GlueConstants import (
     SETTINGS_GLUE_GET, SETTINGS_GLUE_SET, SETTINGS_GLUE_GET_LEGACY, SETTINGS_GLUE_SET_LEGACY
 )
-from src.robot_application.glue_dispensing_application.tools.GlueCell import GlueType
+from robot_application.glue_dispensing_application.tools.GlueCell import GlueType
 
 
 class GlueSettings(Settings, ApplicationSettingsInterface):

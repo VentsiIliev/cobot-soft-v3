@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QResizeEvent
 
 
-from src.frontend.pl_ui.utils.IconLoader import DXF_ICON_PATH, CAMERA_ICON_PATH
+from frontend.pl_ui.utils.IconLoader import DXF_ICON_PATH, CAMERA_ICON_PATH
 
 class ResponsiveWorkpieceOptionButton(QPushButton):
     """Responsive custom button for workpiece options with large icon and text"""

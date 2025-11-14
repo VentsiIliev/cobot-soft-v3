@@ -1,10 +1,10 @@
 from PyQt6.QtCore import Qt, QRectF, QPointF
 from PyQt6.QtGui import QPen, QColor, QBrush, QPainterPath, QTransform
 
-from src.frontend.pl_ui.contour_editor import constants
-from src.frontend.pl_ui.contour_editor.constants import LAYER_COLORS
-from src.frontend.pl_ui.contour_editor.utils.coordinate_utils import calculate_distance
-from src.frontend.pl_ui.contour_editor.utils.point_visibility import get_visible_points
+from frontend.pl_ui.contour_editor import constants
+from frontend.pl_ui.contour_editor.constants import LAYER_COLORS
+from frontend.pl_ui.contour_editor.utils.coordinate_utils import calculate_distance
+from frontend.pl_ui.contour_editor.utils.point_visibility import get_visible_points
 
 
 def draw_ruler(contour_editor,painter):

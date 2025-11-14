@@ -1,6 +1,6 @@
 # contour_editor/modes/MultiPointSelectMode.py
 from PyQt6.QtCore import Qt
-from src.frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
+from frontend.pl_ui.contour_editor.EditorStateMachine.Modes.BaseMode import BaseMode
 
 class MultiPointSelectMode(BaseMode):
     name = "multi_select"

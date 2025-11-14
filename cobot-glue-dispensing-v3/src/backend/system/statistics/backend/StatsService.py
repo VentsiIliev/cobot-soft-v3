@@ -1,8 +1,8 @@
-from src.backend.system.statistics.backend.StatiscticModel import (
+from backend.system.statistics.backend.StatiscticModel import (
      GeneratorStats, TransducerStats, PumpStats, FanStats, LoadCellStats
 )
-from src.backend.system.statistics.backend.StatisticsController import Controller
-from src.backend.system.statistics.backend.StatsPersistence import StatsPersistence
+from backend.system.statistics.backend.StatisticsController import Controller
+from backend.system.statistics.backend.StatsPersistence import StatsPersistence
 import time
 
 class StatsService:

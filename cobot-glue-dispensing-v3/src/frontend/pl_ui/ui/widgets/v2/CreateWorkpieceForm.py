@@ -9,14 +9,14 @@ from PyQt6.QtGui import QPixmap, QColor, QPalette
 from PyQt6.QtWidgets import QFrame, QSizePolicy, QSpacerItem, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton, \
     QCheckBox, QWidget, QMessageBox, QDialog, QScrollArea, QStyleFactory, QListView
 
-from src.frontend.pl_ui.ui.widgets.Drawer import Drawer
-from src.frontend.pl_ui.utils.enums.GlueType import GlueType
-from src.frontend.pl_ui.utils.enums.Gripper import Gripper
-from src.frontend.pl_ui.utils.enums.Program import Program
-from src.frontend.pl_ui.utils.enums.ToolID import ToolID
-from src.frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
-from src.frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
-from src.frontend.pl_ui.utils.IconLoader import WORKPIECE_ID_ICON_PATH, WORKPIECE_NAME_ICON_PATH, DESCRIPTION_ICON_PATH, OFFSET_ICON_PATH, \
+from frontend.pl_ui.ui.widgets.Drawer import Drawer
+from frontend.pl_ui.utils.enums.GlueType import GlueType
+from frontend.pl_ui.utils.enums.Gripper import Gripper
+from frontend.pl_ui.utils.enums.Program import Program
+from frontend.pl_ui.utils.enums.ToolID import ToolID
+from frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
+from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
+from frontend.pl_ui.utils.IconLoader import WORKPIECE_ID_ICON_PATH, WORKPIECE_NAME_ICON_PATH, DESCRIPTION_ICON_PATH, OFFSET_ICON_PATH, \
     HEIGHT_ICON_PATH, TOOL_ID_ICON_PATH, GRIPPER_ID_ICON_PATH, GLUE_TYPE_ICON_PATH, PROGRAM_ICON_PATH, MATERIAL_ICON_PATH, GLUE_QTY_ICON_PATH, SPRAY_WIDTH_ICON_PATH
 # Assuming the path to stylesheets
 SETTINGS_STYLESHEET = os.path.join("settings.qss")

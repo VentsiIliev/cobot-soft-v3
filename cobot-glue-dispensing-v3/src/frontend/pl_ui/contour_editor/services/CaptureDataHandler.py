@@ -10,7 +10,7 @@ This ensures the capture flow uses the same data model as everything else.
 from typing import Dict, Any, Optional
 import numpy as np
 
-from src.frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
+from frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
 from modules.shared.shared.contour_editor.BezierSegmentManager import Layer, Segment
 from PyQt6.QtCore import QPointF
 

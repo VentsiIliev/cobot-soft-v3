@@ -7,8 +7,8 @@ code duplication across the application.
 """
 
 from typing import Dict, Any, Optional
-from src.frontend.pl_ui.contour_editor.adapters.WorkpieceAdapter import WorkpieceAdapter
-from src.frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
+from frontend.pl_ui.contour_editor.adapters.WorkpieceAdapter import WorkpieceAdapter
+from frontend.pl_ui.contour_editor.EditorDataModel import ContourEditorData
 
 
 class SaveWorkpieceHandler:
