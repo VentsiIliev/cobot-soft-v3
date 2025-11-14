@@ -103,6 +103,10 @@ class WorkpieceAdapter:
                 print(f"WorkpieceAdapter: Final main_contour shape: {result['main_contour'].shape}")
         else:
             print("WorkpieceAdapter: No workpiece layer or no segments found")
+            print("WorkpieceAdapter: No workpiece layer or no segments found")
+            # Provide explicit empty defaults when nothing found
+            result["main_contour"] = np.zeros((0, 1, 2), dtype=np.float32)
+            result["main_settings"] = {}
 
         # Extract spray pattern contours
         contour_layer = editor_data.get_layer(cls.LAYER_CONTOUR)

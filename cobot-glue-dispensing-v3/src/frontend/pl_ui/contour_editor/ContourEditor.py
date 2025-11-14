@@ -8,8 +8,10 @@ from PyQt6.QtCore import (
 from PyQt6.QtWidgets import QFrame, QWidget, QApplication, QMessageBox, QDialog, QVBoxLayout, QHBoxLayout
 from shapely import Polygon, LineString
 
+from frontend.pl_ui.contour_editor.services.CaptureDataHandler import CaptureDataHandler
+from frontend.pl_ui.contour_editor.services.SaveWorkpieceHandler import SaveWorkpieceHandler
 from src.frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditorWithBottomToolBar import ContourEditorWithBottomToolBar
-
+from src.robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
 from src.frontend.pl_ui.contour_editor.widgets.LayerAndValueInputDialog import LayerAndValueInputDialog
 from src.frontend.pl_ui.contour_editor.widgets.PointManagerWidget import PointManagerWidget
 from src.frontend.pl_ui.contour_editor.widgets.SlidingPanel import SlidingPanel
@@ -17,7 +19,7 @@ from src.frontend.pl_ui.contour_editor.widgets.TopbarWidget import TopBarWidget
 from src.frontend.pl_ui.contour_editor.utils.utils import shrink_contour_points, generate_spray_pattern
 from src.frontend.pl_ui.ui.widgets.CreateWorkpieceForm import CreateWorkpieceForm
 from src.frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
-
+from src.frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 class MainApplicationFrame(QFrame):
@@ -96,7 +98,6 @@ class MainApplicationFrame(QFrame):
         print(f"on_save_workpiece_requested called with data: {data}")
 
         try:
-            from pl_ui.contour_editor.services.SaveWorkpieceHandler import SaveWorkpieceHandler
 
             # Prepare complete workpiece data using the handler
             complete_data = SaveWorkpieceHandler.prepare_workpiece_data(
@@ -457,8 +458,7 @@ class MainApplicationFrame(QFrame):
 
         Uses SaveWorkpieceHandler to extract contour data consistently.
         """
-        from GlueDispensingApplication.workpiece.Workpiece import Workpiece, WorkpieceField
-        from pl_ui.contour_editor.services.SaveWorkpieceHandler import SaveWorkpieceHandler
+
 
         # Mock form data
         mock_data = {
@@ -601,7 +601,6 @@ class MainApplicationFrame(QFrame):
         Returns:
             ContourEditorData instance that was loaded
         """
-        from pl_ui.contour_editor.services.CaptureDataHandler import CaptureDataHandler
 
         return CaptureDataHandler.handle_capture_data(
             workpiece_manager=self.contourEditor.workpiece_manager,

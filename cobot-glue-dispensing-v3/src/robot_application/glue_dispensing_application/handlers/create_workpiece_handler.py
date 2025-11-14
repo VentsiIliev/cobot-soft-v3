@@ -1,6 +1,6 @@
 import cv2
 
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
+from src.robot_application.base_robot_application import ApplicationState
 from modules.VisionSystem.VisionSystem import VisionSystemState
 
 class CreateWorkpieceHandler:
@@ -9,9 +9,10 @@ class CreateWorkpieceHandler:
 
     def create_workpiece_step_1(self):
         # if robot service is not in idle state, return error
-        if self.application.glue_process_state_machine.state != GlueProcessState.IDLE:
-            print("Robot service not in IDLE state, cannot create workpiece")
-            return False, "Robot service not in IDLE state"
+        if self.application.state_manager.state != ApplicationState.IDLE:
+            print(f"current_state: {self.application.state_manager.state}")
+            print("Application not in IDLE state, cannot create workpiece")
+            return False, f"Application  not in IDLE state, Current state: {self.application.state_manager.state}"
 
         ret = self.application.move_to_spray_capture_position()
         if ret != 0:
@@ -22,9 +23,9 @@ class CreateWorkpieceHandler:
 
     def create_workpiece_step_2(self):
         # if robot service is not in idle state, return error
-        if self.application.state_manager.robotServiceState != GlueProcessState.IDLE:
-            print("Robot service not in IDLE state, cannot create workpiece")
-            return False, "Robot service not in IDLE state"
+        if self.application.state_manager.state != ApplicationState.IDLE:
+            print("Application not in IDLE state, cannot create workpiece")
+            return False, "Application  not in IDLE state"
 
         # if vision service is not running, return error
         if self.application.state_manager.visonServiceState != VisionSystemState.RUNNING:

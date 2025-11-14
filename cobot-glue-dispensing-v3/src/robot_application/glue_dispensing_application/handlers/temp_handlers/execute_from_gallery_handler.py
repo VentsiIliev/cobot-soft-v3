@@ -87,5 +87,10 @@ def execute_from_gallery(application,workpiece,z_offset_for_calibration_pattern)
     application.robotService.moveToCalibrationPosition(z_offset=z_offset_for_calibration_pattern)
     # self.robotService._waitForRobotToReachPosition(self.robotService.calibrationPosition, 1, delay=0)
     # print(f"    handleExecuteFromGallery: paths to trace: {robotPaths}")
-    application.glue_dispensing_operation.start(robotPaths, spray_on=application.settingsManager.glue_settings.get_spray_on())
+    try:
+        application.glue_dispensing_operation.start(robotPaths, spray_on=application.get_glue_settings().get_spray_on())
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f"⚠️ Error during glue dispensing operation: {e}")
     # print("Paths to trace: ", robotPaths)
