@@ -16,4 +16,4 @@ def handle_initializing_state(frame_provider,logger_context):
     if handled:
         return StateResult(success=True,message="Initialization complete",next_state=RobotCalibrationStates.AXIS_MAPPING)
     else:
-        return StateResult(success=False,message="Waiting for camera to initialize...")
+        return StateResult(success=False,message="Waiting for camera to initialize...",next_state=RobotCalibrationStates.INITIALIZING)

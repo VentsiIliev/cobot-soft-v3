@@ -9,7 +9,6 @@ from backend.system.utils.custom_logging import log_warning_message
 from modules.VisionSystem.data_loading import CAMERA_TO_ROBOT_MATRIX_PATH
 from modules.robot.calibration import metrics, visualizer
 from modules.robot.calibration.CalibrationVision import CalibrationVision
-from modules.robot.calibration.axis_mapping import auto_calibrate_image_to_robot_mapping
 from modules.robot.calibration.config_helpers import RobotCalibrationEventsConfig, RobotCalibrationConfig, \
     AdaptiveMovementConfig
 from modules.robot.calibration.debug import DebugDraw
@@ -17,6 +16,8 @@ from modules.robot.calibration.logging import get_log_timing_summary, construct_
     construct_aruco_state_log_message, construct_compute_offsets_log_message, construct_align_robot_log_message, \
     construct_iterative_alignment_log_message, construct_calibration_completion_log_message
 from modules.robot.calibration.robot_controller import CalibrationRobotController
+from modules.robot.calibration.states.axis_mapping import auto_calibrate_image_to_robot_mapping, \
+    handle_axis_mapping_state
 from modules.robot.calibration.states.initializing import handle_initializing_state
 from modules.robot.calibration.states.robot_calibration_states import RobotCalibrationStates
 from backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
@@ -260,35 +261,22 @@ class RobotCalibrationPipeline:
             raise
 
         while True:
-            log_if_enabled(ENABLE_LOGGING, robot_calibration_logger, LoggingLevel.INFO,
-                           "--- Calibration Pipeline State Machine ---",
-                           broadcast_to_ui=self.broadcast_events, topic=self.BROADCAST_TOPIC)
+            log_debug_message(self.logger_context,message="--- Calibration Pipeline State Machine ---")
             init_frame= self.system.getLatestFrame()
-            log_if_enabled(ENABLE_LOGGING, robot_calibration_logger, LoggingLevel.INFO,
-                           f"Current state:({self.current_state})",
-                           broadcast_to_ui=self.broadcast_events, topic=self.BROADCAST_TOPIC)
-            
+            log_debug_message(self.logger_context,message=f"Current state:({self.current_state})")
+
             # Start timer for current state
             self.start_state_timer(self.current_state)
             
             if self.current_state == RobotCalibrationStates.INITIALIZING:
                 result = handle_initializing_state(init_frame,self.logger_context)
-                if not result.success:
-                    continue
-
                 self.current_state = result.next_state
 
             elif self.current_state == RobotCalibrationStates.AXIS_MAPPING:
-                print(f"Performing axis mapping...")
-                image_to_robot_mapping = auto_calibrate_image_to_robot_mapping(self.system,
-                                                                               self.calibration_vision,
-                                                                               self.calibration_robot_controller)
-                self.image_to_robot_mapping = image_to_robot_mapping
-                self.calibration_robot_controller.move_to_calibration_position()
+                result = handle_axis_mapping_state(self.system,self.calibration_vision,self.calibration_robot_controller,self.logger_context)
+                self.image_to_robot_mapping = result.data
                 time.sleep(1)
-
-                self.current_state = RobotCalibrationStates.LOOKING_FOR_CHESSBOARD
-
+                self.current_state = result.next_state
             elif self.current_state == RobotCalibrationStates.LOOKING_FOR_CHESSBOARD:
                 chessboard_frame = None
 

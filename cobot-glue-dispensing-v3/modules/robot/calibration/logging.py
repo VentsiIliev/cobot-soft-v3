@@ -57,7 +57,6 @@ def construct_chessboard_state_log_message(
     found: bool,
     ppm: Optional[float] = None,
     bottom_left_corner: Optional[np.ndarray] = None,
-    chessboard_center: Optional[np.ndarray] = None,
     debug_enabled: bool = False
 ) -> str:
     """
@@ -90,12 +89,7 @@ def construct_chessboard_state_log_message(
     else:
         lines.append("⚠️  Bottom-left corner not defined.")
 
-    # Chessboard center info
-    if chessboard_center is not None:
-        center_int = (int(chessboard_center[0]), int(chessboard_center[1]))
-        lines.append(f"   • Chessboard center (px): {center_int}")
-    else:
-        lines.append("⚠️  Chessboard center not defined.")
+
 
     # Debug mode note
     if debug_enabled:

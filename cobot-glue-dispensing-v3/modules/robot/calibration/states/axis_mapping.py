@@ -3,8 +3,19 @@ import time
 
 import numpy as np
 
+from modules.robot.calibration.states.robot_calibration_states import RobotCalibrationStates
 from modules.robot.enums.axis import ImageAxis, Direction, ImageToRobotMapping, AxisMapping
+from modules.robot.calibration.states.state_result import StateResult
 
+def handle_axis_mapping_state(system, calibration_vision, calibration_robot_controller, logger_context):
+    """Handles the axis mapping calibration state."""
+    try:
+        mapping = auto_calibrate_image_to_robot_mapping(system, calibration_vision, calibration_robot_controller)
+        return StateResult(success=True,message="Axis mapping calibration successful",next_state=RobotCalibrationStates.LOOKING_FOR_CHESSBOARD,data=mapping)
+
+    except Exception as e:
+        error_message = f"Axis mapping calibration failed: {str(e)}"
+        return StateResult(success=False,message=error_message,next_state=RobotCalibrationStates.ERROR,data=None)
 
 def get_marker_position(system, calibration_vision, MARKER_ID, MAX_ATTEMPTS):
     """Blocks until marker with specific MARKER_ID is found, returns (x_px, y_px) as floats."""
