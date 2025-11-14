@@ -10,7 +10,7 @@ from typing import Optional
 
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.shared.settings.robotConfig.robotConfigModel import RobotConfig
-from modules.robot.FairinoRobot import Axis, Direction
+from modules.robot.enums.axis import Axis, Direction
 from modules.robot.RobotUtils import calculate_distance_between_points
 from modules.robot.robotService.RobotServiceMessagePublisher import RobotServiceMessagePublisher
 from modules.robot.robotService.RobotServiceStateManager import RobotServiceStateManager
