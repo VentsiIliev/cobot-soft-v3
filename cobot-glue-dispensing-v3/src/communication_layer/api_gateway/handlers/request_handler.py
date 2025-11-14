@@ -1,8 +1,8 @@
 from modules.shared.v1.Response import Response
 from modules.shared.v1 import Constants
-from src.robot_application.interfaces.robot_application_interface import RobotApplicationInterface
-from src.robot_application.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
-from src.frontend.pl_ui.Endpoints import  *
+from robot_application.interfaces.robot_application_interface import RobotApplicationInterface
+from robot_application.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
+from frontend.pl_ui.Endpoints import  *
 
 # Import specialized handlers
 from .auth_handler import AuthHandler

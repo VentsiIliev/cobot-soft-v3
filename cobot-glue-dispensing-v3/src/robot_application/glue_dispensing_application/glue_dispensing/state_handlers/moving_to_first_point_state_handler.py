@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from modules.robot.robotService.RobotService import CancellationToken
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
 
 MovingResult = namedtuple(
     "MovingResult",

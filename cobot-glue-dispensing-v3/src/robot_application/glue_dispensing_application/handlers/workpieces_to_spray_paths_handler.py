@@ -115,7 +115,7 @@ class WorkpieceToSprayPathsGenerator:
 
         if COMPUTE_ANGLE_BASED_ON_WIDTH:
             spray_width = float(settings.get(GlueSettingKey.SPRAY_WIDTH.value))
-            from src.backend.system.utils.calculateAngleBasedOnWidth import get_angle_from_width, SPRAY_ALONG_X
+            from backend.system.utils.calculateAngleBasedOnWidth import get_angle_from_width, SPRAY_ALONG_X
             rz_angle = get_angle_from_width(desired_width=spray_width, transducer_magnitude=25,
                                             spray_along_axis=SPRAY_ALONG_X)
 

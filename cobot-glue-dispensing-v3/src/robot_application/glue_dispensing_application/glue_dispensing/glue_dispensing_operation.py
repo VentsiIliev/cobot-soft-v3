@@ -3,15 +3,15 @@ import json
 import os
 from datetime import datetime
 
-from src.robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
-from src.robot_application.glue_dispensing_application.glue_dispensing.ExecutionContext import ExecutionContext
+from robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
+from robot_application.glue_dispensing_application.glue_dispensing.ExecutionContext import ExecutionContext
 from modules.glueSprayService.GlueSprayService import GlueSprayService
 
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
 
-from src.backend.system.utils.custom_logging import log_debug_message, log_info_message, log_error_message, \
+from backend.system.utils.custom_logging import log_debug_message, log_info_message, log_error_message, \
     log_calls_with_timestamp_decorator, setup_logger, LoggerContext
-from src.robot_application.glue_dispensing_application.glue_dispensing.PumpController import PumpController
+from robot_application.glue_dispensing_application.glue_dispensing.PumpController import PumpController
 # glue dispensing process configuration
 USE_SEGMENT_SETTINGS = True
 TURN_OFF_PUMP_BETWEEN_PATHS = True
@@ -36,7 +36,7 @@ class GlueDispensingOperation:
             glue_settings = glue_application.get_glue_settings()
         else:
             # Fallback to default settings if no application provided
-            from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+            from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
             glue_settings = GlueSettings()
         
         self.glue_service = GlueSprayService(
@@ -318,16 +318,16 @@ class GlueDispensingOperation:
             return False, f"Execution error: {e}"
 
     def pause_operation(self):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.pause_operation import pause_operation
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.pause_operation import pause_operation
         return pause_operation(self,self.execution_context)
 
     def stop_operation(self):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.stop_operation import stop_operation
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.stop_operation import stop_operation
         return stop_operation(self,self.execution_context)
 
     def resume_operation(self):
         """Resume operation from paused state"""
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.resume_operation import resume_operation
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.resume_operation import resume_operation
         return resume_operation(self.execution_context)
 
     def _resume_execution(self):
@@ -342,31 +342,31 @@ class GlueDispensingOperation:
             self.execution_context.state_machine.transition(GlueProcessState.ERROR)
 
     def _handle_starting_state(self,context):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.start_state_handler import handle_starting_state
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.start_state_handler import handle_starting_state
         # Return whatever the handler returns so the caller can update its local execution context variables
         return handle_starting_state(context)
 
     def _handle_moving_to_first_point_state(self,context,resume):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.moving_to_first_point_state_handler import handle_moving_to_first_point_state
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.moving_to_first_point_state_handler import handle_moving_to_first_point_state
         return handle_moving_to_first_point_state(context,resume)
 
     def _handle_transition_between_paths(self,context):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.transition_between_paths_state_handler import handle_transition_between_paths
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.transition_between_paths_state_handler import handle_transition_between_paths
         return handle_transition_between_paths(context)
 
     def _handle_pump_initial_boost(self, context):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.initial_pump_boost_state_handler import handle_pump_initial_boost
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.initial_pump_boost_state_handler import handle_pump_initial_boost
         return handle_pump_initial_boost(context)
 
     def _handle_start_pump_adjustment_thread(self, execution_context):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.start_pump_adjustment_thread_handler import handle_start_pump_adjustment_thread
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.start_pump_adjustment_thread_handler import handle_start_pump_adjustment_thread
         return handle_start_pump_adjustment_thread(execution_context)
 
     def _handle_send_path_to_robot_state(self, execution_context):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.sending_path_to_robot_state_handler import handle_send_path_to_robot
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.sending_path_to_robot_state_handler import handle_send_path_to_robot
         return handle_send_path_to_robot(execution_context)
 
     def _handle_wait_for_path_completion(self,execution_context):
-        from src.robot_application.glue_dispensing_application.glue_dispensing.state_handlers.wait_for_path_completion_state_handler import handle_wait_for_path_completion
+        from robot_application.glue_dispensing_application.glue_dispensing.state_handlers.wait_for_path_completion_state_handler import handle_wait_for_path_completion
         return handle_wait_for_path_completion(execution_context)
 

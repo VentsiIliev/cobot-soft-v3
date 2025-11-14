@@ -5,7 +5,7 @@ import math
 import numpy as np
 from PyQt6.QtCore import QPointF
 import copy
-from src.frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import default_settings
+from frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import default_settings
 
 class Segment:
     def __init__(self, layer=None,settings=None):

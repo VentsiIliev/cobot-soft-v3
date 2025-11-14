@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
+from backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
 
 
 # Paths to camera calibration data

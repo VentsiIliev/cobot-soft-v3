@@ -1,10 +1,10 @@
 import threading
 from collections import namedtuple
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-from src.robot_application.glue_dispensing_application.glue_dispensing.glue_dispensing_operation import ADJUST_PUMP_SPEED_WHILE_SPRAY, glue_dispensing_logger_context
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
-from src.backend.system.utils.custom_logging import log_debug_message, log_error_message
-from src.robot_application.glue_dispensing_application.glue_dispensing.dynamicPumpSpeedAdjustment import \
+from robot_application.glue_dispensing_application.glue_dispensing.glue_dispensing_operation import ADJUST_PUMP_SPEED_WHILE_SPRAY, glue_dispensing_logger_context
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
+from backend.system.utils.custom_logging import log_debug_message, log_error_message
+from robot_application.glue_dispensing_application.glue_dispensing.dynamicPumpSpeedAdjustment import \
     start_dynamic_pump_speed_adjustment_thread
 
 PumpAdjustmentResult = namedtuple(

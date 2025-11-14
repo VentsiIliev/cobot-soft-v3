@@ -1,8 +1,8 @@
 from collections import namedtuple
 import time
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
-from src.backend.system.utils.custom_logging import log_debug_message, log_error_message
-from src.robot_application.glue_dispensing_application.glue_dispensing.glue_dispensing_operation import glue_dispensing_logger_context
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
+from backend.system.utils.custom_logging import log_debug_message, log_error_message
+from robot_application.glue_dispensing_application.glue_dispensing.glue_dispensing_operation import glue_dispensing_logger_context
 
 HandlerResult = namedtuple(
     "HandlerResult",

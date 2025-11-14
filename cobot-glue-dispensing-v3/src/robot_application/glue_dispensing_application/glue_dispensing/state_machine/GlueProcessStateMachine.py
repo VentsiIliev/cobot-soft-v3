@@ -2,9 +2,9 @@ from typing import Dict, Set, Callable
 
 from modules.shared.MessageBroker import MessageBroker
 from modules.shared.v1.topics import GlueTopics
-from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel, \
+from backend.system.utils.custom_logging import log_if_enabled, LoggingLevel, \
     log_calls_with_timestamp_decorator, setup_logger
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import \
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import \
     GlueProcessTransitionRules, GlueProcessState
 
 ENABLE_ROBOT_SERVICE_STATE_MACHINE_LOGGING = True

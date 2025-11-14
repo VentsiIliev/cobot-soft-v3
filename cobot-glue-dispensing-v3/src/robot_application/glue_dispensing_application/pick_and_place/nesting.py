@@ -2,21 +2,21 @@
 import math
 import os
 from datetime import datetime
-from src.robot_application.glue_dispensing_application.tools.Laser import Laser
+from robot_application.glue_dispensing_application.tools.Laser import Laser
 from modules.VisionSystem.heightMeasuring.LaserTracker import LaserTrackService
-from src.robot_application.glue_dispensing_application.tools.enums.Gripper import Gripper
-from src.backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
+from robot_application.glue_dispensing_application.tools.enums.Gripper import Gripper
+from backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
     setup_logger
-from src.backend.system.utils.contours import is_contour_inside_polygon
+from backend.system.utils.contours import is_contour_inside_polygon
 from modules.shared.v1.topics import VisionTopics
 import time
 # import logging
 import cv2
 import numpy as np
 from modules.shared.shared.ContourStandartized import Contour
-from src.backend.system.contour_matching import CompareContours
-from src.robot_application.glue_dispensing_application.pick_and_place.Plane import Plane
-from src.backend.system.utils import utils
+from backend.system.contour_matching import CompareContours
+from robot_application.glue_dispensing_application.pick_and_place.Plane import Plane
+from backend.system.utils import utils
 from modules.shared.MessageBroker import MessageBroker
 
 # Import matplotlib for debug plotting

@@ -1,17 +1,17 @@
 from typing import Dict, Any, Optional, List
 
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
-from src.robot_application.base_robot_application import BaseRobotApplication, ApplicationType, ApplicationState
-from src.robot_application.glue_dispensing_application.GlueDispensingApplicationStateManager import \
+from robot_application.base_robot_application import BaseRobotApplication, ApplicationType, ApplicationState
+from robot_application.glue_dispensing_application.GlueDispensingApplicationStateManager import \
     GlueDispensingApplicationStateManager
-from src.robot_application.glue_dispensing_application.GlueDispensingMessagePublisher import \
+from robot_application.glue_dispensing_application.GlueDispensingMessagePublisher import \
     GlueDispensingMessagePublisher
-from src.robot_application.glue_dispensing_application.GlueDispensingSubscriptionManager import \
+from robot_application.glue_dispensing_application.GlueDispensingSubscriptionManager import \
     GlueDispensingSubscriptionManager
-from src.robot_application.interfaces.robot_application_interface import RobotApplicationInterface, CalibrationStatus
+from robot_application.interfaces.robot_application_interface import RobotApplicationInterface, CalibrationStatus
 from modules.robot.robotService.RobotService import RobotService
-from src.backend.system.settings.SettingsService import SettingsService
-from src.backend.system.vision.VisionService import _VisionService
+from backend.system.settings.SettingsService import SettingsService
+from backend.system.vision.VisionService import _VisionService
 
 
 class PaintingApplication(BaseRobotApplication,RobotApplicationInterface):

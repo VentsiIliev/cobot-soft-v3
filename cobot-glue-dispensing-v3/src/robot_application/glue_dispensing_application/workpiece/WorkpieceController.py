@@ -1,6 +1,6 @@
 from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
 from modules.shared.v1 import Constants
-from src.robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
+from robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
 import modules.shared.v1.endpoints.workpiece_endpoints as workpiece_endpoints
 
 

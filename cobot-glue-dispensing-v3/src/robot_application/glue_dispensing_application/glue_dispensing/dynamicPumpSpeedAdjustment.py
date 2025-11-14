@@ -3,9 +3,9 @@ import time
 
 from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
 from modules.robot.RobotUtils import calculate_distance_between_points
-from src.robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
-from src.backend.system.utils.custom_logging import log_debug_message
-from src.backend.system.utils.files import write_to_debug_file
+from robot_application.glue_dispensing_application.glue_dispensing.state_machine.GlueProcessState import GlueProcessState
+from backend.system.utils.custom_logging import log_debug_message
+from backend.system.utils.files import write_to_debug_file
 
 # State Management Functions
 def is_point_reached(currentPos, targetPoint, threshold):

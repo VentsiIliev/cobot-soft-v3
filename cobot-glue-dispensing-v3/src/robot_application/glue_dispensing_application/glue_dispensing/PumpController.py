@@ -1,5 +1,5 @@
-from src.robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
-from src.backend.system.utils.custom_logging import log_debug_message, log_error_message, LoggerContext
+from robot_application.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
+from backend.system.utils.custom_logging import log_debug_message, log_error_message, LoggerContext
 
 
 class PumpController:

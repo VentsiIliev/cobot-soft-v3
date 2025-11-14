@@ -1,4 +1,4 @@
-from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
+from backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
 from modules.VisionSystem.calibration.cameraCalibration.CameraCalibrationService import CameraCalibrationService
 
 

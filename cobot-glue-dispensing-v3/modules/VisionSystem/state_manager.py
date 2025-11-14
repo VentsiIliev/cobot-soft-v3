@@ -1,6 +1,6 @@
 from modules.shared.MessageBroker import MessageBroker
-from src.backend.system.SystemStatePublisherThread import SystemStatePublisherThread
-from src.backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
+from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
+from backend.system.utils.custom_logging import log_if_enabled, LoggingLevel
 
 
 class StateManager:

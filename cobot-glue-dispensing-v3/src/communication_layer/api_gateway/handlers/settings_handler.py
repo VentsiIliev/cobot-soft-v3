@@ -7,7 +7,7 @@ Handles all settings-related requests including robot, camera, and glue system c
 from modules.shared.v1.Response import Response
 from modules.shared.v1 import Constants
 from modules.shared.v1.endpoints import settings_endpoints
-from src.robot_application.glue_dispensing_application.settings.GlueConstants import (
+from robot_application.glue_dispensing_application.settings.GlueConstants import (
     SETTINGS_GLUE_GET,
     SETTINGS_GLUE_SET,
     SETTINGS_GLUE_GET_LEGACY,
