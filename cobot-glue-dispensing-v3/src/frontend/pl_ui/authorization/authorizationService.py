@@ -1,4 +1,4 @@
-from modules.shared.shared.user.User import Role, User
+from modules.shared.core.user.User import Role, User
 from enum import Enum
 
 class Permission(Enum):

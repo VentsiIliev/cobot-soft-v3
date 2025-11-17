@@ -20,7 +20,7 @@ import base64
 from PIL import Image, ImageDraw, ImageFont
 
 # Import the original User class
-from modules.shared.shared.user.User import User, Role
+from modules.shared.core.user.User import User, Role
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -321,7 +321,7 @@ def send_access_pass_email(user: User, pkpass_path: str, google_pay_path: str):
         google_pay_path: Path to the Google Pay JSON file
     """
     try:
-        from modules.shared.shared.email.emailSender import EmailSenderService, get_professional_email_template, get_default_email_config
+        from modules.shared.core.email.emailSender import EmailSenderService, get_professional_email_template, get_default_email_config
         
         template = get_professional_email_template(
             user_name=user.get_full_name(),
@@ -1153,7 +1153,7 @@ def send_complete_access_package_email(
         True if email sent successfully, False otherwise
     """
     try:
-        from modules.shared.shared.email.emailSender import EmailSenderService, get_professional_email_template, get_default_email_config
+        from modules.shared.core.email.emailSender import EmailSenderService, get_professional_email_template, get_default_email_config
         
         # Get access level for email message
         access_level = DigitalPassGenerator()._get_access_level(user)

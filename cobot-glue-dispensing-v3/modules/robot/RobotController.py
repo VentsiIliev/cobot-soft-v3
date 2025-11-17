@@ -22,65 +22,51 @@ class RobotController:
         try:
             # === MOVEMENT ENDPOINTS ===
             if request in [
-                robot_endpoints.ROBOT_MOVE_TO_HOME_POS,
-                robot_endpoints.ROBOT_MOVE_TO_HOME_POS_LEGACY,
-                robot_endpoints.HOME_ROBOT,
+                robot_endpoints.ROBOT_MOVE_TO_HOME_POS
             ]:
                 return self._handleHome()
 
             elif request in [
-                robot_endpoints.ROBOT_MOVE_TO_LOGIN_POS,
-                robot_endpoints.ROBOT_MOVE_TO_LOGIN_POS_LEGACY,
-                robot_endpoints.GO_TO_LOGIN_POS,
+                robot_endpoints.ROBOT_MOVE_TO_LOGIN_POS
             ]:
                 return self._handleLoginPos()
 
             elif request in [
-                robot_endpoints.ROBOT_MOVE_TO_CALIB_POS,
-                robot_endpoints.ROBOT_MOVE_TO_CALIB_POS_LEGACY,
-                robot_endpoints.GO_TO_CALIBRATION_POS,
+                robot_endpoints.ROBOT_MOVE_TO_CALIB_POS
             ]:
                 return self._handleMoveToCalibPose()
 
 
 
             elif request in [
-                robot_endpoints.ROBOT_STOP,
-                robot_endpoints.ROBOT_STOP_LEGACY,
+                robot_endpoints.ROBOT_STOP
             ]:
                 return self._handleStop()
 
             # === POSITION / CALIBRATION ===
             elif request in [
-                robot_endpoints.ROBOT_MOVE_TO_POSITION,
-                robot_endpoints.ROBOT_MOVE_TO_POSITION_LEGACY,
+                robot_endpoints.ROBOT_MOVE_TO_POSITION
             ]:
                 return self._handleMoveToPosition(parts)
 
             elif request in [
-                robot_endpoints.ROBOT_SAVE_POINT,
-                robot_endpoints.ROBOT_SAVE_POINT_LEGACY,
+                robot_endpoints.ROBOT_SAVE_POINT
             ]:
                 return self._handleSaveCalibrationPoint()
 
             # === CONFIG / RESET ===
             elif request in [
-                robot_endpoints.ROBOT_UPDATE_CONFIG,
-                robot_endpoints.ROBOT_UPDATE_CONFIG_LEGACY,
-                robot_endpoints.ROBOT_UPDATE_CONFIG_LEGACY_2,
+                robot_endpoints.ROBOT_UPDATE_CONFIG
             ]:
                 return self._handleReloadConfig()
 
             elif request in [
-                robot_endpoints.ROBOT_RESET_ERRORS,
-                robot_endpoints.ROBOT_RESET_ERRORS_LEGACY,
-                robot_endpoints.ROBOT_RESET_ERRORS_LEGACY_2,
+                robot_endpoints.ROBOT_RESET_ERRORS
             ]:
                 return self._handleResetErrors()
 
             elif request in [
-                robot_endpoints.ROBOT_GET_CURRENT_POSITION,
-                robot_endpoints.ROBOT_GET_CURRENT_POSITION_LEGACY,
+                robot_endpoints.ROBOT_GET_CURRENT_POSITION
             ]:
                 return self._handleGetCurrentPosition()
 
@@ -91,13 +77,7 @@ class RobotController:
                 robot_endpoints.ROBOT_ACTION_JOG_Y_PLUS,
                 robot_endpoints.ROBOT_ACTION_JOG_Y_MINUS,
                 robot_endpoints.ROBOT_ACTION_JOG_Z_PLUS,
-                robot_endpoints.ROBOT_ACTION_JOG_Z_MINUS,
-                robot_endpoints.ROBOT_ACTION_JOG_X_PLUS_LEGACY,
-                robot_endpoints.ROBOT_ACTION_JOG_X_MINUS_LEGACY,
-                robot_endpoints.ROBOT_ACTION_JOG_Y_PLUS_LEGACY,
-                robot_endpoints.ROBOT_ACTION_JOG_Y_MINUS_LEGACY,
-                robot_endpoints.ROBOT_ACTION_JOG_Z_PLUS_LEGACY,
-                robot_endpoints.ROBOT_ACTION_JOG_Z_MINUS_LEGACY,
+                robot_endpoints.ROBOT_ACTION_JOG_Z_MINUS
             ]):
                 return self._handleJog(parts)
 

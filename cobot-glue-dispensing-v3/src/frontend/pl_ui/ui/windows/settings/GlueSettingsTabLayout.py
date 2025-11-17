@@ -8,16 +8,20 @@ from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QApplication, QHBoxLa
                              QScrollArea, QGroupBox, QGridLayout)
 from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 from frontend.pl_ui.localization import TranslationKeys, get_app_translator
-from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
+from applications.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
 from modules.glueSprayService.GlueSprayService import GlueSprayService
 from frontend.pl_ui.ui.widgets.SwitchButton import QToggle
 from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
-from frontend.pl_ui.utils.enums.GlueType import GlueType
+
 from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
-# from BaseSettingsTabLayout import BaseSettingsTabLayout
+# import pyqtSignal
+from PyQt6.QtCore import pyqtSignal
+
+from modules.shared.tools.GlueCell import GlueType
 
 
 class GlueSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
+    value_changed_signal = pyqtSignal(str, object, str)  # key, value, className
     def __init__(self, parent_widget,glueSettings):
         BaseSettingsTabLayout.__init__(self, parent_widget)
         QVBoxLayout.__init__(self)
@@ -733,48 +737,80 @@ class GlueSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
         self.generator_toggle.toggled.connect(lambda state: self.toggleGenerator(state))
         self.fan_toggle_btn.toggled.connect(lambda state: self.toggleFan(state))
         self.glueDispenseButton.toggled.connect(lambda state: self.toggleGlueDispense(state))
+        
+        # Connect all setting widgets to emit unified signals - eliminates callback duplication!
+        self._connect_widget_signals()
 
+    def _connect_widget_signals(self):
+        """
+        Connect all widget signals to emit the unified value_changed_signal.
+        This eliminates the need for individual callback connections!
+        """
+        # Settings widgets mapping (widget -> setting_key)
+        widget_mappings = [
+            (self.spray_width_input, GlueSettingKey.SPRAY_WIDTH.value),
+            (self.spraying_height_input, GlueSettingKey.SPRAYING_HEIGHT.value),
+            (self.fan_speed_input, GlueSettingKey.FAN_SPEED.value),
+            (self.time_between_generator_and_glue_input, GlueSettingKey.TIME_BETWEEN_GENERATOR_AND_GLUE.value),
+            (self.motor_speed_input, GlueSettingKey.MOTOR_SPEED.value),
+            (self.reverse_duration_input, GlueSettingKey.REVERSE_DURATION.value),
+            (self.speed_reverse_input, GlueSettingKey.SPEED_REVERSE.value),
+            (self.rz_angle_input, "RZ Angle"),  # Legacy key
+            (self.time_before_motion, GlueSettingKey.TIME_BEFORE_MOTION.value),
+            (self.reach_pos_thresh, GlueSettingKey.REACH_START_THRESHOLD.value),
+            (self.forward_ramp_steps, GlueSettingKey.FORWARD_RAMP_STEPS.value),
+            (self.reverse_ramp_steps, GlueSettingKey.REVERSE_RAMP_STEPS.value),
+            (self.initial_ramp_speed, GlueSettingKey.INITIAL_RAMP_SPEED.value),
+            (self.initial_ramp_speed_duration, GlueSettingKey.INITIAL_RAMP_SPEED_DURATION.value),
+        ]
+        
+        # Connect numeric input widgets
+        for widget, setting_key in widget_mappings:
+            if hasattr(widget, 'valueChanged'):
+                widget.valueChanged.connect(
+                    lambda value, key=setting_key: self._emit_setting_change(key, value)
+                )
+        
+        # Connect special widgets
+        if hasattr(self, 'dropdown') and self.dropdown:
+            self.dropdown.currentTextChanged.connect(
+                lambda value: self._emit_setting_change(GlueSettingKey.GLUE_TYPE.value, value)
+            )
+        
+        if hasattr(self, 'spray_on_toggle') and self.spray_on_toggle:
+            self.spray_on_toggle.toggled.connect(
+                lambda value: self._emit_setting_change(GlueSettingKey.SPRAY_ON.value, value)
+            )
+            
+        if hasattr(self, 'generator_timeout_input') and self.generator_timeout_input:
+            self.generator_timeout_input.valueChanged.connect(
+                lambda value: self._emit_setting_change(GlueSettingKey.GENERATOR_TIMEOUT.value, value)
+            )
+    
+    def _emit_setting_change(self, key: str, value):
+        """
+        Emit the unified setting change signal.
+        
+        Args:
+            key: The setting key
+            value: The new value
+        """
+        class_name = self.__class__.__name__
+        print(f"🔧 Setting changed in {class_name}: {key} = {value}")
+        self.value_changed_signal.emit(key, value, class_name)
+    
     def connectValueChangeCallbacks(self, callback):
-        """Connect value change signals to callback methods with key, value, and className."""
-        self.spray_width_input.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.SPRAY_WIDTH.value, value, "GlueSettingsTabLayout"))
-        self.spraying_height_input.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.SPRAYING_HEIGHT.value, value, "GlueSettingsTabLayout"))
-        self.fan_speed_input.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.FAN_SPEED.value, value, "GlueSettingsTabLayout"))
-        self.time_between_generator_and_glue_input.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.TIME_BETWEEN_GENERATOR_AND_GLUE.value, value,
-                                   "GlueSettingsTabLayout"))
-        self.motor_speed_input.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.MOTOR_SPEED.value, value, "GlueSettingsTabLayout"))
-        self.reverse_duration_input.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.REVERSE_DURATION.value, value, "GlueSettingsTabLayout"))
-        self.speed_reverse_input.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.SPEED_REVERSE.value, value, "GlueSettingsTabLayout"))
-        self.rz_angle_input.valueChanged.connect(
-            lambda value: callback("RZ Angle", value, "GlueSettingsTabLayout"))
-        self.dropdown.currentTextChanged.connect(
-            lambda value: callback(GlueSettingKey.GLUE_TYPE.value, value, "GlueSettingsTabLayout"))
-        self.generator_timeout_input.valueChanged.connect(
-            lambda value: self.onTimeoutChanged(value, callback))
-        self.time_before_motion.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.TIME_BEFORE_MOTION.value, value, "GlueSettingsTabLayout"))
-        self.reach_pos_thresh.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.REACH_START_THRESHOLD.value, value, "GlueSettingsTabLayout"))
+        """
+        DEPRECATED: Use value_changed_signal.connect() instead!
         
-        # Connect new motor ramp settings
-        self.forward_ramp_steps.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.FORWARD_RAMP_STEPS.value, value, "GlueSettingsTabLayout"))
-        self.reverse_ramp_steps.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.REVERSE_RAMP_STEPS.value, value, "GlueSettingsTabLayout"))
-        self.initial_ramp_speed.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.INITIAL_RAMP_SPEED.value, value, "GlueSettingsTabLayout"))
-        self.initial_ramp_speed_duration.valueChanged.connect(
-            lambda value: callback(GlueSettingKey.INITIAL_RAMP_SPEED_DURATION.value, value, "GlueSettingsTabLayout"))
+        This method is kept for backward compatibility but should be migrated to signals.
         
-        # Connect Spray On toggle
-        self.spray_on_toggle.toggled.connect(
-            lambda value: callback(GlueSettingKey.SPRAY_ON.value, value, "GlueSettingsTabLayout"))
+        Migration:
+        OLD: layout.connectValueChangeCallbacks(callback)
+        NEW: layout.value_changed_signal.connect(callback)
+        """
+        print("⚠️  WARNING: connectValueChangeCallbacks is deprecated. Use value_changed_signal instead!")
+        self.value_changed_signal.connect(callback)
 
 
     def connectRobotMotionCallbacks(self, move_start_cb=None, move_login_cb=None, move_calib_cb=None, clean_cb=None,
@@ -1099,9 +1135,9 @@ if __name__ == "__main__":
     settingsService = SettingsService()
     # Get glue settings through the new registry system
     try:
-        from robot_application import settings_registry
-        from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
-        from robot_application import GlueSettingsHandler
+        from applications import settings_registry
+        from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
+        from applications import GlueSettingsHandler
         
         # Register glue settings for testing
         glue_settings_obj = GlueSettings()
@@ -1112,7 +1148,7 @@ if __name__ == "__main__":
         glueSettings = glue_handler.get_settings_object()
     except Exception as e:
         print(f"Failed to get glue settings: {e}")
-        from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+        from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
         glueSettings = GlueSettings()
 
     robot_config = settingsService.robot_config

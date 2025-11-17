@@ -35,9 +35,9 @@ class AuthHandler:
         print(f"AuthHandler: Handling request: {request}")
         
         # Handle both new RESTful endpoints and legacy endpoints
-        if request in [auth_endpoints.LOGIN, auth_endpoints.LEGACY_LOGIN]:
+        if request in [auth_endpoints.LOGIN]:
             return self.handle_login(data)
-        elif request in [auth_endpoints.QR_LOGIN, auth_endpoints.LEGACY_QR_LOGIN]:
+        elif request in [auth_endpoints.QR_LOGIN]:
             return self.handle_qr_login(data)
         else:
             raise ValueError(f"Unknown request: {request}")
@@ -67,9 +67,9 @@ class AuthHandler:
         
         try:
             # Import authentication dependencies
-            from modules.shared.shared.user.User import User, Role, UserField
-            from modules.shared.shared.user.CSVUsersRepository import CSVUsersRepository
-            from modules.shared.shared.user.UserService import UserService
+            from modules.shared.core.user.User import User, Role, UserField
+            from modules.shared.core.user.CSVUsersRepository import CSVUsersRepository
+            from modules.shared.core.user.UserService import UserService
             
             # Set up user repository
             csv_file_path = os.path.join(os.path.dirname(__file__), "../../shared/shared/user/users.csv")
@@ -89,7 +89,7 @@ class AuthHandler:
                     print(f"AuthHandler: Login successful! Welcome, {user.firstName} ({user.role.value})")
                     
                     # Start user session
-                    from modules.shared.shared.user.Session import SessionManager
+                    from modules.shared.core.user.Session import SessionManager
                     SessionManager.login(user)
                     
                     response = Response(Constants.RESPONSE_STATUS_SUCCESS, "1")
@@ -148,7 +148,7 @@ class AuthHandler:
         print("AuthHandler: Handling logout")
         
         try:
-            from modules.shared.shared.user.Session import SessionManager
+            from modules.shared.core.user.Session import SessionManager
             SessionManager.logout()
             
             response = Response(Constants.RESPONSE_STATUS_SUCCESS, 

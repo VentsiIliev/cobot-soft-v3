@@ -127,7 +127,7 @@ class SaveWorkpieceHandler:
         Returns:
             Merged dictionary with all required fields
         """
-        from modules.shared.shared.workpiece.Workpiece import WorkpieceField
+        from modules.shared.core.workpiece.Workpiece import WorkpieceField
 
         # Start with form data
         complete_data = form_data.copy()
@@ -197,7 +197,7 @@ class SaveWorkpieceHandler:
 
         # Print workpiece metadata
         print(f"\nWorkpiece Metadata:")
-        from modules.shared.shared.workpiece.Workpiece import WorkpieceField
+        from modules.shared.core.workpiece.Workpiece import WorkpieceField
 
         metadata_fields = [
             WorkpieceField.WORKPIECE_ID,
@@ -245,7 +245,7 @@ class SaveWorkpieceHandler:
             errors.extend([f"Editor: {err}" for err in editor_errors])
 
         # Validate required form fields
-        from modules.shared.shared.workpiece.Workpiece import WorkpieceField
+        from modules.shared.core.workpiece.Workpiece import WorkpieceField
 
         required_fields = [
             WorkpieceField.WORKPIECE_ID,
@@ -275,7 +275,7 @@ class SaveWorkpieceHandler:
             Tuple of (is_valid, error_messages)
         """
         errors = []
-        from modules.shared.shared.workpiece.Workpiece import WorkpieceField
+        from modules.shared.core.workpiece.Workpiece import WorkpieceField
 
         # Validate required fields
         required_fields = {

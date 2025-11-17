@@ -1,4 +1,3 @@
-from frontend.pl_ui.Endpoints import UPDATE_SETTINGS, UPDATE_CAMERA_FEED, RAW_MODE_ON, RAW_MODE_OFF, GET_SETTINGS
 from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
 from frontend.pl_ui.ui.windows.settings.LoadCellsSettingsTabLayout import LoadCellsSettingsTabLayout
 

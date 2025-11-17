@@ -13,7 +13,7 @@ class SubscriptionManager:
         self.subscriptions[VisionTopics.THRESHOLD_REGION] = self.vision_system.on_threshold_update
 
     def subscribe_to_auto_brightness_toggle(self):
-        self.broker.subscribe(VisionTopics.BRIGHTNESS_REGION, self.vision_system.brightnessManager.on_brighteness_toggle)
+        # self.broker.subscribe(VisionTopics.BRIGHTNESS_REGION, self.vision_system.brightnessManager.on_brighteness_toggle)
         self.subscriptions[VisionTopics.AUTO_BRIGHTNESS] = self.vision_system.brightnessManager.on_brighteness_toggle
 
     def subscribe_all(self):

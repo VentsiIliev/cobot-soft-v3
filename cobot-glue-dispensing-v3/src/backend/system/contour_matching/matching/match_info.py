@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 import numpy as np
 
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 
 
 @dataclass

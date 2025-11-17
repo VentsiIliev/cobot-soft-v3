@@ -8,9 +8,9 @@ from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QMessageBox
 
 from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
-from modules.shared.shared.user.Session import SessionManager
-from frontend.pl_ui.Endpoints import SAVE_WORKPIECE, START, STOP, PAUSE, ROBOT_EXECUTE_NOZZLE_CLEAN, ROBOT_RESET_ERRORS, \
-    RUN_REMO, STOP_DEMO, CREATE_WORKPIECE_STEP_1
+from modules.shared.core.user.Session import SessionManager
+
+from modules.shared.v1.endpoints import operations_endpoints,auth_endpoints,camera_endpoints,robot_endpoints,workpiece_endpoints
 from frontend.pl_ui.ui.widgets.Header import Header
 from frontend.pl_ui.ui.windows.folders_page.FoldersPage import FoldersPage, FolderConfig
 from frontend.pl_ui.ui.windows.login.LoginWindow import LoginWindow
@@ -23,7 +23,7 @@ from frontend.pl_ui.utils.IconLoader import (DASHBOARD_ICON, CREATE_WORKPIECE_IC
                                     GLUE_WEIGHT_CELL_ICON)
 from frontend.pl_ui.authorization.authorizationService import AuthorizationService , Permission
 from frontend.pl_ui.utils.FilePaths import DXF_DIRECTORY
-from frontend.pl_ui.Endpoints import ROBOT_UPDATE_CONFIG
+
 
 
 class MainWindow(TranslatableWidget):
@@ -95,13 +95,13 @@ class MainWindow(TranslatableWidget):
             app_widget.create_workpiece_dxf_selected.connect(self.create_workpiece_via_dxf_selected)
         elif app_name == WidgetType.DASHBOARD.value:
             app_widget = widget_factory.create_widget(WidgetType.DASHBOARD)
-            app_widget.start_requested.connect(lambda: self.controller.handle(START))
-            app_widget.pause_requested.connect(lambda: self.controller.handle(PAUSE))
-            app_widget.stop_requested.connect(lambda: self.controller.handle(STOP))
+            app_widget.start_requested.connect(lambda: self.controller.handle(operations_endpoints.START))
+            app_widget.pause_requested.connect(lambda: self.controller.handle(operations_endpoints.PAUSE))
+            app_widget.stop_requested.connect(lambda: self.controller.handle(operations_endpoints.STOP))
             app_widget.clean_requested.connect(self.on_clean)
-            app_widget.reset_errors_requested.connect(lambda: self.controller.handle(ROBOT_RESET_ERRORS))
-            app_widget.start_demo_requested.connect(lambda: self.controller.handle(RUN_REMO))
-            app_widget.stop_demo_requested.connect(lambda: self.controller.handle(STOP_DEMO))
+            app_widget.reset_errors_requested.connect(lambda: self.controller.handle(robot_endpoints.ROBOT_RESET_ERRORS))
+            app_widget.start_demo_requested.connect(lambda: self.controller.handle(operations_endpoints.RUN_DEMO))
+            app_widget.stop_demo_requested.connect(lambda: self.controller.handle(operations_endpoints.STOP_DEMO))
 
             app_widget.LOGOUT_REQUEST.connect(self.onLogout)
         elif app_name == WidgetType.DXF_BROWSER.value:
@@ -348,7 +348,7 @@ class MainWindow(TranslatableWidget):
     def create_workpiece_via_camera_selected(self):
         """Handle camera selection for workpiece creation"""
         print("Create Workpiece via Camera selected")
-        result,message = self.controller.handle(CREATE_WORKPIECE_STEP_1)
+        result,message = self.controller.handle(workpiece_endpoints.WORKPIECE_CREATE_STEP_1)
         if not result:
             # show warning message box
             QMessageBox.warning(self, "Camera Error", f"Failed to start camera:\n{message}")
@@ -443,8 +443,8 @@ class MainWindow(TranslatableWidget):
         from frontend.pl_ui.utils.FilePaths import DXF_DIRECTORY
         print("DXF_DIRECTORY:", DXF_DIRECTORY)
         print(f"DXF file selected: {file_name}")
-        from modules.shared.shared.dxf.DxfParser import DXFPathExtractor
-        from modules.shared.shared.dxf.utils import scale_contours
+        from modules.shared.core.dxf.DxfParser import DXFPathExtractor
+        from modules.shared.core.dxf.utils import scale_contours
         from frontend.pl_ui.contour_editor.utils.utils import qpixmap_to_cv, create_light_gray_pixmap
 
         file_name = file_name  # Assume single select for now
@@ -515,7 +515,7 @@ class MainWindow(TranslatableWidget):
         sprayPatternsDict['Contour'] = wp_contours_data.get('Contour', [])
         sprayPatternsDict['Fill'] = wp_contours_data.get('Fill', [])
 
-        from modules.shared.shared.workpiece.Workpiece import WorkpieceField
+        from modules.shared.core.workpiece.Workpiece import WorkpieceField
 
         data[WorkpieceField.SPRAY_PATTERN.value] = sprayPatternsDict
         data[WorkpieceField.CONTOUR.value] = wp_contours_data.get('Workpiece', [])
@@ -523,7 +523,7 @@ class MainWindow(TranslatableWidget):
 
         # Save the workpiece using DXF endpoint
         print("Saving DXF workpiece with data:", data)
-        self.controller.handle(SAVE_WORKPIECE, data)
+        self.controller.handle(workpiece_endpoints.WORKPIECE_SAVE, data)
         print("DXF workpiece saved successfully")
 
     def onLogout(self):
@@ -605,7 +605,7 @@ class MainWindow(TranslatableWidget):
         
         # Send update request to robot controller if available
         try:
-            self.controller.handle(ROBOT_UPDATE_CONFIG)
+            self.controller.handle(robot_endpoints.ROBOT_UPDATE_CONFIG)
             print("🤖 Robot configuration update request sent")
         except Exception as e:
             print(f"Warning: Could not send robot config update: {e}")

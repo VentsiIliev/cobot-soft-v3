@@ -1,6 +1,6 @@
 import numpy as np
 
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 
 
 def transform_pickup_point(workpiece, rotationDiff, centroidDiff, centroid):

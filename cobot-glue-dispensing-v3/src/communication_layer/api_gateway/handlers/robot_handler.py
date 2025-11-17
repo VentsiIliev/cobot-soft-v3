@@ -41,14 +41,14 @@ class RobotHandler:
         """
         print(f"RobotHandler: Handling request: {request} with parts: {parts}")
         
-        # Handle both new RESTful endpoints and legacy endpoints
-        if request in [robot_endpoints.ROBOT_CALIBRATE, robot_endpoints.ROBOT_CALIBRATE_LEGACY] or (len(parts) > 1 and parts[1] == "calibrate"):
+        # Handle both new RESTful endpoints
+        if request in [robot_endpoints.ROBOT_CALIBRATE] or (len(parts) > 1 and parts[1] == "calibrate"):
             return self.handle_robot_calibration()
-        elif request in [robot_endpoints.ROBOT_EXECUTE_NOZZLE_CLEAN, robot_endpoints.ROBOT_EXECUTE_NOZZLE_CLEAN_LEGACY] or (len(parts) >= 3 and parts[1] == "move" and parts[2] == "clean"):
+        elif request in [robot_endpoints.ROBOT_EXECUTE_NOZZLE_CLEAN] or (len(parts) >= 3 and parts[1] == "move" and parts[2] == "clean"):
             return self.handle_clean_nozzle()
-        elif request in [robot_endpoints.ROBOT_MOVE_TO_HOME_POS, robot_endpoints.ROBOT_MOVE_TO_HOME_POS_LEGACY]:
+        elif request in [robot_endpoints.ROBOT_MOVE_TO_HOME_POS]:
             return self.handle_home_position()
-        elif request in [robot_endpoints.ROBOT_STOP, robot_endpoints.ROBOT_STOP_LEGACY]:
+        elif request in [robot_endpoints.ROBOT_STOP]:
             return self.handle_robot_stop()
         elif self._is_jog_command(request):
             return self.handle_jog_command(parts, request)
@@ -96,10 +96,7 @@ class RobotHandler:
         jog_endpoints = [
             robot_endpoints.ROBOT_ACTION_JOG_X_PLUS, robot_endpoints.ROBOT_ACTION_JOG_X_MINUS,
             robot_endpoints.ROBOT_ACTION_JOG_Y_PLUS, robot_endpoints.ROBOT_ACTION_JOG_Y_MINUS,
-            robot_endpoints.ROBOT_ACTION_JOG_Z_PLUS, robot_endpoints.ROBOT_ACTION_JOG_Z_MINUS,
-            robot_endpoints.ROBOT_ACTION_JOG_X_PLUS_LEGACY, robot_endpoints.ROBOT_ACTION_JOG_X_MINUS_LEGACY,
-            robot_endpoints.ROBOT_ACTION_JOG_Y_PLUS_LEGACY, robot_endpoints.ROBOT_ACTION_JOG_Y_MINUS_LEGACY,
-            robot_endpoints.ROBOT_ACTION_JOG_Z_PLUS_LEGACY, robot_endpoints.ROBOT_ACTION_JOG_Z_MINUS_LEGACY
+            robot_endpoints.ROBOT_ACTION_JOG_Z_PLUS, robot_endpoints.ROBOT_ACTION_JOG_Z_MINUS
         ]
         return request in jog_endpoints or "/jog/" in request
     
@@ -110,20 +107,14 @@ class RobotHandler:
             robot_endpoints.ROBOT_SLOT_1_PICKUP, robot_endpoints.ROBOT_SLOT_1_DROP,
             robot_endpoints.ROBOT_SLOT_2_PICKUP, robot_endpoints.ROBOT_SLOT_2_DROP,
             robot_endpoints.ROBOT_SLOT_3_PICKUP, robot_endpoints.ROBOT_SLOT_3_DROP,
-            robot_endpoints.ROBOT_SLOT_4_PICKUP, robot_endpoints.ROBOT_SLOT_4_DROP,
-            robot_endpoints.ROBOT_SLOT_0_PICKUP_LEGACY, robot_endpoints.ROBOT_SLOT_0_DROP_LEGACY,
-            robot_endpoints.ROBOT_SLOT_1_PICKUP_LEGACY, robot_endpoints.ROBOT_SLOT_1_DROP_LEGACY,
-            robot_endpoints.ROBOT_SLOT_2_PICKUP_LEGACY, robot_endpoints.ROBOT_SLOT_2_DROP_LEGACY,
-            robot_endpoints.ROBOT_SLOT_3_PICKUP_LEGACY, robot_endpoints.ROBOT_SLOT_3_DROP_LEGACY,
-            robot_endpoints.ROBOT_SLOT_4_PICKUP_LEGACY, robot_endpoints.ROBOT_SLOT_4_DROP_LEGACY
+            robot_endpoints.ROBOT_SLOT_4_PICKUP, robot_endpoints.ROBOT_SLOT_4_DROP
         ]
         return request in slot_endpoints or "/slots/" in request
     
     def _is_position_command(self, request):
         """Check if the request is a robot position command."""
         position_endpoints = [
-            robot_endpoints.ROBOT_GET_CURRENT_POSITION, robot_endpoints.ROBOT_MOVE_TO_POSITION,
-            robot_endpoints.ROBOT_GET_CURRENT_POSITION_LEGACY, robot_endpoints.ROBOT_MOVE_TO_POSITION_LEGACY
+            robot_endpoints.ROBOT_GET_CURRENT_POSITION, robot_endpoints.ROBOT_MOVE_TO_POSITION
         ]
         return request in position_endpoints or "/position/" in request
     

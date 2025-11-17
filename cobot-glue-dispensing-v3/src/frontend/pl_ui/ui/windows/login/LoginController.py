@@ -1,8 +1,7 @@
 from typing import Any, Tuple
 
 from frontend.pl_ui.localization import TranslationKeys, TranslatableObject
-from frontend.pl_ui.Endpoints import START_CONTOUR_DETECTION
-
+from modules.shared.v1.endpoints import camera_endpoints
 
 class LoginController(TranslatableObject):
     def __init__(self, controller: Any) -> None:
@@ -28,7 +27,7 @@ class LoginController(TranslatableObject):
         print("Controller message:", message)
 
         if message == "1":
-            self.controller.handle(START_CONTOUR_DETECTION)
+            self.controller.handle(camera_endpoints.START_CONTOUR_DETECTION)
             return True, ""
         elif message == "0":
             print("INCORRECT_PASSWORD")

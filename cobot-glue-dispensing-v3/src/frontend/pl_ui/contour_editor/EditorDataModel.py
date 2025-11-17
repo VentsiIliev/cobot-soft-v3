@@ -14,7 +14,7 @@ import numpy as np
 from PyQt6.QtCore import QPointF
 from copy import deepcopy
 
-from modules.shared.shared.contour_editor.BezierSegmentManager import Segment, Layer
+from modules.shared.core.contour_editor.BezierSegmentManager import Segment, Layer
 
 
 class ContourEditorData:

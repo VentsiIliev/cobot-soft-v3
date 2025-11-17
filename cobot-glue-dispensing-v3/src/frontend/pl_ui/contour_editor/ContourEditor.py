@@ -8,10 +8,11 @@ from PyQt6.QtCore import (
 from PyQt6.QtWidgets import QFrame, QWidget, QApplication, QMessageBox, QDialog, QVBoxLayout, QHBoxLayout
 from shapely import Polygon, LineString
 
+from applications.glue_dispensing_application.workpiece.GlueWorkpiece import GlueWorkpiece
 from frontend.pl_ui.contour_editor.services.CaptureDataHandler import CaptureDataHandler
 from frontend.pl_ui.contour_editor.services.SaveWorkpieceHandler import SaveWorkpieceHandler
 from frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditorWithBottomToolBar import ContourEditorWithBottomToolBar
-from robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
+
 from frontend.pl_ui.contour_editor.widgets.LayerAndValueInputDialog import LayerAndValueInputDialog
 from frontend.pl_ui.contour_editor.widgets.PointManagerWidget import PointManagerWidget
 from frontend.pl_ui.contour_editor.widgets.SlidingPanel import SlidingPanel
@@ -19,7 +20,8 @@ from frontend.pl_ui.contour_editor.widgets.TopbarWidget import TopBarWidget
 from frontend.pl_ui.contour_editor.utils.utils import shrink_contour_points, generate_spray_pattern
 from frontend.pl_ui.ui.widgets.CreateWorkpieceForm import CreateWorkpieceForm
 from frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
-from frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
+from modules.shared.core.workpiece.Workpiece import WorkpieceField
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 class MainApplicationFrame(QFrame):
@@ -517,7 +519,7 @@ class MainApplicationFrame(QFrame):
             return
 
         # Create and execute workpiece
-        wp = Workpiece.fromDict(complete_data)
+        wp = GlueWorkpiece.fromDict(complete_data)
         print("Workpiece created:", wp)
         print("Start button pressed: CONTOUR EDITOR ")
         self.parent.controller.handleExecuteFromGallery(wp)

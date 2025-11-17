@@ -1,7 +1,7 @@
 from typing import Any
 
 from backend.system.contour_matching.matching.best_match_result import BestMatchResult
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 
 
 class MLMatchingStrategy:

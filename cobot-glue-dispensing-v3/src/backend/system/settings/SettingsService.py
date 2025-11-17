@@ -1,15 +1,15 @@
 import json
 import os
 
-from modules.shared.shared.settings.conreateSettings.RobotSettings import RobotSettings
-from modules.shared.shared.settings.conreateSettings.CameraSettings import CameraSettings
-from modules.shared.shared.settings.robotConfig.robotConfigModel import RobotConfig,get_default_config
+from modules.shared.core.settings.conreateSettings.RobotSettings import RobotSettings
+from modules.shared.core.settings.conreateSettings.CameraSettings import CameraSettings
+from modules.shared.core.settings.robotConfig.robotConfigModel import RobotConfig,get_default_config
 from modules.shared.v1 import Constants
-from modules.shared.shared.settings.conreateSettings.enums.CameraSettingKey import CameraSettingKey
-from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
+from modules.shared.core.settings.conreateSettings.enums.CameraSettingKey import CameraSettingKey
+from modules.shared.core.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
 import logging
 
-from robot_application.interfaces.application_settings_interface import settings_registry
+from core.application.interfaces.application_settings_interface import settings_registry
 
 
 class SettingsService:

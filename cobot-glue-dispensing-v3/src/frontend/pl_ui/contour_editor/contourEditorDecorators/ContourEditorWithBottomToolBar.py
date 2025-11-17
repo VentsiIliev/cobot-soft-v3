@@ -1,6 +1,7 @@
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget, QGridLayout
 
+from frontend.pl_ui.contour_editor import constants
 from frontend.pl_ui.contour_editor.constants import EDIT_MODE, DRAG_MODE
 from frontend.pl_ui.contour_editor.contourEditorDecorators.ContourEditorWithRulers import ContourEditorWithRulers
 from frontend.pl_ui.contour_editor.widgets.BottomToolBar import BottomToolBar
@@ -43,7 +44,7 @@ class ContourEditorWithBottomToolBar(QWidget):
 
     def show_points(self):
         """Show anchor and control points"""
-        from pl_ui.contour_editor import constants
+
         constants.SHOW_ANCHOR_POINTS = True
         constants.SHOW_CONTROL_POINTS = True
         # Trigger repaint to update the display
@@ -51,7 +52,7 @@ class ContourEditorWithBottomToolBar(QWidget):
 
     def hide_points(self):
         """Hide anchor and control points"""
-        from pl_ui.contour_editor import constants
+
         constants.SHOW_ANCHOR_POINTS = False
         constants.SHOW_CONTROL_POINTS = False
         # Trigger repaint to update the display

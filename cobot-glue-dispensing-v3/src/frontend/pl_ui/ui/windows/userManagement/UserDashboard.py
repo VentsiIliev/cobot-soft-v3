@@ -12,9 +12,9 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QPalette, QColor
 
 # Import your existing classes (adjust paths as needed)
-from modules.shared.shared.user.User import User, Role, UserField
-from modules.shared.shared.user.UserService import UserService
-from modules.shared.shared.user.CSVUsersRepository import CSVUsersRepository
+from modules.shared.core.user.User import User, Role, UserField
+from modules.shared.core.user.UserService import UserService
+from modules.shared.core.user.CSVUsersRepository import CSVUsersRepository
 from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget, TranslatableDialog
 from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
 from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
@@ -801,7 +801,7 @@ class UserManagementWidget(TranslatableWidget):
 
         from frontend.pl_ui.utils.AccessCard import create_complete_access_package2 , PassConfig
         from frontend.pl_ui.utils.IconLoader import LOGO
-        from modules.shared.shared.email.emailSender import EmailSenderService, get_email_template, get_default_email_config
+        from modules.shared.core.email.emailSender import EmailSenderService, get_email_template, get_default_email_config
         # Custom configuration with logo
         config = PassConfig(
             organization_name="PL Project LTD.",
@@ -842,7 +842,7 @@ class UserManagementWidget(TranslatableWidget):
             QMessageBox.warning(self, "No Email", "User does not have an email address.")
             return
         """Email the QR code to the user or administrator"""
-        from modules.shared.shared.email.emailSender import EmailSenderService,get_email_template,get_default_email_config
+        from modules.shared.core.email.emailSender import EmailSenderService,get_email_template,get_default_email_config
         template = get_email_template(user_name=user.get_full_name(),
                                     message="Here is your QR code for accessing the system.")
         sender = EmailSenderService(config=get_default_email_config())

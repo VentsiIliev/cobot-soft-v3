@@ -6,8 +6,8 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
 import json
 import os
-from modules.shared.shared.settings.robotConfig.robotConfigModel import RobotConfig, get_default_config
-from modules.shared.shared.settings.robotConfig.robotConfigModel import RobotConfig, get_default_config, OffsetDirectionMap
+from modules.shared.core.settings.robotConfig.robotConfigModel import RobotConfig, get_default_config
+from modules.shared.core.settings.robotConfig.robotConfigModel import RobotConfig, get_default_config, OffsetDirectionMap
 
 
 class TcpOffsetDialog(QDialog):

@@ -1,8 +1,6 @@
-from modules.shared.v1.Response import Response
+from core.application.interfaces.robot_application_interface import RobotApplicationInterface
 from modules.shared.v1 import Constants
-from robot_application.interfaces.robot_application_interface import RobotApplicationInterface
-from robot_application.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
-from frontend.pl_ui.Endpoints import  *
+from applications.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
 
 # Import specialized handlers
 from .auth_handler import AuthHandler
@@ -70,25 +68,21 @@ class RequestHandler:
         """
         # print(f"RequestHandler: Processing request: {request}")
 
-        # Authentication requests (both new and legacy)
-        if request in [auth_endpoints.LOGIN, auth_endpoints.LEGACY_LOGIN, auth_endpoints.QR_LOGIN, auth_endpoints.LEGACY_QR_LOGIN]:
+        # Authentication requests
+        if request in [auth_endpoints.QR_LOGIN]:
             return self.auth_handler.handle(request, data)
 
-        # Main operations requests (both new and legacy)
+        # Main operations requests
         operations_requests = [
-            Constants.START, Constants.STOP, Constants.PAUSE, Constants.TEST_RUN,
             operations_endpoints.START, operations_endpoints.STOP, operations_endpoints.PAUSE, operations_endpoints.TEST_RUN,
-            operations_endpoints.START_LEGACY, operations_endpoints.STOP_LEGACY, operations_endpoints.PAUSE_LEGACY, operations_endpoints.TEST_RUN_LEGACY,
-            "run_demo", RUN_REMO, "stop_demo", "calibrate", "HELP", "help",
             operations_endpoints.RUN_DEMO, operations_endpoints.STOP_DEMO, operations_endpoints.CALIBRATE, operations_endpoints.HELP,
-            operations_endpoints.RUN_REMO, operations_endpoints.STOP_DEMO_LEGACY, operations_endpoints.CALIBRATE_LEGACY, operations_endpoints.HELP_LEGACY,
             "handleSetPreselectedWorkpiece", "handleExecuteFromGallery"
         ]
         if request in operations_requests:
             return self.operations_handler.handle(request, data)
 
-        # Camera work area points (special case - both new and legacy)
-        if (request in [camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS, camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS_LEGACY] or
+        # Camera work area points
+        if (request in [camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS] or
             (len(self._parseRequest(request)) >= 2 and self._parseRequest(request)[1] == "saveWorkAreaPoints")):
             return self.camera_handler.handle_save_work_area_points(data)
 
@@ -97,7 +91,6 @@ class RequestHandler:
 
         # Try to detect which resource (robot, camera, settings, workpieces) is present in the path
         resource = next((p.lower() for p in parts if p.lower() in self.resource_dispatch), None)
-
         if resource:
             return self.resource_dispatch[resource](parts, request, data)
 
@@ -105,36 +98,7 @@ class RequestHandler:
         print(f"Resource parsed: {resource}")
         print(f"Available resources: {list(self.resource_dispatch.keys())}")
         raise ValueError(f"Unknown request: {request}")
-        return Response(
-            Constants.RESPONSE_STATUS_ERROR,
-            message=f"No handler found for request: {request}"
-        ).to_dict()
 
-        # # Parse request for resource-based routing
-        # parts = self._parseRequest(request)
-        # resource = parts[0]
-        #
-        # # Route to specialized handlers based on resource
-        # if resource in self.resource_dispatch:
-        #     return self.resource_dispatch[resource](parts, request, data)
-        print(f"RequestHandler: No handler found for request: {request}")
-        print(f"Resource parsed: {resource}")
-        print(f"Available resources: {list(self.resource_dispatch.keys())}")
-        # If no handler found, return error
-        return Response(
-            Constants.RESPONSE_STATUS_ERROR,
-            message=f"No handler found for request: {request}"
-        ).to_dict()
-
-
-    # def _parseRequest(self, request):
-    #     # print(request)  # Output: ['robot', 'jog', 'X', 'Minus']
-    #     # Remove leading/trailing slashes and split
-    #     parts = [p for p in request.strip("/").split("/") if p]
-    #     # parts = request.split("/")
-    #     # resource = parts[0]
-    #     # Example: "/api/v1/workpieces/create/step_1" → ["api", "v1", "workpieces", "create", "step_1"]
-    #     return parts
 
     def _parseRequest(self, request: str):
         """

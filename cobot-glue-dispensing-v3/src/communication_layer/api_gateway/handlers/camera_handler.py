@@ -41,22 +41,22 @@ class CameraHandler:
         """
         # print(f"CameraHandler: Handling request: {request} with parts: {parts}")
         
-        # Handle both new RESTful endpoints and legacy endpoints
-        if request in [camera_endpoints.CAMERA_ACTION_CALIBRATE, camera_endpoints.CAMERA_ACTION_CALIBRATE_LEGACY] or (len(parts) > 1 and parts[1] == "calibrate"):
+        # Handle both new RESTful endpoints
+        if request in [camera_endpoints.CAMERA_ACTION_CALIBRATE] or (len(parts) > 1 and parts[1] == "calibrate"):
             return self.handle_camera_calibration()
-        elif request in [camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS, camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS_LEGACY] or (len(parts) > 1 and parts[1] == "saveWorkAreaPoints"):
+        elif request in [camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS] or (len(parts) > 1 and parts[1] == "saveWorkAreaPoints"):
             return self.handle_save_work_area_points(data)
-        elif request in [camera_endpoints.CAMERA_ACTION_GET_LATEST_FRAME, camera_endpoints.CAMERA_ACTION_GET_LATEST_FRAME_LEGACY]:
+        elif request in [camera_endpoints.CAMERA_ACTION_GET_LATEST_FRAME,]:
             return self.handle_frame_request(parts, request, data)
-        elif request in [camera_endpoints.CAMERA_ACTION_RAW_MODE_ON, camera_endpoints.CAMERA_ACTION_RAW_MODE_ON_LEGACY]:
+        elif request in [camera_endpoints.CAMERA_ACTION_RAW_MODE_ON]:
             return self.handle_mode_change(parts, request, data)
-        elif request in [camera_endpoints.CAMERA_ACTION_RAW_MODE_OFF, camera_endpoints.CAMERA_ACTION_RAW_MODE_OFF_LEGACY]:
+        elif request in [camera_endpoints.CAMERA_ACTION_RAW_MODE_OFF]:
             return self.handle_mode_change(parts, request, data)
-        elif request in [camera_endpoints.START_CONTOUR_DETECTION, camera_endpoints.START_CONTOUR_DETECTION_LEGACY, camera_endpoints.START_CONTOUR_DETECTION_LEGACY_2]:
+        elif request in [camera_endpoints.START_CONTOUR_DETECTION]:
             return self.handle_contour_detection(parts, request, data)
-        elif request in [camera_endpoints.STOP_CONTOUR_DETECTION, camera_endpoints.STOP_CONTOUR_DETECTION_LEGACY, camera_endpoints.STOP_CONTOUR_DETECTION_LEGACY_2]:
+        elif request in [camera_endpoints.STOP_CONTOUR_DETECTION]:
             return self.handle_contour_detection(parts, request, data)
-        elif request in [camera_endpoints.CAMERA_ACTION_CAPTURE_CALIBRATION_IMAGE, camera_endpoints.CAMERA_ACTION_CAPTURE_CALIBRATION_IMAGE_LEGACY]:
+        elif request in [camera_endpoints.CAMERA_ACTION_CAPTURE_CALIBRATION_IMAGE]:
             return self.handle_capture_request(parts, request, data)
         else:
             raise ValueError(f"CameraHandler: Unknown camera request: {request}")

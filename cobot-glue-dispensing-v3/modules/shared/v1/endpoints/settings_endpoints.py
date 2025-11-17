@@ -24,14 +24,3 @@ SETTINGS_CAMERA_SET = "/api/v1/settings/camera/set"
 SETTINGS_GET = "/api/v1/settings"
 SETTINGS_UPDATE = "/api/v1/settings"
 
-# === LEGACY ENDPOINTS (for backward compatibility) ===
-
-# Legacy endpoints from pl_ui/Endpoints.py
-GET_SETTINGS = "settings/get"
-UPDATE_SETTINGS = "settings/update"
-
-# Legacy Constants.py endpoints
-SETTINGS_ROBOT_GET_LEGACY = "settings/robot/get"
-SETTINGS_ROBOT_SET_LEGACY = "settings/robot/set"
-SETTINGS_CAMERA_GET_LEGACY = "settings/camera/get"
-SETTINGS_CAMERA_SET_LEGACY = "settings/camera/set"

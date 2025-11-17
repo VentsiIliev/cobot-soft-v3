@@ -1,6 +1,8 @@
 from PyQt6.QtCore import pyqtSignal
 
 from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
+from modules.shared.v1.endpoints import camera_endpoints
+from modules.shared.tools.GlueCell import GlueCellsManagerSingleton
 
 
 class DashboardAppWidget(AppWidget):
@@ -26,9 +28,9 @@ class DashboardAppWidget(AppWidget):
         # Replace the content with actual UserManagementWidget if available
         try:
             from frontend.pl_ui.ui.windows.dashboard.DashboardWidget import DashboardWidget
-            from frontend.pl_ui.Endpoints import UPDATE_CAMERA_FEED
+
             # Remove the placeholder content
-            self.content_widget = DashboardWidget(updateCameraFeedCallback=lambda: self.controller.handle(UPDATE_CAMERA_FEED))
+            self.content_widget = DashboardWidget(updateCameraFeedCallback=lambda: self.controller.handle(camera_endpoints.UPDATE_CAMERA_FEED))
             self.content_widget.start_requested.connect(self.start_requested.emit)
             self.content_widget.pause_requested.connect(self.pause_requested.emit)
             self.content_widget.stop_requested.connect(self.stop_requested.emit)
@@ -145,7 +147,7 @@ class DashboardAppWidget(AppWidget):
 
     def on_glue_type_changed(self, index,glue_type):
         print(f"Glue type of {index} changed to: {glue_type} ")
-        from robot_application import GlueCellsManagerSingleton
+
         manager = GlueCellsManagerSingleton.get_instance()
         manager.updateGlueTypeById(index,glue_type)
 

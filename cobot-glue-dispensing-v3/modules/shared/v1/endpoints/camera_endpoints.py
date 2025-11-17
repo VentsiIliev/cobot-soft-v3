@@ -36,28 +36,5 @@ CAMERA_ACTION_SAVE_WORK_AREA_POINTS = "/api/v1/camera/work-area/points"
 START_CONTOUR_DETECTION = "/api/v1/camera/contour-detection/start"
 STOP_CONTOUR_DETECTION = "/api/v1/camera/contour-detection/stop"
 
-# === LEGACY ENDPOINTS (for backward compatibility) ===
 
-# Legacy endpoints from pl_ui/Endpoints.py
-QR_LOGIN = "camera/login"
-CALIBRATE_CAMERA = "calibrate_camera"
-CAPTURE_CALIBRATION_IMAGE = "capture_calibration_image"
-TEST_CALIBRATION = "test_calibration"
-RAW_MODE_ON = "rawModeOn"
-RAW_MODE_OFF = "rawModeOff"
-SAVE_WORK_AREA_POINTS = "save_work_area_points"
-START_CONTOUR_DETECTION_LEGACY = "START_CONTOUR_DETECTION"
-STOP_CONTOUR_DETECTION_LEGACY = "STOP_CONTOUR_DETECTION"
-UPDATE_CAMERA_FEED_LEGACY = "cameraFeed/update"
 
-# Legacy Constants.py endpoints
-CAMERA_ACTION_GET_LATEST_FRAME_LEGACY = "camera/getLatestFrame"
-CAMERA_ACTION_CAPTURE_CALIBRATION_IMAGE_LEGACY = "camera/captureCalibrationImage"
-CAMERA_ACTION_RAW_MODE_ON_LEGACY = "camera/rawModeOn"
-CAMERA_ACTION_RAW_MODE_OFF_LEGACY = "camera/rawModeOff"
-CAMERA_ACTION_CALIBRATE_LEGACY = "camera/calibrate"
-CAMERA_ACTION_TEST_CALIBRATION_LEGACY = "camera/testCalibration"
-CAMERA_ACTION_SAVE_WORK_AREA_POINTS_LEGACY = "camera/saveWorkAreaPoints"
-START_CONTOUR_DETECTION_LEGACY_2 = "camera/START_CONTOUR_DETECTION"
-STOP_CONTOUR_DETECTION_LEGACY_2 = "camera/STOP_CONTOUR_DETECTION"
-QR_LOGIN_LEGACY = "camera/login"

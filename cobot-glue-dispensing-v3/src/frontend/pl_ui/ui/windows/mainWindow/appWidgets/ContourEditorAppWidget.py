@@ -1,8 +1,7 @@
-from frontend.pl_ui.Endpoints import UPDATE_CAMERA_FEED, CREATE_WORKPIECE_STEP_2, SAVE_WORKPIECE, GET_LATEST_IMAGE
 from frontend.pl_ui.localization import TranslationKeys
 from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
 from frontend.pl_ui.ui.widgets.CustomFeedbackDialog import CustomFeedbackDialog, DialogType
-
+from modules.shared.v1.endpoints import camera_endpoints, workpiece_endpoints
 
 class ContourEditorAppWidget(AppWidget):
     """Specialized widget for User Management application"""
@@ -38,7 +37,7 @@ class ContourEditorAppWidget(AppWidget):
 
 
     def on_update_camera_feed_requested(self):
-        image = self.controller.handle(UPDATE_CAMERA_FEED)
+        image = self.controller.handle(camera_endpoints.UPDATE_CAMERA_FEED)
         if image is None:
             # print("No image received for camera feed update")
             return
@@ -53,7 +52,7 @@ class ContourEditorAppWidget(AppWidget):
         it goes through the proper ContourEditorData pipeline.
         """
         print("Camera capture requested from Contour Editor")
-        result, message, data = self.controller.handle(CREATE_WORKPIECE_STEP_2)
+        result, message, data = self.controller.handle(workpiece_endpoints.WORKPIECE_CREATE_STEP_2)
 
         if not result:
             # show error message box

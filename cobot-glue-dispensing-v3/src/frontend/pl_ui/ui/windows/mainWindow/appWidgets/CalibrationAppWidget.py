@@ -1,10 +1,8 @@
 from PyQt6.QtWidgets import QWidget
 
 from modules.shared.MessageBroker import MessageBroker
-from frontend.pl_ui.Endpoints import UPDATE_CAMERA_FEED, HOME_ROBOT, CALIBRATE_ROBOT, SAVE_ROBOT_CALIBRATION_POINT, RAW_MODE_ON, \
-    GO_TO_CALIBRATION_POS, JOG_ROBOT, CALIBRATE_CAMERA, CAPTURE_CALIBRATION_IMAGE, CALIBRATE, TEST_CALIBRATION, \
-    SAVE_WORK_AREA_POINTS
 
+from modules.shared.v1.endpoints import camera_endpoints,robot_endpoints
 from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
 from frontend.pl_ui.ui.windows.settings.CalibrationSettingsTab import CalibrationServiceTabLayout
 
@@ -33,27 +31,27 @@ class CalibrationAppWidget(AppWidget):
 
 
             def updateCameraFeedCallback():
-                frame = self.controller.handle(UPDATE_CAMERA_FEED)
+                frame = self.controller.handle(camera_endpoints.UPDATE_CAMERA_FEED)
                 self.content_layout.update_camera_feed(frame)
 
             self.content_widget = QWidget(self.parent)
             self.content_layout = CalibrationServiceTabLayout()
             self.content_layout.update_camera_feed_signal.connect(lambda: updateCameraFeedCallback())
-            self.content_layout.move_to_pickup_requested.connect(lambda: self.controller.handle(HOME_ROBOT))
-            self.content_layout.jogRequested.connect(lambda endpoint,axis, dir_str, step_size: self.controller.handle(JOG_ROBOT,axis, dir_str, step_size))
-            self.content_layout.compute_homography_requested.connect(lambda: self.controller.handle(CALIBRATE_ROBOT))
-            self.content_layout.save_point_requested.connect(lambda: self.controller.handle(SAVE_ROBOT_CALIBRATION_POINT))
+            self.content_layout.move_to_pickup_requested.connect(lambda: self.controller.handle(robot_endpoints.HOME_ROBOT))
+            self.content_layout.jogRequested.connect(lambda endpoint,axis, dir_str, step_size: self.controller.handle(robot_endpoints.JOG_ROBOT,axis, dir_str, step_size))
+            self.content_layout.compute_homography_requested.connect(lambda: self.controller.handle(robot_endpoints.CALIBRATE_ROBOT))
+            self.content_layout.save_point_requested.connect(lambda: self.controller.handle(robot_endpoints.SAVE_ROBOT_CALIBRATION_POINT))
 
             def onMoveToCalibrationPos():
-                self.controller.handle(RAW_MODE_ON)
-                self.controller.handle(GO_TO_CALIBRATION_POS)
+                self.controller.handle(camera_endpoints.CAMERA_ACTION_RAW_MODE_ON)
+                self.controller.handle(robot_endpoints.ROBOT_MOVE_TO_CALIB_POS)
 
             self.content_layout.move_to_calibration_requested.connect(lambda: onMoveToCalibrationPos())
-            self.content_layout.calibrate_camera_requested.connect(lambda: self.controller.handle(CALIBRATE_CAMERA))
-            self.content_layout.capture_image_requested.connect(lambda: self.controller.handle(CAPTURE_CALIBRATION_IMAGE))
-            self.content_layout.auto_calibrate_requested.connect(lambda: self.controller.handle(CALIBRATE))
-            self.content_layout.test_calibration_requested.connect(lambda: self.controller.handle(TEST_CALIBRATION))
-            self.content_layout.save_work_area_requested.connect(lambda points: self.controller.handle(SAVE_WORK_AREA_POINTS,points))
+            self.content_layout.calibrate_camera_requested.connect(lambda: self.controller.handle(camera_endpoints.CAMERA_ACTION_CALIBRATE))
+            self.content_layout.capture_image_requested.connect(lambda: self.controller.handle(camera_endpoints.CAMERA_ACTION_CAPTURE_CALIBRATION_IMAGE))
+            self.content_layout.auto_calibrate_requested.connect(lambda: self.controller.handle(camera_endpoints.CAMERA_ACTION_CALIBRATE))
+            # self.content_layout.test_calibration_requested.connect(lambda: self.controller.handle(TEST_CALIBRATION))
+            self.content_layout.save_work_area_requested.connect(lambda points: self.controller.handle(camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS,points))
 
             # self.content_layout.start_calibration_requested.connect(lambda: self.controller.handle(CALIBRATE))
 

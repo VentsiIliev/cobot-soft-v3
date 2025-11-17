@@ -12,8 +12,3 @@ LOGIN = "/api/v1/auth/login"
 
 # QR code login via camera
 QR_LOGIN = "/api/v1/auth/qr-login"
-
-# Legacy endpoint names (for backward compatibility)
-# These map to the same endpoints as above
-LEGACY_LOGIN = "login"
-LEGACY_QR_LOGIN = "camera/login"

@@ -10,30 +10,28 @@ import sys
 import json
 import os
 import copy
-from modules.shared.shared.settings.robotConfig.robotConfigModel import RobotConfig, MovementGroup,get_default_config
+from modules.shared.core.settings.robotConfig.robotConfigModel import RobotConfig, MovementGroup,get_default_config
 
 from modules.shared.v1.Response import Response
 from modules.shared.v1.DomesticRequestSender import DomesticRequestSender
-from modules.shared.v1.Constants import ROBOT_MOVE_TO_HOME_POS, ROBOT_MOVE_TO_LOGIN_POS, ROBOT_MOVE_TO_CALIB_POS, \
-    ROBOT_SLOT_0_PICKUP, ROBOT_SLOT_0_DROP, ROBOT_EXECUTE_NOZZLE_CLEAN, ROBOT_GET_CURRENT_POSITION, \
-    RESPONSE_STATUS_ERROR
-from modules.shared.v1.Constants import ROBOT_MOVE_TO_POSITION
-from modules.shared.v1.Constants import ROBOT_SLOT_1_DROP,ROBOT_SLOT_1_PICKUP, ROBOT_SLOT_4_DROP,ROBOT_SLOT_4_PICKUP
-from modules.shared.v1.Constants import ROBOT_UPDATE_CONFIG
+from modules.shared.v1.Constants import  RESPONSE_STATUS_ERROR
+from modules.shared.v1.endpoints import robot_endpoints
+
+
 from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
 from frontend.pl_ui.localization import TranslationKeys, get_app_translator
 class RequestHandler:
 
     def handleRequest(self,request,data):
-        if request == ROBOT_MOVE_TO_HOME_POS:
+        if request == robot_endpoints.HOME_ROBOT:
             print(f"🏠 Executing {request}: {data}")
-        elif request == ROBOT_MOVE_TO_LOGIN_POS:
+        elif request == robot_endpoints.GO_TO_LOGIN_POS:
             print(f"🔐 Executing {request}: {data}")
-        elif request == ROBOT_MOVE_TO_CALIB_POS:
+        elif request == robot_endpoints.GO_TO_CALIBRATION_POS:
             print(f"⚙️  Executing {request}: {data}")
-        elif request == ROBOT_MOVE_TO_POSITION:
+        elif request == robot_endpoints.ROBOT_MOVE_TO_POSITION:
             print(f"📍 Executing {request}: {data}")
-        elif request == ROBOT_UPDATE_CONFIG:
+        elif request == robot_endpoints.ROBOT_UPDATE_CONFIG:
             print(f"💾 Executing UPDATE_CONFIG: {data}")
         else:
             print(f"Handling request: {request} with data {data}")
@@ -765,7 +763,7 @@ class RobotConfigController:
             point_name = current_item.text()
             x, y, z, rx, ry, rz = [s.strip() for s in point_name.strip('[]').split(',')]
             print(f"Parsed coordinates: x={x}, y={y}, z={z}, rx={rx}, ry={ry}, rz={rz}")
-            req = ROBOT_MOVE_TO_POSITION.format(position = f"{x}/{y}/{z}/{rx}/{ry}/{rz}")
+            req = robot_endpoints.ROBOT_MOVE_TO_POSITION.format(position = f"{x}/{y}/{z}/{rx}/{ry}/{rz}")
             vel_acc_info = self._get_velocity_acceleration_info(group_name)
             print(f"Moving to point: {point_name} in group: {group_name}{vel_acc_info}")
             self.requestSender.sendRequest(req, "")
@@ -809,13 +807,13 @@ class RobotConfigController:
             # Send appropriate movement request based on group name
             if self.requestSender:
                 if group_name == "HOME_POS":
-                    self.requestSender.sendRequest(ROBOT_MOVE_TO_HOME_POS, position_text)
+                    self.requestSender.sendRequest(robot_endpoints.ROBOT_MOVE_TO_HOME_POS, position_text)
                     print(f"🤖 ROBOT_MOVE_TO_HOME_POS request sent: {position_text}")
                 elif group_name == "LOGIN_POS":
-                    self.requestSender.sendRequest(ROBOT_MOVE_TO_LOGIN_POS, position_text)
+                    self.requestSender.sendRequest(robot_endpoints.ROBOT_MOVE_TO_LOGIN_POS, position_text)
                     print(f"🤖 ROBOT_MOVE_TO_LOGIN_POS request sent: {position_text}")
                 elif group_name == "CALIBRATION_POS":
-                    self.requestSender.sendRequest(ROBOT_MOVE_TO_CALIB_POS, position_text)
+                    self.requestSender.sendRequest(robot_endpoints.ROBOT_MOVE_TO_CALIB_POS, position_text)
                     print(f"🤖 ROBOT_MOVE_TO_CALIB_POS request sent: {position_text}")
                 else:
                     # For other positions, just print the movement info
@@ -858,7 +856,7 @@ class RobotConfigController:
     def on_save_current_position_as_point(self, group_name):
         """Handle saving current robot position to a specific group"""
         print(f"Saving current position to {group_name}")
-        response = self.requestSender.sendRequest(ROBOT_GET_CURRENT_POSITION)
+        response = self.requestSender.sendRequest(robot_endpoints.ROBOT_GET_CURRENT_POSITION)
         response = Response.from_dict(response)
         status = response.status
         if status == RESPONSE_STATUS_ERROR:
@@ -912,19 +910,19 @@ class RobotConfigController:
 
                 request = None
                 if group_name == "SLOT 1 PICKUP":
-                    request = ROBOT_SLOT_1_PICKUP
+                    request = robot_endpoints.ROBOT_SLOT_1_PICKUP
                 elif group_name == "SLOT 1 DROPOFF":
-                    request = ROBOT_SLOT_1_DROP
+                    request = robot_endpoints.ROBOT_SLOT_1_DROP
                 elif group_name == "SLOT 4 PICKUP":
-                    request = ROBOT_SLOT_4_PICKUP
+                    request = robot_endpoints.ROBOT_SLOT_4_PICKUP
                 elif group_name == "SLOT 4 DROPOFF":
-                    request = ROBOT_SLOT_4_DROP
+                    request = robot_endpoints.ROBOT_SLOT_4_DROP
                 elif group_name == "SLOT 0 PICKUP":
-                    request = ROBOT_SLOT_0_PICKUP
+                    request = robot_endpoints.ROBOT_SLOT_0_PICKUP
                 elif group_name == "SLOT 0 DROPOFF":
-                    request = ROBOT_SLOT_0_DROP
+                    request = robot_endpoints.ROBOT_SLOT_0_DROP
                 elif group_name == "NOZZLE CLEAN":
-                    request = ROBOT_EXECUTE_NOZZLE_CLEAN
+                    request = robot_endpoints.ROBOT_EXECUTE_NOZZLE_CLEAN
 
                 self.requestSender.sendRequest(request)
 
@@ -1156,7 +1154,7 @@ class RobotConfigController:
             movement_groups["NOZZLE CLEAN"].iterations = self.ui.nozzle_clean_iterations.value()
 
         # Get safety limits from UI
-        from modules.shared.shared.settings.robotConfig.robotConfigModel import SafetyLimits, GlobalMotionSettings
+        from modules.shared.core.settings.robotConfig.robotConfigModel import SafetyLimits, GlobalMotionSettings
         
         safety_limits = SafetyLimits()
         if hasattr(self.ui, 'safety_limits'):
@@ -1203,7 +1201,7 @@ class RobotConfigController:
 
             # Send UPDATE_CONFIG request after successful save
             if self.requestSender:
-                self.requestSender.sendRequest(ROBOT_UPDATE_CONFIG)
+                self.requestSender.sendRequest(robot_endpoints.ROBOT_UPDATE_CONFIG)
                 print(f"🔄 ROBOT_UPDATE_CONFIG request sent for file: {self.config_file}")
                 print(f"   └── Configuration has been updated and saved")
             else:

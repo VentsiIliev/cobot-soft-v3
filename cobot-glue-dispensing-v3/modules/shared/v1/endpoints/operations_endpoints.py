@@ -34,22 +34,4 @@ CALIBRATE = "/api/v1/operations/calibrate"
 # Utility operations
 HELP = "/api/v1/operations/help"
 
-# === LEGACY ENDPOINTS (for backward compatibility) ===
 
-# Legacy endpoints from pl_ui/Endpoints.py
-START_LEGACY = "start"
-STOP_LEGACY = "stop"
-PAUSE_LEGACY = "pause"
-RUN_REMO = "run_demo"  # Note: original name was RUN_REMO
-STOP_DEMO_LEGACY = "stop_demo"
-TEST_RUN_LEGACY = "test_run"
-CALIBRATE_LEGACY = "calibrate"
-HELP_LEGACY = "HELP"
-
-# Legacy Constants.py endpoints
-START_LEGACY_2 = "start"
-STOP_LEGACY_2 = "stop"
-PAUSE_LEGACY_2 = "pause"
-TEST_RUN_LEGACY_2 = "test_run"
-RUN_REMO_LEGACY = "run_demo"
-STOP_DEMO_LEGACY_2 = "stop_demo"

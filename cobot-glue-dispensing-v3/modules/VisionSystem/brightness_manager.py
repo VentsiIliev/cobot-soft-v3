@@ -30,7 +30,7 @@ class BrightnessManager:
         elif mode == "stop":
             self.vision_system.camera_settings.set_brightness_auto(False)
         else:
-            print(f"Invalid mode")
+            print(f"on_brighteness_toggle Invalid mode {mode}")
 
     def get_area_by_threshold(self):
         if self.vision_system.threshold_by_area == "pickup":

@@ -6,7 +6,7 @@ Handles all workpiece-related requests including CRUD operations, creation workf
 
 from modules.shared.v1.Response import Response
 from modules.shared.v1 import Constants
-from modules.shared.shared.workpiece.Workpiece import WorkpieceField
+from modules.shared.core.workpiece.Workpiece import WorkpieceField
 from modules.shared.v1.endpoints import workpiece_endpoints
 import traceback
 
@@ -44,21 +44,21 @@ class WorkpieceHandler:
         print(f"WorkpieceHandler: Handling request: {request} with parts: {parts}")
         
         # Handle both new RESTful endpoints and legacy endpoints
-        if request in [workpiece_endpoints.WORKPIECE_SAVE, workpiece_endpoints.WORKPIECE_SAVE_LEGACY] or (len(parts) > 1 and parts[1] == "save"):
+        if request in [workpiece_endpoints.WORKPIECE_SAVE] or (len(parts) > 1 and parts[1] == "save"):
             return self.handle_save_workpiece(request, parts, data)
-        elif request in [workpiece_endpoints.WORKPIECE_SAVE_DXF, workpiece_endpoints.WORKPIECE_SAVE_DXF_LEGACY] or (len(parts) > 1 and parts[1] == "dxf"):
+        elif request in [workpiece_endpoints.WORKPIECE_SAVE_DXF] or (len(parts) > 1 and parts[1] == "dxf"):
             return self.handle_save_workpiece_from_dxf(data)
-        elif request in [workpiece_endpoints.WORKPIECE_CREATE, workpiece_endpoints.WORKPIECE_CREATE_LEGACY] or (len(parts) > 1 and parts[1] == "create"):
+        elif request in [workpiece_endpoints.WORKPIECE_CREATE] or (len(parts) > 1 and parts[1] == "create"):
             return self.handle_create_workpiece()
-        elif request in [workpiece_endpoints.WORKPIECE_CREATE_STEP_1, workpiece_endpoints.WORKPIECE_CREATE_STEP_1_LEGACY] or (len(parts) > 1 and parts[1] == "create_step_1"):
+        elif request in [workpiece_endpoints.WORKPIECE_CREATE_STEP_1] or (len(parts) > 1 and parts[1] == "create_step_1"):
             return self.handle_create_workpiece_step_1()
-        elif request in [workpiece_endpoints.WORKPIECE_CREATE_STEP_2, workpiece_endpoints.WORKPIECE_CREATE_STEP_2_LEGACY] or (len(parts) > 1 and parts[1] == "create_step_2"):
+        elif request in [workpiece_endpoints.WORKPIECE_CREATE_STEP_2] or (len(parts) > 1 and parts[1] == "create_step_2"):
             return self.handle_create_workpiece_step_2()
-        elif request in [workpiece_endpoints.WORKPIECE_GET_ALL, workpiece_endpoints.WORKPIECE_GET_ALL_LEGACY, workpiece_endpoints.WORPIECE_GET_ALL] or (len(parts) > 1 and parts[1] == "getall"):
+        elif request in [workpiece_endpoints.WORKPIECE_GET_ALL] or (len(parts) > 1 and parts[1] == "getall"):
             return self.handle_get_all_workpieces()
-        elif request in [workpiece_endpoints.WORKPIECE_DELETE, workpiece_endpoints.WORKPIECE_DELETE_LEGACY, workpiece_endpoints.WORKPIECE_DELETE_LEGACY_2] or (len(parts) > 1 and parts[1] == "delete"):
+        elif request in [workpiece_endpoints.WORKPIECE_DELETE] or (len(parts) > 1 and parts[1] == "delete"):
             return self.handle_delete_workpiece(data)
-        elif request in [workpiece_endpoints.WORKPIECE_GET_BY_ID, workpiece_endpoints.WORKPIECE_GET_BY_ID_LEGACY, workpiece_endpoints.WORKPIECE_GET_BY_ID_LEGACY_2] or (len(parts) > 1 and parts[1] == "getbyid"):
+        elif request in [workpiece_endpoints.WORKPIECE_GET_BY_ID] or (len(parts) > 1 and parts[1] == "getbyid"):
             return self.handle_get_workpiece_by_id(data)
         else:
             raise ValueError(f"Unknown request: {request}")

@@ -6,10 +6,10 @@ from PyQt6.QtWidgets import QLabel, QPushButton, QVBoxLayout
 
 from modules.shared.v1 import Constants
 from frontend.pl_ui.localization import TranslationKeys, TranslatableWidget
-from frontend.pl_ui.Endpoints import STOP_CONTOUR_DETECTION, UPDATE_CAMERA_FEED, START_CONTOUR_DETECTION, QR_LOGIN
 from frontend.pl_ui.ui.widgets.CameraFeed import CameraFeed,CameraFeedConfig
 from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 from frontend.pl_ui.utils.IconLoader import LOGIN_QR_BUTTON
+from modules.shared.v1.endpoints import camera_endpoints,auth_endpoints
 
 
 class QRLoginTab(TranslatableWidget):
@@ -48,7 +48,7 @@ class QRLoginTab(TranslatableWidget):
     def setup_ui(self) -> None:
         """Initialize UI layout and widgets."""
         # Stop contour detection when initializing QR tab
-        self.controller.handle(STOP_CONTOUR_DETECTION)
+        self.controller.handle(camera_endpoints.STOP_CONTOUR_DETECTION)
 
         layout: QVBoxLayout = QVBoxLayout()
         layout.setContentsMargins(20, 20, 20, 20)
@@ -90,13 +90,13 @@ class QRLoginTab(TranslatableWidget):
 
     def get_camera_frame(self) -> Any:
         """Get camera frame for the camera feed."""
-        return self.controller.handle(UPDATE_CAMERA_FEED)
+        return self.controller.handle(camera_endpoints.UPDATE_CAMERA_FEED)
 
     def handle_qr_code(self) -> None:
         """Handle QR code scanning and login."""
-        self.controller.handle(START_CONTOUR_DETECTION)
+        self.controller.handle(camera_endpoints.START_CONTOUR_DETECTION)
 
-        response: Any = self.controller.handle(QR_LOGIN)
+        response: Any = self.controller.handle(auth_endpoints.QR_LOGIN)
         if response is None:
             raise ValueError("No response from QR login endpoint")
 
@@ -113,7 +113,7 @@ class QRLoginTab(TranslatableWidget):
         """Start automatic QR code detection."""
         if not self.qr_scanning_active:
             print("Starting automatic QR scanning...")
-            self.controller.handle(START_CONTOUR_DETECTION)
+            self.controller.handle(camera_endpoints.START_CONTOUR_DETECTION)
             self.qr_scanning_active = True
             # Check for QR codes every 2 seconds
             self.qr_timer.start(2000)
@@ -148,7 +148,7 @@ class QRLoginTab(TranslatableWidget):
                 return
                 
             print(f"[{timestamp}] Calling controller.handle(QR_LOGIN)...")
-            response: Any = self.controller.handle(QR_LOGIN)
+            response: Any = self.controller.handle(auth_endpoints.QR_LOGIN)
             if response is None:
                 print(f"[{timestamp}] QR_LOGIN response is None")
                 return
@@ -206,7 +206,7 @@ class QRLoginTab(TranslatableWidget):
         
         # Stop contour detection completely
         try:
-            self.controller.handle(STOP_CONTOUR_DETECTION)
+            self.controller.handle(camera_endpoints.STOP_CONTOUR_DETECTION)
             print(f"[{timestamp}] Contour detection stopped during emergency stop")
         except Exception as e:
             print(f"[{timestamp}] Error stopping contour detection: {e}")
@@ -230,7 +230,7 @@ class QRLoginTab(TranslatableWidget):
             print(f"[{timestamp}] Stopping automatic QR scanning...")
             self.qr_timer.stop()
             self.qr_scanning_active = False
-            self.controller.handle(STOP_CONTOUR_DETECTION)
+            self.controller.handle(camera_endpoints.STOP_CONTOUR_DETECTION)
             print(f"[{timestamp}] QR scanning stopped successfully")
         else:
             print(f"[{timestamp}] QR scanning was already inactive")
@@ -265,7 +265,7 @@ class QRLoginTab(TranslatableWidget):
         
         # Stop contour detection
         if hasattr(self, 'controller'):
-            self.controller.handle(STOP_CONTOUR_DETECTION)
+            self.controller.handle(camera_endpoints.STOP_CONTOUR_DETECTION)
             print("Contour detection stopped during cleanup")
     
     def __del__(self) -> None:

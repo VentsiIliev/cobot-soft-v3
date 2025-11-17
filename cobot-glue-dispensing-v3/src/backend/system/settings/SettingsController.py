@@ -6,7 +6,7 @@ import modules.shared.v1.endpoints.settings_endpoints as settings_endpoints
 
 from backend.system.settings.SettingsService import SettingsService
 from backend.system.vision.VisionService import VisionServiceSingleton
-from robot_application.interfaces.application_settings_interface import settings_registry
+from core.application.interfaces.application_settings_interface import settings_registry
 
 
 
@@ -40,41 +40,33 @@ class SettingsController:
         try:
             # === CORE SETTINGS - GET OPERATIONS ===
             if request in [
-                settings_endpoints.SETTINGS_ROBOT_GET,
-                settings_endpoints.SETTINGS_ROBOT_GET_LEGACY,
-                settings_endpoints.GET_SETTINGS
+                settings_endpoints.SETTINGS_ROBOT_GET
             ]:
                 return self._handleGet("robot")
 
             elif request in [
-                settings_endpoints.SETTINGS_CAMERA_GET,
-                settings_endpoints.SETTINGS_CAMERA_GET_LEGACY
+                settings_endpoints.SETTINGS_CAMERA_GET
             ]:
                 return self._handleGet("camera")
 
             elif request in [
-                settings_endpoints.SETTINGS_GET,
-                settings_endpoints.GET_SETTINGS,
+                settings_endpoints.SETTINGS_GET
             ]:
                 return self._handleGet("general")
 
             # === CORE SETTINGS - SET / UPDATE OPERATIONS ===
             elif request in [
-                settings_endpoints.SETTINGS_ROBOT_SET,
-                settings_endpoints.SETTINGS_ROBOT_SET_LEGACY,
-                settings_endpoints.UPDATE_SETTINGS
+                settings_endpoints.SETTINGS_ROBOT_SET
             ]:
                 return self._handleSet("robot", data)
 
             elif request in [
-                settings_endpoints.SETTINGS_CAMERA_SET,
-                settings_endpoints.SETTINGS_CAMERA_SET_LEGACY
+                settings_endpoints.SETTINGS_CAMERA_SET
             ]:
                 return self._handleSet("camera", data)
 
             elif request in [
-                settings_endpoints.SETTINGS_UPDATE,
-                settings_endpoints.UPDATE_SETTINGS
+                settings_endpoints.SETTINGS_UPDATE
             ]:
                 return self._handleSet("general", data)
 

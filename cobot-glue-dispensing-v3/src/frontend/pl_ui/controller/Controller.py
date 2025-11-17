@@ -1,9 +1,11 @@
 from PyQt6.QtCore import QThread
+
+from applications.glue_dispensing_application.workpiece.GlueWorkpiece import GlueWorkpiece
 from modules.shared.v1.Response import Response
 from modules.shared.v1 import Constants
-from modules.shared.shared.settings.conreateSettings.CameraSettings import CameraSettings
-from robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
-from modules.shared.shared.settings.conreateSettings.RobotSettings import RobotSettings
+from modules.shared.core.settings.conreateSettings.CameraSettings import CameraSettings
+from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
+from modules.shared.core.settings.conreateSettings.RobotSettings import RobotSettings
 
 from .RequestWorker import RequestWorker
 from frontend.pl_ui.ui.widgets.FeedbackProvider import FeedbackProvider
@@ -18,16 +20,14 @@ from modules.shared.v1.endpoints import (
     settings_endpoints
 )
 # Import glue application constants
-from robot_application.glue_dispensing_application.settings.GlueConstants import (
+from applications.glue_dispensing_application.settings.GlueConstants import (
     REQUEST_RESOURCE_GLUE,
     SETTINGS_GLUE_GET,
     SETTINGS_GLUE_SET
 )
-from robot_application.glue_dispensing_application.workpiece import Workpiece
+
 
 from frontend.pl_ui.ui.windows.settings.CameraSettingsTabLayout import CameraSettingsTabLayout
-from frontend.pl_ui.ui.windows.settings.ContourSettingsTabLayout import ContourSettingsTabLayout
-from frontend.pl_ui.ui.windows.settings.RobotSettingsTabLayout import RobotSettingsTabLayout
 from frontend.pl_ui.ui.windows.settings.GlueSettingsTabLayout import GlueSettingsTabLayout
 
 import logging
@@ -44,85 +44,52 @@ class Controller:
     def registerEndpoints(self):
         self.endpointsMap = {
             # Settings endpoints
-            settings_endpoints.UPDATE_SETTINGS: self.updateSettings,
-            settings_endpoints.GET_SETTINGS: self.handleGetSettings,
+            settings_endpoints.SETTINGS_UPDATE: self.updateSettings,
+            settings_endpoints.SETTINGS_GET: self.handleGetSettings,
             
             # Authentication endpoints
             auth_endpoints.LOGIN: self.handleLogin,
-            auth_endpoints.LEGACY_LOGIN: self.handleLogin,
             auth_endpoints.QR_LOGIN: self.handleQrLogin,
-            auth_endpoints.LEGACY_QR_LOGIN: self.handleQrLogin,
             
             # Operations endpoints
             operations_endpoints.START: self.handleStart,
-            operations_endpoints.START_LEGACY: self.handleStart,
             operations_endpoints.PAUSE: self.handlePause,
-            operations_endpoints.PAUSE_LEGACY: self.handlePause,
             operations_endpoints.STOP: self.handleStop,
-            operations_endpoints.STOP_LEGACY: self.handleStop,
             operations_endpoints.TEST_RUN: self.handleTestRun,
-            operations_endpoints.TEST_RUN_LEGACY: self.handleTestRun,
             operations_endpoints.CALIBRATE: self.handleCalibrate,
-            operations_endpoints.CALIBRATE_LEGACY: self.handleCalibrate,
             operations_endpoints.HELP: self.handleHelp,
-            operations_endpoints.HELP_LEGACY: self.handleHelp,
             operations_endpoints.RUN_DEMO: self.handleRunDemo,
-            operations_endpoints.RUN_REMO: self.handleRunDemo,
             operations_endpoints.STOP_DEMO: self.handleStopDemo,
-            operations_endpoints.STOP_DEMO_LEGACY: self.handleStopDemo,
-            
+
             # Camera endpoints
             camera_endpoints.CAMERA_ACTION_CALIBRATE: self.handleCalibrateCamera,
-            camera_endpoints.CALIBRATE_CAMERA: self.handleCalibrateCamera,
             camera_endpoints.CAMERA_ACTION_CAPTURE_CALIBRATION_IMAGE: self.handleCaptureCalibrationImage,
-            camera_endpoints.CAPTURE_CALIBRATION_IMAGE: self.handleCaptureCalibrationImage,
             camera_endpoints.CAMERA_ACTION_TEST_CALIBRATION: self.handleTestCalibration,
-            camera_endpoints.TEST_CALIBRATION: self.handleTestCalibration,
             camera_endpoints.CAMERA_ACTION_SAVE_WORK_AREA_POINTS: self.handleSaveWorkAreaPoints,
-            camera_endpoints.SAVE_WORK_AREA_POINTS: self.handleSaveWorkAreaPoints,
             camera_endpoints.UPDATE_CAMERA_FEED: self.updateCameraFeed,
-            camera_endpoints.UPDATE_CAMERA_FEED_LEGACY: self.updateCameraFeed,
             camera_endpoints.START_CONTOUR_DETECTION: self.handleStartContourDetection,
-            camera_endpoints.START_CONTOUR_DETECTION_LEGACY: self.handleStartContourDetection,
             camera_endpoints.STOP_CONTOUR_DETECTION: self.handleStopContourDetection,
-            camera_endpoints.STOP_CONTOUR_DETECTION_LEGACY: self.handleStopContourDetection,
             camera_endpoints.CAMERA_ACTION_RAW_MODE_ON: self.handleRawModeOn,
-            camera_endpoints.RAW_MODE_ON: self.handleRawModeOn,
             camera_endpoints.CAMERA_ACTION_RAW_MODE_OFF: self.handleRawModeOff,
-            camera_endpoints.RAW_MODE_OFF: self.handleRawModeOff,
-            
+
             # Robot endpoints
             robot_endpoints.ROBOT_CALIBRATE: self.handleCalibrateRobot,
-            robot_endpoints.CALIBRATE_ROBOT: self.handleCalibrateRobot,
             robot_endpoints.ROBOT_MOVE_TO_HOME_POS: self.homeRobot,
-            robot_endpoints.HOME_ROBOT: self.homeRobot,
             robot_endpoints.ROBOT_MOVE_TO_CALIB_POS: self.handleMoveToCalibrationPos,
-            robot_endpoints.GO_TO_CALIBRATION_POS: self.handleMoveToCalibrationPos,
             robot_endpoints.ROBOT_MOVE_TO_LOGIN_POS: self.handleLoginPos,
-            robot_endpoints.GO_TO_LOGIN_POS: self.handleLoginPos,
-            robot_endpoints.JOG_ROBOT: self.handleJog,
             robot_endpoints.ROBOT_SAVE_POINT: self.saveRobotCalibrationPoint,
-            robot_endpoints.SAVE_ROBOT_CALIBRATION_POINT: self.saveRobotCalibrationPoint,
             robot_endpoints.ROBOT_EXECUTE_NOZZLE_CLEAN: self.handleCleanNozzle,
             robot_endpoints.ROBOT_RESET_ERRORS: self.handleResetErrors,
-            robot_endpoints.ROBOT_RESET_ERRORS_LEGACY: self.handleResetErrors,
             robot_endpoints.ROBOT_UPDATE_CONFIG: self.handleRobotUpdateConfig,
-            robot_endpoints.ROBOT_UPDATE_CONFIG_LEGACY: self.handleRobotUpdateConfig,
-            
+
             # Workpiece endpoints
             workpiece_endpoints.WORKPIECE_SAVE: self.saveWorkpiece,
-            workpiece_endpoints.SAVE_WORKPIECE: self.saveWorkpiece,
             workpiece_endpoints.WORKPIECE_SAVE_DXF: self.saveWorkpieceFromDXF,
-            workpiece_endpoints.SAVE_WORKPIECE_DXF: self.saveWorkpieceFromDXF,
             workpiece_endpoints.WORKPIECE_CREATE: self.createWorkpieceAsync,
-            workpiece_endpoints.CREATE_WORKPIECE_TOPIC: self.createWorkpieceAsync,
             workpiece_endpoints.WORKPIECE_CREATE_STEP_1: self.handleCreateWorkpieceStep1,
-            workpiece_endpoints.CREATE_WORKPIECE_STEP_1: self.handleCreateWorkpieceStep1,
             workpiece_endpoints.WORKPIECE_CREATE_STEP_2: self.handleCreateWorkpieceStep2,
-            workpiece_endpoints.CREATE_WORKPIECE_STEP_2: self.handleCreateWorkpieceStep2,
             workpiece_endpoints.WORKPIECE_GET_ALL: self.handleGetAllWorpieces,
-            workpiece_endpoints.WORPIECE_GET_ALL: self.handleGetAllWorpieces,
-            
+
             # Legacy special endpoints
             "executeFromGallery": self.handleExecuteFromGallery,
         }
@@ -201,6 +168,7 @@ class Controller:
     def handle(self, endpoint, *args):
         if endpoint in self.endpointsMap:
             try:
+                # print(f"{self.logTag} Handling endpoint: '{endpoint}' with args: {args}")
                 return self.endpointsMap[endpoint](*args)
             except TypeError as e:
                 self.logger.debug(f"{self.logTag} [Method: handle] Parameter mismatch for endpoint '{endpoint}': {e}")
@@ -261,7 +229,7 @@ class Controller:
 
     def saveWorkpieceFromDXF(self, data):
 
-        request = workpiece_endpoints.SAVE_WORKPIECE_DXF
+        request = workpiece_endpoints.WORKPIECE_SAVE_DXF
         responseDict = self.requestSender.sendRequest(request, data)
         response = Response.from_dict(responseDict)
 
@@ -359,7 +327,7 @@ class Controller:
         print("Robot calibration response:", response)
         self.logger.debug(f"{self.logTag}] Calibrate robot response: {response}")
         if response.status == Constants.RESPONSE_STATUS_ERROR:
-            request = Constants.CAMERA_ACTION_RAW_MODE_OFF
+            request = camera_endpoints.CAMERA_ACTION_RAW_MODE_OFF
             response = self.requestSender.sendRequest(request)
             response = Response.from_dict(response)
             FeedbackProvider.showMessage(response.message)
@@ -371,7 +339,7 @@ class Controller:
         return True, response.message
 
     def saveRobotCalibrationPoint(self):
-        request = robot_endpoints.SAVE_ROBOT_CALIBRATION_POINT
+        request = robot_endpoints.ROBOT_SAVE_POINT
         responseDict = self.requestSender.sendRequest(request)
         response = Response.from_dict(responseDict)
 
@@ -385,13 +353,6 @@ class Controller:
         else:
             return True, False
 
-    # def calibPickupArea(self):
-    #     # request = Request(Constants.REQUEST_TYPE_EXECUTE,Constants.ACTION_CALIBRATE_PICKUP_AREA,Constants.REQUEST_RESOURCE_ROBOT)
-    #     request = Constants.ROBOT_CALIBRATE_PICKUP
-    #     self.requestSender.sendRequest(request)
-    #
-    # def moveBelt(self):
-    #     self.requestSender.handleBelt()
 
     def is_blue_button_pressed(self):
         return True
@@ -414,14 +375,11 @@ class Controller:
 
     def updateSettings(self, key, value, className):
         if className == CameraSettingsTabLayout.__name__:
+            print("Updating Settings Camera", key, value)
             resource = Constants.REQUEST_RESOURCE_CAMERA
             request = settings_endpoints.SETTINGS_CAMERA_SET
-        elif className == ContourSettingsTabLayout.__name__:
-            resource = Constants.REQUEST_RESOURCE_CAMERA
-            request = settings_endpoints.SETTINGS_CAMERA_SET
-        elif className == RobotSettingsTabLayout.__name__:
-            resource = Constants.REQUEST_RESOURCE_ROBOT
-            request = settings_endpoints.SETTINGS_ROBOT_SET
+
+
         elif className == GlueSettingsTabLayout.__name__:
             print("Updating Settings Glue", key, value)
             resource = REQUEST_RESOURCE_GLUE
@@ -523,7 +481,7 @@ class Controller:
         # Convert the response data to a Workpiece object
         try:
             if isinstance(response.data, dict):
-                workpiece = Workpiece.fromDict(response.data)
+                workpiece = GlueWorkpiece.fromDict(response.data)
                 return True, workpiece
             else:
                 # response.data is already a Workpiece object
@@ -562,7 +520,7 @@ class Controller:
         return True, response.message, response.data
 
     def createWorkpieceAsync(self, onSuccess, onError=None):
-        request = workpiece_endpoints.CREATE_WORKPIECE_TOPIC
+        request = workpiece_endpoints.WORKPIECE_CREATE
         print("CreateWorkpieceAsync request:", request)
 
         def successCallback(req, resp):

@@ -5,7 +5,7 @@ import numpy as np
 from enum import Enum
 
 # Internal shared settings
-from modules.shared.shared.settings.conreateSettings.CameraSettings import CameraSettings
+from modules.shared.core.settings.conreateSettings.CameraSettings import CameraSettings
 
 # Vision System core modules
 from modules.VisionSystem.brightness_manager import BrightnessManager

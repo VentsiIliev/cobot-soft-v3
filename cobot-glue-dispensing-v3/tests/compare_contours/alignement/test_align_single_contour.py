@@ -5,7 +5,7 @@ import pytest
 from backend.system.contour_matching.alignment.contour_aligner import align_single_contour
 from backend.system.contour_matching.matching_config import REFINEMENT_THRESHOLD
 from compare_contours.testShapeGenerator import create_rectangle_contour
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 
 
 # --- Fixtures for basic contours ---

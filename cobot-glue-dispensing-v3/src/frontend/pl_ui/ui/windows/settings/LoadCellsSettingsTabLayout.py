@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QApplication, QHBoxLa
                              QSizePolicy, QComboBox,
                              QScrollArea, QGroupBox, QGridLayout)
 
-from robot_application.glue_dispensing_application.tools.GlueCell import UPDATE_SCALE_ENDPOINT, GET_CONFIG_ENDPOINT, \
+from modules.shared.tools.GlueCell import UPDATE_SCALE_ENDPOINT, GET_CONFIG_ENDPOINT, \
     GlueCellsManagerSingleton, GlueDataFetcher, UPDATE_OFFSET_ENDPOINT, TARE_ENDPOINT
 from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
 from frontend.pl_ui.localization import get_app_translator

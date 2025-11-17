@@ -1,4 +1,4 @@
-from src.robot_application.glue_dispensing_application.settings.GlueSettings import GlueSettings
+from src.applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
 from modules.glueSprayService.fanControl.fanControl import FanControl, FanState
 from modules.glueSprayService.generatorControl.GeneratorControl import GeneratorControl, GeneratorState
 from modules.glueSprayService.generatorControl.timer import Timer

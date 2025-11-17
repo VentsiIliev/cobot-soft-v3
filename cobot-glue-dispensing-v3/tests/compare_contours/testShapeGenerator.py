@@ -1,6 +1,6 @@
 import numpy as np
 
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 
 
 def create_rectangle_contour(center=(400, 300), width=200, height=100):

@@ -2,8 +2,8 @@ from PyQt6.QtCore import pyqtSignal, Qt, QTimer, QPointF
 from PyQt6.QtGui import QPainter
 from PyQt6.QtWidgets import QFrame
 
-from modules.shared.shared.contour_editor.BezierSegmentManager import BezierSegmentManager
-from robot_application.glue_dispensing_application.workpiece.Workpiece import Workpiece
+from modules.shared.core.contour_editor.BezierSegmentManager import BezierSegmentManager
+
 from frontend.pl_ui.contour_editor import constants
 from frontend.pl_ui.contour_editor.controllers.SegmentActionController import SegmentActionController
 from frontend.pl_ui.contour_editor.controllers.viewport_controller import ViewportController
@@ -17,12 +17,14 @@ from frontend.pl_ui.contour_editor.managers.event_manager import EventManager
 from frontend.pl_ui.contour_editor.managers.layer_manager import LayerManager
 from frontend.pl_ui.contour_editor.managers.workpiece_manager import WorkpieceManager
 from frontend.pl_ui.contour_editor.rendering.editor_renderer import EditorRenderer
+from modules.shared.core.workpiece.Workpiece import BaseWorkpiece
+
 
 class ContourEditor(QFrame):
     pointsUpdated = pyqtSignal()
     update_camera_feed_requested = pyqtSignal()
 
-    def __init__(self, visionSystem, image_path=None, contours=None, parent=None, workpiece: Workpiece = None):
+    def __init__(self, visionSystem, image_path=None, contours=None, parent=None, workpiece: BaseWorkpiece = None):
         super().__init__()
 
         # Initialize all managers first to avoid AttributeError during Qt events

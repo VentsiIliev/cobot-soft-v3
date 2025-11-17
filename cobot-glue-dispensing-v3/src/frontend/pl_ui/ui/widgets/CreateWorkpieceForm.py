@@ -14,15 +14,17 @@ from frontend.pl_ui.utils.styles.CreateWorkpieceStyles import get_input_field_st
 from frontend.pl_ui.utils.styles.CreateWorkpieceStyles import get_popup_view_styles
 
 from frontend.pl_ui.ui.widgets.Drawer import Drawer
-from frontend.pl_ui.utils.enums.GlueType import GlueType
-from frontend.pl_ui.utils.enums.Gripper import Gripper
-from frontend.pl_ui.utils.enums.Program import Program
-from frontend.pl_ui.utils.enums.ToolID import ToolID
-from frontend.pl_ui.utils.enums.WorkpieceField import WorkpieceField
+
 from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusLineEdit
 from frontend.pl_ui.utils.IconLoader import WORKPIECE_ID_ICON_PATH, WORKPIECE_NAME_ICON_PATH, DESCRIPTION_ICON_PATH, OFFSET_ICON_PATH, \
     HEIGHT_ICON_PATH, TOOL_ID_ICON_PATH, GRIPPER_ID_ICON_PATH, GLUE_TYPE_ICON_PATH, PROGRAM_ICON_PATH, MATERIAL_ICON_PATH, ACCEPT_BUTTON_ICON_PATH, \
     CANCEL_BUTTON_ICON_PATH, GLUE_QTY_ICON_PATH, SPRAY_WIDTH_ICON_PATH
+from modules.shared.core.workpiece.Workpiece import WorkpieceField
+from modules.shared.tools.GlueCell import GlueType
+from modules.shared.tools.enums.Gripper import Gripper
+from modules.shared.tools.enums.Program import Program
+from modules.shared.tools.enums.ToolID import ToolID
+
 # Assuming the path to stylesheets
 SETTINGS_STYLESHEET = os.path.join("settings.qss")
 

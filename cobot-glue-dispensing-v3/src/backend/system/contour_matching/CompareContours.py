@@ -11,7 +11,7 @@ from backend.system.contour_matching.matching.strategies.matching_strategy_inter
 from backend.system.contour_matching.matching.strategies.ml_matching_strategy import MLMatchingStrategy
 from modules.shapeMatchinModelTraining.modelManager import load_latest_model
 
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 from backend.system.contour_matching.alignment.contour_aligner import _alignContours
 from backend.system.contour_matching.matching_config import *
 

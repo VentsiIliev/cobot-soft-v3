@@ -25,7 +25,7 @@ class CreateWorkpieceManager:
         sprayPatternsDict['Contour'] = wp_contours_data.get('Contour')
         sprayPatternsDict['Fill'] = wp_contours_data.get('Fill')
 
-        from modules.shared.shared.workpiece.Workpiece import WorkpieceField
+        from modules.shared.core.workpiece.Workpiece import WorkpieceField
         data[WorkpieceField.SPRAY_PATTERN.value] = sprayPatternsDict
         data[WorkpieceField.CONTOUR.value] = wp_contours_data.get('External')
         print("Workpiece data to save:", data)

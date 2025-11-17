@@ -1,5 +1,5 @@
 import numpy as np
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 from backend.system.contour_matching.debug.plot_generator import get_similarity_debug_plot
 from pathlib import Path
 

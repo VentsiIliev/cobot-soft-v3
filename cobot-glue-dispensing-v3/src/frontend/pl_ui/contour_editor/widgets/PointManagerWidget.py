@@ -7,13 +7,16 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QIcon, QFont
 
+from applications.glue_dispensing_application.settings.enums import GlueSettingKey
 from frontend.pl_ui.contour_editor.widgets.SegmentSettingsWidget import SegmentSettingsWidget
-from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
-from frontend.pl_ui.utils.enums.GlueType import GlueType
+
+from modules.shared.core.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
+
 from frontend.pl_ui.contour_editor.widgets.LayerButtonsWidget import LayerButtonsWidget
 from frontend.pl_ui.contour_editor.widgets.SegmentButtonsAndComboWidget import SegmentButtonsAndComboWidget
 from PyQt6.QtWidgets import QApplication
+
+from modules.shared.tools.GlueCell import GlueType
 
 RESOURCE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..","icons")
 HIDE_ICON = os.path.join(RESOURCE_DIR, "hide.png")

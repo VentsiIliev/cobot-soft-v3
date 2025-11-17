@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal
 
 from modules.shared.MessageBroker import MessageBroker
-from frontend.pl_ui.Endpoints import WORPIECE_GET_ALL
+from modules.shared.v1.endpoints import workpiece_endpoints
 from frontend.pl_ui.ui.windows.mainWindow.appWidgets.AppWidget import AppWidget
 
 
@@ -20,7 +20,7 @@ class GalleryAppWidget(AppWidget):
         super().setup_ui()  # Get the basic layout with back button
 
         try:
-            workpieces = self.controller.handle(WORPIECE_GET_ALL)
+            workpieces = self.controller.handle(workpiece_endpoints.WORKPIECE_GET_ALL)
 
             def onApply(filename):
                 if not filename:

@@ -6,7 +6,7 @@ import numpy as np
 
 from backend.system.contour_matching.debug.plot_generator import plot_contour_alignment
 from backend.system.contour_matching.matching.match_info import MatchInfo
-from modules.shared.shared.ContourStandartized import Contour
+from modules.shared.core.ContourStandartized import Contour
 from backend.system.contour_matching.alignment.mask_refinement import _refine_alignment_with_mask
 from backend.system.contour_matching.alignment.workpiece_update import update_workpiece_data
 from backend.system.contour_matching.matching_config import REFINEMENT_THRESHOLD

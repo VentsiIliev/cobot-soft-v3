@@ -1,5 +1,5 @@
 from PyQt6 import QtCore
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, pyqtSignal
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QScroller
@@ -8,8 +8,8 @@ from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QHBoxLayout,
 
 from frontend.pl_ui.ui.widgets.ClickableLabel import ClickableLabel
 from frontend.pl_ui.ui.widgets.MaterialButton import MaterialButton
-from modules.shared.shared.settings.conreateSettings.CameraSettings import CameraSettings
-from modules.shared.shared.settings.conreateSettings.enums.CameraSettingKey import CameraSettingKey
+from modules.shared.core.settings.conreateSettings.CameraSettings import CameraSettings
+from modules.shared.core.settings.conreateSettings.enums.CameraSettingKey import CameraSettingKey
 from frontend.pl_ui.ui.widgets.SwitchButton import QToggle
 from frontend.pl_ui.ui.widgets.ToastWidget import ToastWidget
 from frontend.pl_ui.ui.windows.settings.BaseSettingsTabLayout import BaseSettingsTabLayout
@@ -20,6 +20,10 @@ from modules.shared.MessageBroker import MessageBroker
 from modules.shared.v1.topics import VisionTopics
 
 class CameraSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
+    # Unified signal for all value changes - eliminates callback duplication
+    value_changed_signal = pyqtSignal(str, object, str)  # key, value, component_type
+    
+    # Action signals
     update_camera_feed_signal = QtCore.pyqtSignal()
     star_camera_requested = QtCore.pyqtSignal()
     stop_camera_requested = QtCore.pyqtSignal()
@@ -49,6 +53,9 @@ class CameraSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
 
         # Create main content with new layout
         self.create_main_content()
+        
+        # Connect all widget signals to unified emission pattern
+        self._connect_widget_signals()
 
         self.updateFrequency = 30  # in milliseconds
         self.timer = QTimer(self)
@@ -874,85 +881,81 @@ class CameraSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
         layout.setColumnStretch(1, 1)
         return group
 
+    def _connect_widget_signals(self):
+        """
+        Connect all widget signals to the unified value_changed_signal.
+        This eliminates callback duplication while maintaining the same interface.
+        """
+        widget_mappings = [
+            # Core settings
+            (self.camera_index_input, CameraSettingKey.INDEX.value, 'valueChanged'),
+            (self.width_input, CameraSettingKey.WIDTH.value, 'valueChanged'),
+            (self.height_input, CameraSettingKey.HEIGHT.value, 'valueChanged'),
+            (self.skip_frames_input, CameraSettingKey.SKIP_FRAMES.value, 'valueChanged'),
+            (self.capture_pos_offset_input, CameraSettingKey.CAPTURE_POS_OFFSET.value, 'valueChanged'),
+            
+            # Contour detection
+            (self.contour_detection_toggle, CameraSettingKey.CONTOUR_DETECTION.value, 'toggled'),
+            (self.draw_contours_toggle, CameraSettingKey.DRAW_CONTOURS.value, 'toggled'),
+            (self.threshold_input, CameraSettingKey.THRESHOLD.value, 'valueChanged'),
+            (self.threshold_pickup_area_input, CameraSettingKey.THRESHOLD_PICKUP_AREA.value, 'valueChanged'),
+            (self.epsilon_input, CameraSettingKey.EPSILON.value, 'valueChanged'),
+            (self.min_contour_area_input, CameraSettingKey.MIN_CONTOUR_AREA.value, 'valueChanged'),
+            (self.max_contour_area_input, CameraSettingKey.MAX_CONTOUR_AREA.value, 'valueChanged'),
+            
+            # Preprocessing
+            (self.gaussian_blur_toggle, CameraSettingKey.GAUSSIAN_BLUR.value, 'toggled'),
+            (self.blur_kernel_input, CameraSettingKey.BLUR_KERNEL_SIZE.value, 'valueChanged'),
+            (self.threshold_type_combo, CameraSettingKey.THRESHOLD_TYPE.value, 'currentTextChanged'),
+            (self.dilate_enabled_toggle, CameraSettingKey.DILATE_ENABLED.value, 'toggled'),
+            (self.dilate_kernel_input, CameraSettingKey.DILATE_KERNEL_SIZE.value, 'valueChanged'),
+            (self.dilate_iterations_input, CameraSettingKey.DILATE_ITERATIONS.value, 'valueChanged'),
+            (self.erode_enabled_toggle, CameraSettingKey.ERODE_ENABLED.value, 'toggled'),
+            (self.erode_kernel_input, CameraSettingKey.ERODE_KERNEL_SIZE.value, 'valueChanged'),
+            (self.erode_iterations_input, CameraSettingKey.ERODE_ITERATIONS.value, 'valueChanged'),
+            
+            # Calibration
+            (self.chessboard_width_input, CameraSettingKey.CHESSBOARD_WIDTH.value, 'valueChanged'),
+            (self.chessboard_height_input, CameraSettingKey.CHESSBOARD_HEIGHT.value, 'valueChanged'),
+            (self.square_size_input, CameraSettingKey.SQUARE_SIZE_MM.value, 'valueChanged'),
+            (self.calib_skip_frames_input, CameraSettingKey.CALIBRATION_SKIP_FRAMES.value, 'valueChanged'),
+            
+            # Brightness control
+            (self.brightness_auto_toggle, CameraSettingKey.BRIGHTNESS_AUTO.value, 'toggled'),
+            (self.kp_input, CameraSettingKey.BRIGHTNESS_KP.value, 'valueChanged'),
+            (self.ki_input, CameraSettingKey.BRIGHTNESS_KI.value, 'valueChanged'),
+            (self.kd_input, CameraSettingKey.BRIGHTNESS_KD.value, 'valueChanged'),
+            (self.target_brightness_input, CameraSettingKey.TARGET_BRIGHTNESS.value, 'valueChanged'),
+            
+            # ArUco detection
+            (self.aruco_enabled_toggle, CameraSettingKey.ARUCO_ENABLED.value, 'toggled'),
+            (self.aruco_dictionary_combo, CameraSettingKey.ARUCO_DICTIONARY.value, 'currentTextChanged'),
+            (self.aruco_flip_toggle, CameraSettingKey.ARUCO_FLIP_IMAGE.value, 'toggled'),
+        ]
+        
+        for widget, setting_key, signal_name in widget_mappings:
+            if hasattr(widget, signal_name):
+                signal = getattr(widget, signal_name)
+                signal.connect(
+                    lambda value, key=setting_key: self._emit_setting_change(key, value)
+                )
+    
+    def _emit_setting_change(self, key: str, value):
+        """
+        Emit the unified value_changed_signal with setting information.
+        
+        Args:
+            key: The setting key
+            value: The new value
+        """
+        self.value_changed_signal.emit(key, value, self.__class__.__name__)
+    
     def connectValueChangeCallbacks(self, callback):
-        """Connect value change signals to callback methods with key, value, and className."""
-        # Core settings
-        self.camera_index_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.INDEX.value, value, "CameraSettingsTabLayout"))
-        self.width_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.WIDTH.value, value, "CameraSettingsTabLayout"))
-        self.height_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.HEIGHT.value, value, "CameraSettingsTabLayout"))
-        self.skip_frames_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.SKIP_FRAMES.value, value, "CameraSettingsTabLayout"))
-        self.capture_pos_offset_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.CAPTURE_POS_OFFSET.value, value, "CameraSettingsTabLayout"))
-
-        # Contour detection
-        self.contour_detection_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.CONTOUR_DETECTION.value, value, "CameraSettingsTabLayout"))
-        self.draw_contours_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.DRAW_CONTOURS.value, value, "CameraSettingsTabLayout"))
-        self.threshold_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.THRESHOLD.value, value, "CameraSettingsTabLayout"))
-        self.threshold_pickup_area_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.THRESHOLD_PICKUP_AREA.value, value, "CameraSettingsTabLayout"))
-        self.epsilon_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.EPSILON.value, value, "CameraSettingsTabLayout"))
-        self.min_contour_area_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.MIN_CONTOUR_AREA.value, value, "CameraSettingsTabLayout"))
-        self.max_contour_area_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.MAX_CONTOUR_AREA.value, value, "CameraSettingsTabLayout"))
-
-        # Preprocessing
-        self.gaussian_blur_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.GAUSSIAN_BLUR.value, value, "CameraSettingsTabLayout"))
-        self.blur_kernel_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.BLUR_KERNEL_SIZE.value, value, "CameraSettingsTabLayout"))
-        self.threshold_type_combo.currentTextChanged.connect(
-            lambda value: callback(CameraSettingKey.THRESHOLD_TYPE.value, value, "CameraSettingsTabLayout"))
-        self.dilate_enabled_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.DILATE_ENABLED.value, value, "CameraSettingsTabLayout"))
-        self.dilate_kernel_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.DILATE_KERNEL_SIZE.value, value, "CameraSettingsTabLayout"))
-        self.dilate_iterations_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.DILATE_ITERATIONS.value, value, "CameraSettingsTabLayout"))
-        self.erode_enabled_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.ERODE_ENABLED.value, value, "CameraSettingsTabLayout"))
-        self.erode_kernel_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.ERODE_KERNEL_SIZE.value, value, "CameraSettingsTabLayout"))
-        self.erode_iterations_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.ERODE_ITERATIONS.value, value, "CameraSettingsTabLayout"))
-
-        # Calibration
-        self.chessboard_width_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.CHESSBOARD_WIDTH.value, value, "CameraSettingsTabLayout"))
-        self.chessboard_height_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.CHESSBOARD_HEIGHT.value, value, "CameraSettingsTabLayout"))
-        self.square_size_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.SQUARE_SIZE_MM.value, value, "CameraSettingsTabLayout"))
-        self.calib_skip_frames_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.CALIBRATION_SKIP_FRAMES.value, value, "CameraSettingsTabLayout"))
-
-        # Brightness control
-        self.brightness_auto_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.BRIGHTNESS_AUTO.value, value, "CameraSettingsTabLayout"))
-        self.kp_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.BRIGHTNESS_KP.value, value, "CameraSettingsTabLayout"))
-        self.ki_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.BRIGHTNESS_KI.value, value, "CameraSettingsTabLayout"))
-        self.kd_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.BRIGHTNESS_KD.value, value, "CameraSettingsTabLayout"))
-        self.target_brightness_input.valueChanged.connect(
-            lambda value: callback(CameraSettingKey.TARGET_BRIGHTNESS.value, value, "CameraSettingsTabLayout"))
-
-        # ArUco detection
-        self.aruco_enabled_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.ARUCO_ENABLED.value, value, "CameraSettingsTabLayout"))
-        self.aruco_dictionary_combo.currentTextChanged.connect(
-            lambda value: callback(CameraSettingKey.ARUCO_DICTIONARY.value, value, "CameraSettingsTabLayout"))
-        self.aruco_flip_toggle.toggled.connect(
-            lambda value: callback(CameraSettingKey.ARUCO_FLIP_IMAGE.value, value, "CameraSettingsTabLayout"))
+        """
+        Legacy method for backward compatibility.
+        Now connects the unified signal to the provided callback.
+        """
+        self.value_changed_signal.connect(lambda key, value, component_type: callback(key, value, component_type))
 
     def connect_default_callbacks(self):
         self.capture_image_button.clicked.connect(lambda: self.capture_image_requested.emit())

@@ -496,7 +496,7 @@ if __name__ == '__main__':
     tracker.display_thresholds = True
 
     VisionSystem = VisionSystem()
-    from src.robot_application.glue_dispensing_application.tools import Laser
+    from modules.shared.tools import Laser
 
     laser = Laser()
     laser.turnOn()

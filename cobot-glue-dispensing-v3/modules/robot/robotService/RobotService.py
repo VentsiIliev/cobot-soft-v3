@@ -9,7 +9,7 @@ import time
 from typing import Optional
 
 from modules.shared.MessageBroker import MessageBroker
-from modules.shared.shared.settings.robotConfig.robotConfigModel import RobotConfig
+from modules.shared.core.settings.robotConfig.robotConfigModel import RobotConfig
 from modules.robot.enums.axis import RobotAxis, Direction
 from modules.robot.RobotUtils import calculate_distance_between_points
 from modules.robot.robotService.RobotServiceMessagePublisher import RobotServiceMessagePublisher
@@ -17,9 +17,9 @@ from modules.robot.robotService.RobotServiceStateManager import RobotServiceStat
 from modules.robot.robotService.RobotServiceSubscriptionManager import RobotServiceSubscriptionManager
 from modules.robot.robotService.RobotStateManager import RobotStateManager
 from modules.robot.robotService.enums.RobotServiceState import RobotServiceState
-from robot_application.glue_dispensing_application.tools.Laser import Laser
-from robot_application.glue_dispensing_application.tools.ToolChanger import ToolChanger
-from robot_application.glue_dispensing_application.tools.VacuumPump import VacuumPump
+from modules.shared.tools.Laser import Laser
+from modules.shared.tools.ToolChanger import ToolChanger
+from modules.shared.tools.VacuumPump import VacuumPump
 from backend.system.utils.custom_logging import setup_logger, \
     LoggerContext, log_info_message, log_debug_message
 

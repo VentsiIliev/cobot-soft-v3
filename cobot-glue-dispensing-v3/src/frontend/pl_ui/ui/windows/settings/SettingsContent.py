@@ -5,8 +5,7 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon, QPixmap, QPainter
 # import QSizePolicy
 from PyQt6.QtWidgets import QVBoxLayout
-
-from frontend.pl_ui.Endpoints import HOME_ROBOT, GO_TO_LOGIN_POS, GO_TO_CALIBRATION_POS, ROBOT_EXECUTE_NOZZLE_CLEAN, GET_SETTINGS
+from frontend.pl_ui.ui.windows.settings.RobotConfigUI import RobotConfigController, RobotConfigUI
 from frontend.pl_ui.ui.widgets.CustomWidgets import CustomTabWidget, BackgroundTabPage
 from .CameraSettingsTabLayout import CameraSettingsTabLayout
 from .GlueSettingsTabLayout import GlueSettingsTabLayout
@@ -40,14 +39,19 @@ class BackgroundWidget(CustomTabWidget):
 
 
 class SettingsContent(BackgroundWidget):
+    # Action signals
     update_camera_feed_requested = QtCore.pyqtSignal()
     raw_mode_requested = QtCore.pyqtSignal(bool)
+    
+    # Settings change signal - replaces callback pattern
+    setting_changed = QtCore.pyqtSignal(str, object, str)  # key, value, component_type
 
-    def __init__(self, updateSettingsCallback=None,controller=None):
+    def __init__(self, controller=None):
         super().__init__()
 
+        # Keep minimal controller reference only for RobotConfigController
+        # All other operations should be handled via signals
         self.controller = controller
-        self.updateSettingsCallback = updateSettingsCallback
 
         self.setStyleSheet(""" 
             QTabWidget {
@@ -79,20 +83,14 @@ class SettingsContent(BackgroundWidget):
         self.connectCameraSettingSignals()
         self.cameraSettingsTabLayout.update_camera_feed_signal.connect(lambda: self.update_camera_feed_requested.emit())
 
-        # self.robotSettingsTabLayout = RobotSettingsTabLayout(self.robotSettingsTab)
-        from frontend.pl_ui.ui.windows.settings.RobotConfigUI import RobotConfigController,RobotConfigUI
+
+        # Create robot settings (still needs controller for now due to RobotConfigUI design)
         robotConfigController = RobotConfigController(self.controller.requestSender)
         self.robotSettingsTabLayout = RobotConfigUI(self, robotConfigController)
-        # self.contourSettingsTabLayout = ContourSettingsTabLayout(self.contourSettingsTab)
-        cameraSettings, robotSettings, glueSettings = self.controller.handle(GET_SETTINGS)
-        self.glueSettingsTabLayout = GlueSettingsTabLayout(self.glueSettingsTab,glueSettings)
-        self.glueSettingsTabLayout.connectRobotMotionCallbacks(
-        move_start_cb=lambda :self.controller.handle(HOME_ROBOT),
-        move_login_cb=lambda :self.controller.handle(GO_TO_LOGIN_POS),
-        move_calib_cb=lambda :self.controller.handle(GO_TO_CALIBRATION_POS),
-        clean_cb=lambda :self.controller.handle(ROBOT_EXECUTE_NOZZLE_CLEAN),
+        
+        # Create glue settings without initial data - will be populated externally
+        self.glueSettingsTabLayout = GlueSettingsTabLayout(self.glueSettingsTab, None)
 
-    )
         # *** ADD THIS: Set the layouts to the tab pages ***
         self.cameraSettingsTab.setLayout(self.cameraSettingsTabLayout)
         
@@ -104,11 +102,35 @@ class SettingsContent(BackgroundWidget):
         # self.contourSettingsTab.setLayout(self.contourSettingsTabLayout)
         self.glueSettingsTab.setLayout(self.glueSettingsTabLayout)
 
-        # Connect callbacks
-        self.glueSettingsTabLayout.connectValueChangeCallbacks(self.updateSettingsCallback)
-        self.cameraSettingsTabLayout.connectValueChangeCallbacks(self.updateSettingsCallback)
+        # Connect unified signals to settings callback
+        self._connect_settings_signals()
         # self.hide()  # Hide settings content initially
 
+    def _connect_settings_signals(self):
+        """
+        Connect all settings tab signals to emit the unified setting_changed signal.
+        This replaces the old callback pattern with clean signal emission.
+        """
+        # Connect glue settings value changes
+        self.glueSettingsTabLayout.value_changed_signal.connect(self._emit_setting_change)
+        
+        # Connect camera settings value changes
+        self.cameraSettingsTabLayout.value_changed_signal.connect(self._emit_setting_change)
+        
+        # Note: RobotConfigUI uses a different pattern - would need separate handling if required
+    
+    def _emit_setting_change(self, key: str, value, component_type: str):
+        """
+        Emit the unified setting_changed signal and maintain backward compatibility.
+        
+        Args:
+            key: The setting key
+            value: The new value
+            component_type: The component class name
+        """
+        # Emit the new signal for modern signal-based handling
+        self.setting_changed.emit(key, value, component_type)
+    
     def clean_up(self):
         """Clean up resources when closing the settings content"""
         self.cameraSettingsTabLayout.clean_up()

@@ -4,7 +4,7 @@ from frontend.pl_ui.ui.windows.dashboard.widgets.DashboardCard import DashboardC
 from frontend.pl_ui.ui.windows.dashboard.widgets.GlueMeterWidget import GlueMeterWidget
 from frontend.pl_ui.utils.enums.GlueType import GlueType
 from frontend.pl_ui.ui.windows.dashboard.config.dashboard_styles import DashboardConfig
-from robot_application.glue_dispensing_application.tools.GlueCell import GlueCellsManagerSingleton
+from modules.shared.tools.GlueCell import GlueCellsManagerSingleton
 
 
 class GlueCardFactory:

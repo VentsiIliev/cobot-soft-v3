@@ -43,13 +43,13 @@ class OperationsHandler:
         # print(f"OperationsHandler: Handling request: {request}")
         
         # Handle both new RESTful endpoints and legacy endpoints
-        if request in [operations_endpoints.START, operations_endpoints.START_LEGACY, Constants.START]:
+        if request in [operations_endpoints.START]:
             return self.handle_start()
-        elif request in [operations_endpoints.STOP, operations_endpoints.STOP_LEGACY, Constants.STOP]:
+        elif request in [operations_endpoints.STOP]:
             return self.handle_stop()
-        elif request in [operations_endpoints.PAUSE, operations_endpoints.PAUSE_LEGACY, Constants.PAUSE]:
+        elif request in [operations_endpoints.PAUSE]:
             return self.handle_pause()
-        elif request in [operations_endpoints.CALIBRATE, operations_endpoints.CALIBRATE_LEGACY, "calibrate"]:
+        elif request in [operations_endpoints.CALIBRATE]:
             return self.handle_calibrate()
         elif request in [operations_endpoints.CLEAN_NOZZLE]:
             return self.handler_clean_nozzle()

@@ -2,16 +2,17 @@
 import logging
 import os
 
+from applications.glue_dispensing_application.workpiece.WorkPieceRepositorySingleton import WorkPieceRepositorySingleton
 from frontend.pl_ui.localization import setup_localization
 
 setup_localization()
 
 
 from modules.shared.MessageBroker import MessageBroker
-from modules.shared.shared.workpiece.WorkpieceService import WorkpieceService
+from modules.shared.core.workpiece.WorkpieceService import WorkpieceService
 from modules.shared.v1.DomesticRequestSender import DomesticRequestSender
-from robot_application.application_factory import create_application_factory
-from robot_application.base_robot_application import ApplicationType
+from core.application_factory import create_application_factory
+from core.base_robot_application import ApplicationType
 from backend.system.SensorPublisher import SensorPublisher
 
 from modules.robot.RobotController import RobotController
@@ -25,7 +26,7 @@ from backend.system.settings.SettingsService import SettingsService
 
 from backend.system.vision.CameraSystemController import CameraSystemController
 from backend.system.vision.VisionService import VisionServiceSingleton
-from robot_application.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
+from applications.glue_dispensing_application.workpiece.WorkpieceController import WorkpieceController
 from backend.system.utils import PathResolver
 
 
@@ -72,7 +73,8 @@ if __name__ == "__main__":
 
     cameraService = VisionServiceSingleton().get_instance()
 
-    workpieceService = WorkpieceService()
+    repository = WorkPieceRepositorySingleton().get_instance()
+    workpieceService = WorkpieceService(repository=repository)
 
     robotService = RobotService(robot, settingsService)
 

@@ -6,8 +6,9 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtCore import Qt
-from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
+
+from applications.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
+from modules.shared.core.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
 # import qt DoubleSpinBox
 from PyQt6.QtWidgets import QDoubleSpinBox
 from frontend.pl_ui.ui.widgets.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
@@ -349,8 +350,8 @@ def get_default_settings() -> dict:
 initialize_default_settings()
 
 if __name__ == "__main__":
-    from modules.shared.shared.settings.conreateSettings.enums.GlueSettingKey import GlueSettingKey
-    from modules.shared.shared.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
+    from applications.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
+    from modules.shared.core.settings.conreateSettings.enums.RobotSettingKey import RobotSettingKey
     from frontend.pl_ui.utils.enums.GlueType import GlueType
 
     from PyQt6.QtWidgets import QApplication
