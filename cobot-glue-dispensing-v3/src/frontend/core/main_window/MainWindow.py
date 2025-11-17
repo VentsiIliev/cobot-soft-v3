@@ -391,36 +391,6 @@ class MainWindow(TranslatableWidget):
 
 
         self.contour_editor = self.show_app(WidgetType.CONTOUR_EDITOR.value)
-        
-        # # Track that camera operations are in progress
-        # self.pending_camera_operations = True
-        #
-        # # Create a wrapped manager that handles completion
-        # createWorkpieceManager = CreateWorkpieceManager(self.contour_editor, self.controller)
-        #
-        # # Wrap the original success and failure callbacks
-        # original_success = createWorkpieceManager.via_camera_success
-        # original_failure = createWorkpieceManager.via_camera_failure
-        #
-        # def wrapped_success(frame, contours, data):
-        #     try:
-        #         original_success(frame, contours, data)
-        #     finally:
-        #         self.pending_camera_operations = False
-        #         print("Camera operations completed - ContourEditor can now be safely deleted")
-        #
-        # def wrapped_failure(req, msg):
-        #     try:
-        #         original_failure(req, msg)
-        #     finally:
-        #         self.pending_camera_operations = False
-        #         print("Camera operations failed - ContourEditor can now be safely deleted")
-        #
-        # # Replace the callbacks
-        # createWorkpieceManager.via_camera_success = wrapped_success
-        # createWorkpieceManager.via_camera_failure = wrapped_failure
-        #
-        # createWorkpieceManager.via_camera()
 
     def create_workpiece_via_dxf_selected(self):
         """Handle DXF selection for workpiece creation"""

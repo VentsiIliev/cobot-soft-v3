@@ -20,23 +20,41 @@ class ContourEditorAppWidget(AppWidget):
 
         # Replace the content with actual UserManagementWidget if available
         try:
-
+            print("🔧 Creating MainApplicationFrame for contour editor...")
             # Remove the placeholder content
             self.content_widget = MainApplicationFrame(parent=self.parent)
+            print(f"✅ MainApplicationFrame created: {type(self.content_widget)}")
+            
+            # Connect signals
             self.content_widget.capture_requested.connect(self.on_camera_capture_requested)
             self.content_widget.update_camera_feed_requested.connect(self.on_update_camera_feed_requested)
             self.content_widget.save_workpiece_requested.connect(lambda data: self.via_camera_on_create_workpiece_submit(data))
+            print("✅ Contour editor signals connected")
+            
             # Replace the last widget in the layout (the placeholder) with the real widget
             layout = self.layout()
-            old_content = layout.itemAt(layout.count() - 1).widget()
-            layout.removeWidget(old_content)
-            old_content.deleteLater()
-
+            print(f"🔍 Current layout items count: {layout.count()}")
+            
+            if layout.count() > 0:
+                old_content = layout.itemAt(layout.count() - 1).widget()
+                print(f"🗑️ Removing old placeholder: {type(old_content)}")
+                layout.removeWidget(old_content)
+                old_content.deleteLater()
+            
             layout.addWidget(self.content_widget)
-        except ImportError:
+            print("✅ Contour editor widget added to layout")
+            
+            # Show the content widget
+            self.content_widget.show()
+            print("✅ Contour editor content widget shown")
+        except ImportError as e:
             import traceback
             traceback.print_exc()
-            print("Contour Editor not available, using placeholder")
+            print(f"Contour Editor not available due to ImportError: {e}, using placeholder")
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            print(f"Contour Editor failed to load due to error: {e}, using placeholder")
 
 
     def on_update_camera_feed_requested(self):

@@ -1,0 +1,16 @@
+{
+    "name": "ContourEditor",
+    "version": "1.0.0",
+    "description": "Advanced contour editing interface for workpiece design and modification",
+    "author": "PL Team",
+    "category": "core",
+    "entry_point": "plugin.ContourEditorPlugin",
+    "permissions": [
+        "FILE_SYSTEM",
+        "CAMERA_ACCESS"
+    ],
+    "dependencies": [],
+    "auto_load": true,
+    "min_app_version": "1.0.0",
+    "icon": "contour_editor.png"
+}

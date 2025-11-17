@@ -76,9 +76,24 @@ class WidgetFactory:
         return CreateWorkpieceOptionsAppWidget(controller = self.controller)
 
     def __create_contour_editor_widget(self, *args, **kwargs):
-        print("Creating Contour Editor Widget")
-
-        return ContourEditorAppWidget(parent=self.main_window,controller=self.controller)
+        print("🔧 Creating Contour Editor Widget via WidgetFactory")
+        print(f"🔍 Args: {args}, Kwargs: {kwargs}")
+        print(f"🔍 Parent: {self.main_window}, Controller: {self.controller}")
+        
+        try:
+            print("🚀 About to call ContourEditorAppWidget constructor...")
+            widget = ContourEditorAppWidget(parent=self.main_window,controller=self.controller)
+            print(f"✅ ContourEditorAppWidget created successfully: {type(widget)}")
+            print(f"🔍 Widget has content_widget: {hasattr(widget, 'content_widget')}")
+            if hasattr(widget, 'content_widget'):
+                print(f"🔍 Content widget type: {type(widget.content_widget)}")
+            return widget
+        except Exception as e:
+            print(f"❌ Failed to create ContourEditorAppWidget: {e}")
+            import traceback
+            traceback.print_exc()
+            # Return a basic AppWidget as fallback
+            return AppWidget(app_name="Contour Editor (Error)")
 
     def __create_dashboard_widget(self, *args, **kwargs):
         print("Creating Dashboard Widget")
@@ -103,14 +118,3 @@ class WidgetFactory:
         # return DXFBrowserAppWidget(*args, **kwargs)
 
 
-if __name__ == "__main__":
-    class MockController:
-        pass
-    factory = WidgetFactory(controller=MockController())
-    factory.create_widget(WidgetType.USER_MANAGEMENT)
-    factory.create_widget(WidgetType.SETTINGS)
-    factory.create_widget(WidgetType.DASHBOARD)
-    try:
-        factory.create_widget("INVALID_TYPE")
-    except ValueError as e:
-        print(e)

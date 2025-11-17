@@ -190,7 +190,7 @@ class PluginWidgetFactory:
         try:
             # Legacy widget creation for non-migrated widgets using WidgetType enum
             legacy_methods = {
-                WidgetType.CONTOUR_EDITOR.value: self._create_legacy_contour_editor,
+
                 WidgetType.CREATE_WORKPIECE_OPTIONS.value: self._create_legacy_create_workpiece,
                 WidgetType.DXF_BROWSER.value: self._create_legacy_dxf_browser
             }
@@ -211,11 +211,7 @@ class PluginWidgetFactory:
     
     # Legacy widget creation methods (gradually remove as plugins are created)
 
-    def _create_legacy_contour_editor(self, *args, **kwargs):
-        """Create legacy contour editor widget"""
-        from plugins.core.contour_editor.ui.ContourEditorAppWidget import ContourEditorAppWidget
-        return ContourEditorAppWidget(parent=self.main_window, controller=self.controller)
-    
+
     def _create_legacy_create_workpiece(self, *args, **kwargs):
         """Create legacy create workpiece widget"""
         from frontend.legacy_ui.app_widgets.CreateWorkpieceOptionsAppWidget import CreateWorkpieceOptionsAppWidget

@@ -3,11 +3,12 @@ import os
 from PyQt6 import QtCore
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon, QPixmap, QPainter
+from PyQt6.QtWidgets import QVBoxLayout, QSizePolicy
+
 from plugins.core.settings.ui.RobotConfigUI import RobotConfigController, RobotConfigUI
 from frontend.widgets.CustomWidgets import CustomTabWidget, BackgroundTabPage
 from .CameraSettingsTabLayout import CameraSettingsTabLayout
 from plugins.core.wight_cells_settings_plugin.ui.GlueSettingsTabLayout import GlueSettingsTabLayout
-from PyQt6.QtWidgets import QVBoxLayout
 
 #
 RESOURCE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..", "icons")

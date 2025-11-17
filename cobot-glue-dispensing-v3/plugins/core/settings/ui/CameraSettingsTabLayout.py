@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QScroller
 from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QHBoxLayout, QSizePolicy, QComboBox, QScrollArea, QGroupBox, QGridLayout)
-
+from PyQt6.QtWidgets import QWidget
 from frontend.widgets.ClickableLabel import ClickableLabel
 from frontend.widgets.MaterialButton import MaterialButton
 from modules.shared.core.settings.conreateSettings.CameraSettings import CameraSettings
