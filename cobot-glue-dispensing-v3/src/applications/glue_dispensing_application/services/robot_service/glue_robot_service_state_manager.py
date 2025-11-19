@@ -1,7 +1,7 @@
-from core.services.robot_service.impl.robot_monitor.state_manager import BaseServiceStateManager
+from core.services.robot_service.impl.robot_monitor.state_manager import BaseRobotServiceStateManager
 
 
-class GlueRobotServiceStateManager(BaseServiceStateManager):
+class GlueRobotServiceStateManager(BaseRobotServiceStateManager):
     def __init__(self, initial_state, message_publisher, robot_service):
         super().__init__(initial_state, message_publisher, robot_service)
 
