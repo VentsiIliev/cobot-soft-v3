@@ -36,7 +36,7 @@ class SystemTopics(TopicCategory):
     SYSTEM_MODE_CHANGE = "system/mode-change"
     CURRENT_PROCESS = "system/current-process"
     # Glue process state
-    PROCESS_STATE = "glue-process/state"
+    PROCESS_STATE = "application/process/state"
     APPLICATION_STATE = "application/state"
 
 
