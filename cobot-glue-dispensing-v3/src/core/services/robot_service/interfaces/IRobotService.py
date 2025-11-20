@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from core.application.interfaces.ISubscriptionModule import ISubscriptionModule
 from core.model.robot.enums.axis import Direction, RobotAxis
 
 class IRobotService(ABC):
@@ -37,3 +38,5 @@ class IRobotService(ABC):
 
     @abstractmethod
     def get_state_topic(self) -> str: ...
+
+

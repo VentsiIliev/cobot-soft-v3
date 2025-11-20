@@ -25,7 +25,6 @@ class GlueProcessStateMachine:
         self.broker = MessageBroker()
         log_if_enabled(enabled=ENABLE_ROBOT_SERVICE_STATE_MACHINE_LOGGING, logger=robot_service_state_machine_logger,
                        message="GlueProcessStateMachine initialized", level=LoggingLevel.INFO)
-
     log_calls_with_timestamp_decorator(logger=robot_service_state_machine_logger, enabled=False)
 
 

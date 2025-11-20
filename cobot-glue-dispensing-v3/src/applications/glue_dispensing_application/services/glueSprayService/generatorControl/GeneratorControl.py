@@ -1,4 +1,4 @@
-from modules.glueSprayService.generatorControl.timer import Timer
+from applications.glue_dispensing_application.services.glueSprayService.generatorControl.timer import Timer
 from typing import List, Optional
 from dataclasses import dataclass
 

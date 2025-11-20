@@ -5,18 +5,16 @@ from typing import Optional
 from backend.system.utils.custom_logging import log_info_message, log_debug_message, setup_logger, LoggerContext
 from backend.system.utils import robot_utils
 from communication_layer.api.v1.topics import RobotTopics, VisionTopics
+from core.application.interfaces.ISubscriptionModule import ISubscriptionModule
+from core.application_state_management import SubscriptionManger
 from core.model.robot.IRobot import IRobot
 from core.services.robot_service.impl.robot_monitor.state_manager import BaseRobotServiceStateManager
 from core.services.robot_service.interfaces.IRobotService import IRobotService
+from core.system_state_management import ServiceState
 from frontend.core.services.domain.RobotService import RobotAxis
 
 from core.model.robot.enums.axis import Direction
-from core.services.robot_service.enums.RobotState import RobotState
 from modules.shared.MessageBroker import MessageBroker
-from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
-from core.services.robot_service.enums.RobotServiceState import RobotServiceState
-from modules.shared.tools.ToolChanger import ToolChanger
-from modules.shared.tools.ToolManager import ToolManager
 
 ENABLE_ROBOT_SERVICE_LOGGING = True
 
@@ -59,14 +57,15 @@ class CancellationToken:
         return self._timestamp
 
 class RobotServiceMessagePublisher:
-    def __init__(self,broker):
+    def __init__(self,broker,service_id):
         self.broker = broker
+        self.service_id = service_id
         self.state_topic = RobotTopics.SERVICE_STATE
         self.trajectory_stop_topic = RobotTopics.TRAJECTORY_STOP
         self.trajectory_break_topic = RobotTopics.TRAJECTORY_BREAK
         self.threshold_region_topic = VisionTopics.THRESHOLD_REGION
+
     def publish_state(self,state):
-        # print(f"Publishing Robot Service State: {state}")
         self.broker.publish(self.state_topic, state)
 
     def publish_trajectory_stop_topic(self):
@@ -78,21 +77,24 @@ class RobotServiceMessagePublisher:
     def publish_threshold_region_topic(self,region):
         self.broker.publish(self.threshold_region_topic, {"region":region})
 
-
-class BaseRobotService(IRobotService):
+class RobotService(IRobotService):
     def __init__(self, robot:IRobot, settings_service, robot_state_manager):
         self.robot = robot
+        self.service_id = "robot_service"
         self.settings_service = settings_service
         self.robot_config = self.settings_service.robot_config
         self._operation_lock = threading.Lock()
         self.enable_logging = ENABLE_ROBOT_SERVICE_LOGGING
         self.robot_state_manager = robot_state_manager
         self.broker = MessageBroker()
-        self.message_publisher = RobotServiceMessagePublisher(self.broker)
-        self.state_manager = BaseRobotServiceStateManager(RobotServiceState.INITIALIZING, self.message_publisher, self)
+        self.message_publisher = RobotServiceMessagePublisher(self.broker,self.service_id)
+        self.state_manager = BaseRobotServiceStateManager(ServiceState.INITIALIZING, self.message_publisher, self,self.service_id)
+        self.subscription_manager = SubscriptionManger(self, self.broker,self.get_subscriptions())
+        self.subscription_manager.subscribe_all()
+
         self.robot_state_manager.start_monitoring()
-        self.toolChanger = ToolChanger()
-        self.tool_manager = ToolManager(self.toolChanger,self)
+
+        self.tool_manager = None
         if self.enable_logging:
             self.logger = setup_logger("RobotService")
         else:
@@ -103,6 +105,12 @@ class BaseRobotService(IRobotService):
     @property
     def current_tool(self):
         return self.tool_manager.current_gripper
+
+    def get_subscriptions(self):
+        subscriptions = []
+        robot_state_subscription = [self.robot_state_manager.robotStateTopic,self.state_manager.onRobotStateUpdate]
+        subscriptions.append(robot_state_subscription)
+        return subscriptions
 
     def moveToStartPosition(self, z_offset=0):
         """Move robot to start position"""
@@ -324,6 +332,18 @@ class BaseRobotService(IRobotService):
                 return True
 
             time.sleep(0.01)
+
+    def add_subscription_module(self, module: "ISubscriptionModule"):
+        """
+        Attach a subscription module to this robot service.
+        The module will register itself to the service's subscription manager.
+        """
+        if not self.subscription_manager:
+            raise RuntimeError("No subscription manager set for this robot service")
+
+        module.register(self.subscription_manager)
+        print(f"Subscription module {module} added to robot service.")
+
 
     def get_current_velocity(self):
         """Get current robot velocity"""

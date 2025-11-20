@@ -2,12 +2,13 @@
 import math
 import os
 from datetime import datetime
+
+from communication_layer.api.v1.topics import VisionTopics
 from modules.shared.tools.Laser import Laser
 from modules.VisionSystem.heightMeasuring.LaserTracker import LaserTrackService
 from backend.system.utils.custom_logging import LoggingLevel, log_if_enabled, \
     setup_logger
 from backend.system.utils.contours import is_contour_inside_polygon
-from communication_layer.api.v1 import VisionTopics
 import time
 from modules.shared.tools.enums.Gripper import Gripper
 # import logging
@@ -47,9 +48,6 @@ if ENABLE_LOGGING:
     nesting_logger = setup_logger("nesting")
 else:
     nesting_logger = None
-
-
-
 
 def calculate_drop_off_position(match, centroid, orientation, plane, pickup_height,gripper):
     """
@@ -276,8 +274,7 @@ def start_nesting(visionService, robotService,preselected_workpiece,z_offset_for
     log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.INFO, f"Loaded {len(workpieces)} workpiece templates")
     log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.DEBUG, f"Plane configuration: {plane.xMin}-{plane.xMax} x {plane.yMin}-{plane.yMax}")
 
-    laser = Laser()
-    laser.turnOn()
+    laser = robotService.tool_manager.laser
     laserTrackingService = LaserTrackService()
     # === FUNCTIONALITY ===
     while True:
@@ -602,7 +599,7 @@ def start_nesting(visionService, robotService,preselected_workpiece,z_offset_for
                                                   drop_off_position2,
                                                   measured_height, gripper)
             if ret != 0:
-                robotService.pump.turnOff(robotService.robot)
+                robotService.tool_manager.pump.turnOff(robotService.robot)
                 laser.turnOff()
                 return False, "Failed to move to pickup position"
 
@@ -669,7 +666,7 @@ def execute_place_sequence(robot_service,drop_off_position1, drop_off_position2)
         return ret
     ret = move_to(robot_service, drop_off_position2)
 
-    robot_service.pump.turnOff(robot_service.robot)
+    robot_service.tool_manager.pump.turnOff(robot_service.robot)
     return ret
 
 def execute_pick_and_place_sequence(robot_service, pickup_positions, drop_off_position1, drop_off_position2,measured_height,gripper):

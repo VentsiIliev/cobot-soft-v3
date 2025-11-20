@@ -1,21 +1,38 @@
-from core.services.robot_service.impl.base_robot_service import BaseRobotService
+# core/services/robot_service/impl/robot_monitor/subscription_manager.py
+from frontend.core.services.domain import RobotService
 
 
 class BaseSubscriptionManager:
-    def __init__(self,robot_service:BaseRobotService,broker):
+    def __init__(self, robot_service: RobotService, broker):
         self.robot_service = robot_service
         self.broker = broker
         self.subscriptions = {}
+        self.modules = []   # ← NEW: registered subscription modules
 
+    # ----------------------------
+    # Module support
+    # ----------------------------
+    def load_modules(self, modules):
+        """Load subscription modules (plugins)"""
+        for module in modules:
+            module.register(self)
+            self.modules.append(module)
+
+    # ----------------------------
+    # Core robot subscriptions
+    # ----------------------------
     def subscribe_all(self):
+        """Subscribe the base robot topics + all loaded modules."""
         self.subscribe_robot_state_topic()
 
     def subscribe_robot_state_topic(self):
-        self._add_subscription(self.robot_service.robot_state_manager.robotStateTopic, self.robot_service.state_manager.onRobotStateUpdate)
+        topic = self.robot_service.robot_state_manager.robotStateTopic
+        callback = self.robot_service.state_manager.onRobotStateUpdate
+        self._add_subscription(topic, callback)
 
-    def unsubscribe_robot_state_topic(self):
-        self._remove_subscription(self.robot_service.robot_state_manager.robotStateTopic)
-
+    # ----------------------------
+    # Internal subscription handling
+    # ----------------------------
     def _add_subscription(self, topic, callback):
         self.broker.subscribe(topic, callback)
         self.subscriptions[topic] = callback

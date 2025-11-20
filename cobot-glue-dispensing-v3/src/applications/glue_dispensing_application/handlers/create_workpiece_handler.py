@@ -3,7 +3,8 @@ from dataclasses import dataclass
 import cv2
 
 from core.base_robot_application import ApplicationState
-from modules.VisionSystem.VisionSystem import VisionSystemState
+# from modules.VisionSystem.VisionSystem import VisionSystemState
+from core.system_state_management import ServiceState
 
 @dataclass
 class CreateWorkpieceData:
@@ -68,7 +69,7 @@ class CreateWorkpieceHandler:
             return CrateWorkpieceResult(success=False, message="Application not in IDLE state", data=None)
 
         # if vision service is not running, return error
-        if self.application.state_manager.visonServiceState != VisionSystemState.RUNNING:
+        if self.application.state_manager.visonServiceState != ServiceState.IDLE:
             return CrateWorkpieceResult(success=False, message="Vision service not in RUNNING state", data=None)
         self.create_workpiece_step_1()
         # Store original contours for later use

@@ -73,30 +73,29 @@ class CameraSettingsTabLayout(BaseSettingsTabLayout, QVBoxLayout):
     """CAMERA PREVIEW METHODS"""
 
     def onVisionSystemStateUpdate(self,message):
-
+        state = message.get("state")
         # Check if we need to initialize the current state
         if not hasattr(self, 'current_camera_state'):
             self.current_camera_state = None
 
         # Only update if state has changed
-        if self.current_camera_state == message.value:
+        if self.current_camera_state == state:
             return  # No change, skip update
 
-        self.current_camera_state = message.value
-
+        self.current_camera_state = state
 
         if hasattr(self, 'camera_status_label') and self.camera_status_label is not None:
-            self.camera_status_label.setText(f"{self.translator.get(TranslationKeys.CameraSettings.CAMERA_STATUS)}: {message.value}")
+            self.camera_status_label.setText(f"{self.translator.get(TranslationKeys.CameraSettings.CAMERA_STATUS)}: {state}")
 
             # Set label color based on state
-            if message.value == "running":
+            if state == "idle":
                 self.camera_status_label.setStyleSheet("color: green; font-weight: bold;")
-            elif message.value == "initializing":
+            elif state == "initializing":
                 self.camera_status_label.setStyleSheet("color: #FFA500; font-weight: bold;")  # Orange/yellow
             else:
                 self.camera_status_label.setStyleSheet("color: red; font-weight: bold;")  # Default for other states
         else:
-            print(f"Camera status update received but label not ready: {message.value}")
+            print(f"Camera status update received but label not ready: {state}")
 
     def update_camera_feed(self, frame):
         try:

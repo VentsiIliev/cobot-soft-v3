@@ -1,5 +1,5 @@
-from applications.glue_dispensing_application.services.robot_service.glue_robot_service import GlueRobotService
 from core.controllers.robot.base_robot_controller import BaseRobotController
+from frontend.core.services.domain import RobotService
 
 
 class GlueRobotController(BaseRobotController):
@@ -10,7 +10,7 @@ class GlueRobotController(BaseRobotController):
     delegating the actual execution to GlueRobotService.
     """
 
-    def __init__(self, robot_service: GlueRobotService):
+    def __init__(self, robot_service: RobotService):
         self.robot_service = robot_service
         self._dynamic_handler_resolver = self._resolve_dynamic_handler
         super().__init__(robot_service=self.robot_service)

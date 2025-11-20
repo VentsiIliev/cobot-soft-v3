@@ -5,7 +5,7 @@ from core.controllers.BaseController import BaseController
 
 from core.model.robot.enums.axis import Direction, RobotAxis
 import communication_layer.api.v1.endpoints.robot_endpoints as robot_endpoints
-from core.services.robot_service.impl.base_robot_service import BaseRobotService
+from core.services.robot_service.impl.base_robot_service import RobotService
 
 
 class BaseRobotController(BaseController):
@@ -16,7 +16,7 @@ class BaseRobotController(BaseController):
     delegating the actual execution to RobotService.
     """
 
-    def __init__(self, robot_service: BaseRobotService):
+    def __init__(self, robot_service: RobotService):
         self.robot_service = robot_service
         self._dynamic_handler_resolver = self._resolve_dynamic_handler
         super().__init__()

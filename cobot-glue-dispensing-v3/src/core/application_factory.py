@@ -17,10 +17,12 @@ from core.services.vision.VisionService import _VisionService
 from backend.system.settings.SettingsService import SettingsService
 from core.services.workpiece.BaseWorkpieceService import BaseWorkpieceService
 from applications.glue_dispensing_application.GlueDispensingApplication import GlueSprayingApplication
-from applications.example_painting_application.application import PaintingApplication
 from core.services.robot_service.interfaces.IRobotService import IRobotService
+from .services.robot_service.impl.base_robot_service import RobotService
+from .system_state_management import ServiceRegistry
 
 logger = logging.getLogger(__name__)
+
 
 class ApplicationRegistryError(Exception):
     """Raised when there are issues with application registration"""
@@ -42,13 +44,14 @@ class ApplicationFactory:
     - Application lifecycle management
     - Easy switching between different applications
     """
-    
-    def __init__(self, 
+
+    def __init__(self,
                  vision_service: _VisionService,
                  settings_service: SettingsService,
                  workpiece_service: BaseWorkpieceService,
-                 robot_service: IRobotService,
-                 settings_registry=ApplicationSettingsRegistry):
+                 robot_service: RobotService,
+                 settings_registry:ApplicationSettingsRegistry,
+                 service_registry:ServiceRegistry):
         """
         Initialize the application factory with core services.
         
@@ -58,30 +61,32 @@ class ApplicationFactory:
             workpiece_service: Workpiece management service
             robot_service: Robot control service
         """
+
         self.vision_service = vision_service
         self.settings_service = settings_service
         self.workpiece_service = workpiece_service
         self.robot_service = robot_service
         self.settings_registry = settings_registry
-        
+        self.service_registry = service_registry
+
         # Registry of application types to their implementation classes
         self._application_registry: Dict[ApplicationType, Type[BaseRobotApplication]] = {}
-        
+
         # Currently active application instance
         self._current_application: Optional[RobotApplicationInterface] = None
         self._current_application_type: Optional[ApplicationType] = None
-        
+
         # Application instances cache (for quick switching)
         self._application_cache: Dict[ApplicationType, RobotApplicationInterface] = {}
 
         # Whether to cache application instances
         self._use_cache = True
-        
+
         logger.info("ApplicationFactory initialized")
-    
-    def register_application(self, 
-                           app_type: ApplicationType, 
-                           app_class: Type[BaseRobotApplication]) -> None:
+
+    def register_application(self,
+                             app_type: ApplicationType,
+                             app_class: Type[BaseRobotApplication]) -> None:
         """
         Register an application type with its implementation class.
         
@@ -96,13 +101,13 @@ class ApplicationFactory:
             raise ApplicationRegistryError(
                 f"Application class {app_class.__name__} must inherit from BaseRobotApplication"
             )
-        
+
         if app_type in self._application_registry:
             logger.warning(f"Overriding existing registration for {app_type.value}")
-        
+
         self._application_registry[app_type] = app_class
         logger.info(f"Registered application: {app_type.value} -> {app_class.__name__}")
-    
+
     def unregister_application(self, app_type: ApplicationType) -> None:
         """
         Unregister an application type.
@@ -112,22 +117,22 @@ class ApplicationFactory:
         """
         if app_type in self._application_registry:
             del self._application_registry[app_type]
-            
+
             # Remove from cache if present
             if app_type in self._application_cache:
                 self._shutdown_application(self._application_cache[app_type])
                 del self._application_cache[app_type]
-            
+
             # Clear current application if it's the one being unregistered
             if self._current_application_type == app_type:
                 self._current_application = None
                 self._current_application_type = None
-            
+
             logger.info(f"Unregistered application: {app_type.value}")
-    
-    def create_application(self, 
-                         app_type: ApplicationType,
-                         use_cache: bool = None) -> RobotApplicationInterface:
+
+    def create_application(self,
+                           app_type: ApplicationType,
+                           use_cache: bool = None) -> RobotApplicationInterface:
         """
         Create an instance of the specified application type.
         
@@ -142,23 +147,25 @@ class ApplicationFactory:
             ApplicationCreationError: If creation fails
         """
         use_cache = use_cache if use_cache is not None else self._use_cache
-        
+
         # Check if we have a cached instance
         if use_cache and app_type in self._application_cache:
             logger.info(f"Returning cached instance of {app_type.value}")
             return self._application_cache[app_type]
-        
+
         # Check if application type is registered
         if app_type not in self._application_registry:
             raise ApplicationCreationError(
                 f"Application type {app_type.value} is not registered. "
                 f"Available types: {list(self._application_registry.keys())}"
             )
-        
+
         try:
             # Get the application class
             app_class = self._application_registry[app_type]
-            
+            app_metadata = app_class.get_metadata()
+            dependencies = app_metadata.dependencies
+            print(f"Dependencies for {app_type.value}: {dependencies}")
             # Create the application instance
             logger.info(f"Creating new instance of {app_type.value}")
             application = app_class(
@@ -166,20 +173,21 @@ class ApplicationFactory:
                 settings_manager=self.settings_service,
                 robot_service=self.robot_service,
                 settings_registry=self.settings_registry,
-                workpiece_service=self.workpiece_service  # optional for apps that use it
+                workpiece_service=self.workpiece_service,  # optional for apps that use it
+                service_registry=self.service_registry # optional for apps that use it
             )
-            
+
             # Cache the instance if caching is enabled
             if use_cache:
                 self._application_cache[app_type] = application
-            
+
             logger.info(f"Successfully created application: {app_type.value}")
             return application
-            
+
         except Exception as e:
             logger.error(f"Failed to create application {app_type.value}: {e}")
             raise ApplicationCreationError(f"Failed to create {app_type.value}: {e}") from e
-    
+
     def switch_application(self, app_type: ApplicationType) -> RobotApplicationInterface:
         """
         Switch to a different application type.
@@ -200,11 +208,11 @@ class ApplicationFactory:
         """
         try:
             # If we're already using this application type, return current instance
-            if (self._current_application_type == app_type and 
-                self._current_application is not None):
+            if (self._current_application_type == app_type and
+                    self._current_application is not None):
                 logger.info(f"Already using {app_type.value}, returning current instance")
                 return self._current_application
-            
+
             # Stop current application if it exists
             if self._current_application is not None:
                 logger.info(f"Stopping current application: {self._current_application_type.value}")
@@ -212,22 +220,22 @@ class ApplicationFactory:
                     self._current_application.stop()
                 except Exception as e:
                     logger.warning(f"Error stopping current application: {e}")
-            
+
             # Create/get the new application
             logger.info(f"Switching to application: {app_type.value}")
             new_application = self.create_application(app_type)
-            
+
             # Set as current application
             self._current_application = new_application
             self._current_application_type = app_type
-            
+
             logger.info(f"Successfully switched to {app_type.value}")
             return new_application
-            
+
         except Exception as e:
             logger.error(f"Failed to switch to application {app_type.value}: {e}")
             raise ApplicationCreationError(f"Failed to switch to {app_type.value}: {e}") from e
-    
+
     def get_current_application(self) -> Optional[RobotApplicationInterface]:
         """
         Get the currently active application.
@@ -236,7 +244,7 @@ class ApplicationFactory:
             Current application instance or None if no application is active
         """
         return self._current_application
-    
+
     def get_current_application_type(self) -> Optional[ApplicationType]:
         """
         Get the type of the currently active application.
@@ -245,7 +253,7 @@ class ApplicationFactory:
             Current application type or None if no application is active
         """
         return self._current_application_type
-    
+
     def get_registered_applications(self) -> List[ApplicationType]:
         """
         Get list of all registered application types.
@@ -255,7 +263,6 @@ class ApplicationFactory:
         """
         return list(self._application_registry.keys())
 
-    
     def is_application_registered(self, app_type: ApplicationType) -> bool:
         """
         Check if an application type is registered.
@@ -267,7 +274,7 @@ class ApplicationFactory:
             True if registered, False otherwise
         """
         return app_type in self._application_registry
-    
+
     def set_cache_enabled(self, enabled: bool) -> None:
         """
         Enable or disable application instance caching.
@@ -276,13 +283,13 @@ class ApplicationFactory:
             enabled: Whether to enable caching
         """
         self._use_cache = enabled
-        
+
         if not enabled:
             # Clear existing cache
             self.clear_cache()
-        
+
         logger.info(f"Application caching {'enabled' if enabled else 'disabled'}")
-    
+
     def clear_cache(self) -> None:
         """
         Clear all cached application instances.
@@ -292,16 +299,16 @@ class ApplicationFactory:
                 self._shutdown_application(application)
             except Exception as e:
                 logger.warning(f"Error shutting down cached application {app_type.value}: {e}")
-        
+
         self._application_cache.clear()
         logger.info("Application cache cleared")
-    
+
     def shutdown(self) -> None:
         """
         Shutdown the factory and all managed applications.
         """
         logger.info("Shutting down ApplicationFactory")
-        
+
         # Stop current application
         if self._current_application is not None:
             try:
@@ -309,16 +316,16 @@ class ApplicationFactory:
                 self._shutdown_application(self._current_application)
             except Exception as e:
                 logger.warning(f"Error stopping current application: {e}")
-        
+
         # Clear cache and shutdown all cached applications
         self.clear_cache()
-        
+
         # Clear current application reference
         self._current_application = None
         self._current_application_type = None
-        
+
         logger.info("ApplicationFactory shutdown complete")
-    
+
     def _shutdown_application(self, application: RobotApplicationInterface) -> None:
         """
         Safely shutdown an application instance.
@@ -343,7 +350,7 @@ def auto_register_applications(factory: ApplicationFactory) -> None:
         factory: ApplicationFactory instance to register applications with
     """
     logger.info("Auto-registering available applications")
-    
+
     try:
         # Register Glue Dispensing Application
         factory.register_application(ApplicationType.GLUE_DISPENSING, GlueSprayingApplication)
@@ -353,34 +360,27 @@ def auto_register_applications(factory: ApplicationFactory) -> None:
     except Exception as e:
         logger.warning(f"Error registering GlueDispensingApplication: {e}")
 
-    try:
-        # Register Painting Application
-        factory.register_application(ApplicationType.PAINT_APPLICATION, PaintingApplication)
-        logger.info("Registered PaintingApplication")
-    except ImportError as e:
-        logger.warning(f"Could not register PaintingApplication: {e}")
-    except Exception as e:
-        logger.warning(f"Error registering PaintingApplication: {e}")
-
-    # TODO: Add other applications as they become available
     # try:
-    #     from backend.robot_application.paint_application.PaintApplication import PaintApplication
-    #     factory.register_application(ApplicationType.PAINT_APPLICATION, PaintApplication)
-    #     logger.info("Registered PaintApplication")
+    #     # Register Painting Application
+    #     factory.register_application(ApplicationType.PAINT_APPLICATION, PaintingApplication)
+    #     logger.info("Registered PaintingApplication")
     # except ImportError as e:
-    #     logger.warning(f"Could not register PaintApplication: {e}")
-    
+    #     logger.warning(f"Could not register PaintingApplication: {e}")
+    # except Exception as e:
+    #     logger.warning(f"Error registering PaintingApplication: {e}")
+
     logger.info(f"Auto-registration complete. Registered applications: {factory.get_registered_applications()}")
 
 
 # ========== Factory Creation Helper ==========
 
 def create_application_factory(vision_service: _VisionService,
-                             settings_service: SettingsService,
-                             workpiece_service: BaseWorkpieceService,
-                             robot_service: IRobotService,
-                                settings_registry=ApplicationSettingsRegistry,
-                             auto_register: bool = True) -> ApplicationFactory:
+                               settings_service: SettingsService,
+                               workpiece_service: BaseWorkpieceService,
+                               robot_service: IRobotService,
+                               settings_registry:ApplicationSettingsRegistry,
+                               service_registry:ServiceRegistry,
+                               auto_register: bool = True) -> ApplicationFactory:
     """
     Create and configure an ApplicationFactory with automatic application discovery.
     
@@ -389,6 +389,8 @@ def create_application_factory(vision_service: _VisionService,
         settings_service: Settings management service
         workpiece_service: Workpiece management service
         robot_service: Robot control service
+        service_registry: Service registry for system services
+        settings_registry: Registry for application settings
         auto_register: Whether to automatically register discovered applications
         
     Returns:
@@ -399,12 +401,13 @@ def create_application_factory(vision_service: _VisionService,
         settings_service=settings_service,
         workpiece_service=workpiece_service,
         robot_service=robot_service,
-        settings_registry=settings_registry
+        settings_registry=settings_registry,
+        service_registry = service_registry
     )
-    
+
     if auto_register:
         auto_register_applications(factory)
-    
+
     return factory
 
 #

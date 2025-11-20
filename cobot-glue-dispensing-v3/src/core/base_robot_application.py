@@ -8,11 +8,14 @@ should inherit from this base class and implement the required abstract methods.
 
 import threading
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Any, List
 
-from communication_layer.api.v1.topics import SystemTopics
+from communication_layer.api.v1.topics import SystemTopics, RobotTopics
+from core.services.robot_service.impl.base_robot_service import  RobotService
 from core.services.robot_service.interfaces.IRobotService import IRobotService
+from core.system_state_management import SystemState
 from modules.shared.MessageBroker import MessageBroker
 from core.services.vision.VisionService import _VisionService
 from backend.system.settings.SettingsService import SettingsService
@@ -20,6 +23,11 @@ from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
 from core.operations_handlers.robot_calibration_handler import calibrate_robot
 from core.operations_handlers.camera_calibration_handler import calibrate_camera
 from core.application.interfaces.application_settings_interface import ApplicationSettingsRegistry
+from core.application_state_management import ApplicationState, ApplicationStateManager, ApplicationMessagePublisher
+from modules.shared.tools.Laser import Laser
+from modules.shared.tools.ToolChanger import ToolChanger
+from modules.shared.tools.ToolManager import ToolManager
+from modules.shared.tools.VacuumPump import VacuumPump
 
 
 class ApplicationType(Enum):
@@ -29,113 +37,17 @@ class ApplicationType(Enum):
 
 
 
-class ApplicationState(Enum):
-    """Base application states that all robot applications should support"""
-    INITIALIZING = "initializing"
-    IDLE = "idle"
-    PAUSED = "paused"
-    STOPPED = "stopped"
-    STARTED = "started"
-    ERROR = "error"
-    CALIBRATING = "calibrating"
 
+@dataclass
+class ApplicationMetadata:
+    """Metadata for robot applications"""
+    name: str
+    version: str
+    dependencies: List[str] = None
 
-class BaseMessagePublisher:
-    """Base message publisher for robot applications"""
-    
-    def __init__(self, broker: MessageBroker):
-        self.broker = broker
-        self.state_topic = SystemTopics.SYSTEM_STATE
-
-    def publish_state(self, state: ApplicationState):
-        """Publish application state"""
-        self.broker.publish(self.state_topic, {
-            "state": state.value,
-            "timestamp": self._get_timestamp()
-        })
-
-    def _get_timestamp(self) -> str:
-        """Get current timestamp"""
-        import datetime
-        return datetime.datetime.now().isoformat()
-
-
-class BaseApplicationStateManager:
-    """Base state manager for robot applications"""
-    
-    def __init__(self, initial_state: ApplicationState, message_publisher: BaseMessagePublisher):
-        self.state = initial_state
-        self.message_publisher = message_publisher
-        self.vision_service_state = None
-        self.robot_service_state = None
-        self.system_state_publisher = None
-        self._last_state = None
-    
-    def update_state(self, new_state: ApplicationState):
-        """Update application state"""
-        if self.state != new_state:
-            self._last_state = self.state
-            self.state = new_state
-            self.publish_state()
-    
-    def publish_state(self):
-        """Publish current state"""
-        # print(f"BaseApplicationStateManager Publishing application state: {self.state}")
-        self.message_publisher.publish_state(self.state)
-    
-    def start_state_publisher_thread(self):
-        """Start the state publisher thread"""
-        if self.system_state_publisher is None:
-            self.system_state_publisher = SystemStatePublisherThread(self.publish_state)
-            self.system_state_publisher.start()
-    
-    def stop_state_publisher_thread(self):
-        """Stop the state publisher thread"""
-        if self.system_state_publisher:
-            self.system_state_publisher.stop()
-            self.system_state_publisher = None
-    
-    def on_robot_service_state_update(self, state):
-        """Handle robot service state updates"""
-        self.robot_service_state = state
-    
-    def on_vision_system_state_update(self, state):
-        """Handle vision system state updates"""
-        self.vision_service_state = state
-
-
-class BaseSubscriptionManager:
-    """Base subscription manager for robot applications"""
-    
-    def __init__(self, application: 'BaseRobotApplication', broker: MessageBroker):
-        self.application = application
-        self.broker = broker
-        self.subscriptions = {}
-    
-    def subscribe_all(self):
-        """Subscribe to all required topics"""
-        self.subscribe_vision_topics()
-        self.subscribe_robot_service_topics()
-    
-    def subscribe_robot_service_topics(self):
-        """Subscribe to robot service topics"""
-        topic = self.application.robotService.get_state_topic()
-        callback = self.application.state_manager.on_robot_service_state_update
-        self.broker.subscribe(topic, callback)
-        self.subscriptions[topic] = callback
-    
-    def subscribe_vision_topics(self):
-        """Subscribe to vision service topics"""
-        topic = self.application.visionService.stateTopic
-        callback = self.application.state_manager.on_vision_system_state_update
-        self.broker.subscribe(topic, callback)
-        self.subscriptions[topic] = callback
-    
-    def unsubscribe_all(self):
-        """Unsubscribe from all topics"""
-        for topic, callback in self.subscriptions.items():
-            self.broker.unsubscribe(topic, callback)
-        self.subscriptions.clear()
+    def __post_init__(self):
+        if self.dependencies is None:
+            self.dependencies = []
 
 
 class BaseRobotApplication(ABC):
@@ -147,10 +59,10 @@ class BaseRobotApplication(ABC):
     dispensing, paint application, etc. should inherit from this class.
     """
     
-    def __init__(self, 
+    def __init__(self,
                  vision_service: _VisionService,
                  settings_manager: SettingsService,
-                 robot_service: IRobotService,
+                 robot_service: RobotService,
                  settings_registry:ApplicationSettingsRegistry,
                  **kwargs
                  ):
@@ -162,47 +74,70 @@ class BaseRobotApplication(ABC):
             settings_manager: Settings management service
             robot_service: Robot control service
         """
-        
+
         # Core services
         self.visionService = vision_service
         self.settingsManager = settings_manager
         self.robotService = robot_service
         self.settings_registry = settings_registry
+        self.system_state_topic = SystemTopics.SYSTEM_STATE
+        self.system_state = SystemState.UNKNOWN
 
-        # Optional services
-        self.workpieceService = kwargs.get("workpiece_service", None)
         # Message broker and communication
         self.broker = MessageBroker()
-        self.message_publisher = BaseMessagePublisher(broker=self.broker)
-        
-        # State management
-        initial_state = self.get_initial_state()
-        self.state_manager = BaseApplicationStateManager(
-            initial_state=initial_state,
-            message_publisher=self.message_publisher
-        )
-        
-        # Subscription management
-        self.subscription_manager = BaseSubscriptionManager(
-            application=self,
-            broker=self.broker
-        )
-        
+        self.message_publisher = ApplicationMessagePublisher(self.broker)
+        self.state_manager = ApplicationStateManager(self.message_publisher)
+        self.state_manager.start_state_publisher_thread()
+        # subscribe to system state updates
+
+
+        self.toolChanger = ToolChanger()
+        self.tool_manager = ToolManager(self.toolChanger, self)
+        self.pump = VacuumPump()
+        self.laser = Laser()
+        self.robotService.tool_manager = self.tool_manager
+
+
         # Initialize application
         self._initialize_application()
+
+    def get_subscriptions(self):
+        subscriptions = []
+        # SUBSCRIBE TO PROCESS STATE UPDATES
+        process_state_subscription = [SystemTopics.PROCESS_STATE,self.state_manager.on_process_state_update]
+        # SUBSCRIBE TO MODE CHANGE UPDATES
+        mode_change_subscription = [SystemTopics.SYSTEM_MODE_CHANGE,self.on_mode_change]
+        # SUBSCRIBE TO SYSTEM STATE UPDATES
+        system_state_subscription = [self.system_state_topic,self.on_system_state_update]
+        subscriptions.append(system_state_subscription)
+        subscriptions.append(process_state_subscription)
+        subscriptions.append(mode_change_subscription)
+        return subscriptions
+
+    def on_system_state_update(self, state):
+        self.system_state = state
+
     
+    @staticmethod
+    @abstractmethod
+    def get_metadata() -> ApplicationMetadata:
+        """Return application metadata"""
+        return ApplicationMetadata(name="BaseRobotApplication",
+                                   version="1.0.0",
+                                   dependencies=["_VisionService",
+                                                 "SettingsService",
+                                                 "BaseRobotService",
+                                                 "ApplicationSettingsRegistry"])
+
+
+ 
+
+
     def _initialize_application(self):
         """Initialize the application infrastructure"""
         # Start camera feed in separate thread
         self.cameraThread = threading.Thread(target=self.visionService.run, daemon=True)
         self.cameraThread.start()
-        
-        # Start state publisher and subscriptions
-        self.state_manager.start_state_publisher_thread()
-        self.subscription_manager.subscribe_all()
-        
-        # Keep initial state - let service callbacks determine when ready
-        print(f"BaseRobotApplication initialized with state: {self.state_manager.state}")
     
     # Abstract methods that must be implemented by specific applications
 
@@ -251,7 +186,17 @@ class BaseRobotApplication(ABC):
         """
         pass
 
-    
+
+    @abstractmethod
+    def on_mode_change(self,mode):
+        """
+        Handle mode change requests.
+
+        Args:
+            mode: New mode to switch to
+        """
+        pass
+
     def calibrate_robot(self) -> Dict[str, Any]:
         """
         Calibrate the robot system.
@@ -268,10 +213,10 @@ class BaseRobotApplication(ABC):
     
     def shutdown(self):
         """Shutdown the application and cleanup resources"""
-        self.state_manager.update_state(ApplicationState.STOPPED)
-        self.state_manager.stop_state_publisher_thread()
-        self.subscription_manager.unsubscribe_all()
-    
+        # self.state_manager.update_state(ApplicationState.STOPPED)
+        # self.state_manager.stop_state_publisher_thread()
+        # self.subscription_manager.unsubscribe_all()
+        pass
     # Optional methods for application-specific features
     
     def get_supported_operations(self) -> List[str]:

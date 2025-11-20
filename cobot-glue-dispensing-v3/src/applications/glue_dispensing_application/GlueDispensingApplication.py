@@ -1,25 +1,24 @@
 from typing import Dict, Any
 
-from applications.glue_dispensing_application.services.robot_service.glue_robot_service import GlueRobotService
+
+from applications.glue_dispensing_application.services.glueSprayService.GlueSprayService import GlueSprayService
 from applications.glue_dispensing_application.services.workpiece.glue_workpiece_service import GlueWorkpieceService
+from communication_layer.api.v1.topics import GlueTopics, SystemTopics
 from core.application.interfaces.application_settings_interface import ApplicationSettingsRegistry
 from core.application.interfaces.robot_application_interface import RobotApplicationInterface, OperationMode
 
 import logging
 
 from backend.system.settings.SettingsService import SettingsService
+from core.application_state_management import SubscriptionManger
 from core.operations_handlers.camera_calibration_handler import \
     calibrate_camera
 from core.operations_handlers.robot_calibration_handler import calibrate_robot
+from core.services.robot_service.impl.base_robot_service import RobotService
 from core.services.vision.VisionService import _VisionService
 # Import base classes
-from core.base_robot_application import BaseRobotApplication, ApplicationState
-from applications.glue_dispensing_application.GlueDispensingApplicationStateManager import \
-    GlueDispensingApplicationStateManager
-from applications.glue_dispensing_application.GlueDispensingMessagePublisher import \
-    GlueDispensingMessagePublisher
-from applications.glue_dispensing_application.GlueDispensingSubscriptionManager import \
-    GlueDispensingSubscriptionManager
+from core.base_robot_application import BaseRobotApplication, ApplicationState, ApplicationMetadata
+
 from applications.glue_dispensing_application.glue_process.glue_dispensing_operation import \
     GlueDispensingOperation
 from applications.glue_dispensing_application.glue_process.state_machine.GlueProcessState import \
@@ -38,10 +37,9 @@ from applications.glue_dispensing_application.handlers.workpieces_to_spray_paths
     WorkpieceToSprayPathsGenerator
 from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
 from applications.glue_dispensing_application.settings.GlueSettingsHandler import GlueSettingsHandler
+from core.system_state_management import ServiceRegistry
+from modules.shared.MessageBroker import MessageBroker
 from modules.shared.tools.GlueCell import GlueCellsManagerSingleton, GlueDataFetcher
-
-
-from core.services.workpiece.BaseWorkpieceService import BaseWorkpieceService
 
 """
 ENDPOINTS
@@ -63,35 +61,34 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
 
     glueCellsManager = GlueCellsManagerSingleton.get_instance()
 
-
     def __init__(self,
                  vision_service: _VisionService,
                  settings_manager: SettingsService,
                  workpiece_service: GlueWorkpieceService,
-                 robot_service: GlueRobotService,
+                 robot_service: RobotService,
                  settings_registry: ApplicationSettingsRegistry,
+                 service_registry: ServiceRegistry,
                  **kwargs
                  ):
 
         # Initialize logger first (before base class to avoid issues)
         self.logger = logging.getLogger(self.__class__.__name__)
-        # register glue meters
-        glue_fetcher = GlueDataFetcher()
-        glue_fetcher.start()
+
+        self.vision_service = vision_service
+        self.settings_manager = settings_manager
+        self.workpiece_service=workpiece_service
         self.robot_service = robot_service
+        self.settings_registry = settings_registry
+        self.service_registry = service_registry
         # Initialize the base class
-        super().__init__(vision_service, settings_manager, self.robot_service,settings_registry)
+        super().__init__(self.vision_service, self.settings_manager, self.robot_service,self.settings_registry)
 
         # Register application-specific settings after initialization
         self._register_settings()
-
         # Override the base managers with glue dispensing specific extensions
-        self.workpiece_service=workpiece_service
-        self.message_publisher = GlueDispensingMessagePublisher(self.message_publisher)
-        self.state_manager = GlueDispensingApplicationStateManager(self.state_manager)
-        self.subscription_manager = GlueDispensingSubscriptionManager(self, self.subscription_manager)
-        
-        # Update subscriptions with the extended manager
+
+
+        self.subscription_manager = SubscriptionManger(self,self.broker,self.get_subscriptions())
         self.subscription_manager.subscribe_all()
 
         # Application-specific initialization
@@ -100,10 +97,12 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         self.create_workpiece_handler = CreateWorkpieceHandler(self)
         
         # Initialize glue process state machine for operation control
-
         self.glue_process_state_machine = GlueProcessStateMachine(GlueProcessState.INITIALIZING)
         self.workpiece_matcher = WorkpieceMatcher()
-
+        self.glue_service= GlueSprayService(generatorTurnOffTimeout=10, settings=self.get_glue_settings())
+        # TODO: register glue service in service registry when the glue service state management is implemented
+        # self.service_registry.register_service(self.glue_service.service_id,"glue-service/state",ServiceState.UNKNOWN)
+        # print(f"Registed Services in Glue App: {service_registry.get_registered_services()}")
         # Initialize glue dispensing operation with proper settings access
         self.glue_dispensing_operation = GlueDispensingOperation(self.robot_service, self)
 
@@ -111,6 +110,22 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         self.CONTOUR_MATCHING = True
         self.current_operation = None
 
+    @staticmethod
+    def get_metadata() -> ApplicationMetadata:
+        return ApplicationMetadata(
+            name="Glue Spraying Application",
+            version="1.0.0",
+            dependencies=["_VisionService",
+                          "SettingsService",
+                          "GlueRobotService",
+                          "ApplicationSettingsRegistry"],
+        )
+
+
+
+    def initialize_glue_data_fetcher(self):
+        glue_fetcher = GlueDataFetcher()
+        glue_fetcher.start()
 
     # ========== BaseRobotApplication Abstract Methods Implementation ==========
     
@@ -149,13 +164,27 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         self.current_operation = "Spraying"
         return spraying_handler.start_spraying(self, workpieces, debug)
 
-    def move_to_nesting_capture_position(self):
-        z_offset = self.settingsManager.get_camera_settings().get_capture_pos_offset()
-        return self.robot_service.move_to_nesting_capture_position(z_offset)
+    def move_to_nesting_capture_position(self, z_offset=0):
+        ret = self.robot_service.moveToStartPosition(z_offset=z_offset)
 
-    def move_to_spray_capture_position(self):
-        z_offset = self.settingsManager.get_camera_settings().get_capture_pos_offset()
-        return self.robot_service.move_to_spray_capture_position(z_offset)
+        if ret != 0:
+            return ret
+
+        target_pose = self.robot_service.robot_config.getHomePositionParsed()
+        target_pose[2] += z_offset  # apply z_offset
+        self.robot_service._waitForRobotToReachPosition(target_pose, 1, 0.1)
+        return ret
+
+    def move_to_spray_capture_position(self, z_offset=0):
+        ret = self.robot_service.move_to_calibration_position(z_offset=z_offset)
+
+        if ret != 0:
+            return ret
+
+        target_pose = self.robot_service.robot_config.getCalibrationPositionParsed()
+        target_pose[2] += z_offset  # apply z_offset
+        self.robot_service._waitForRobotToReachPosition(target_pose, 1, 0.1)
+        return ret
 
     # ========== Tool and Hardware Control ==========
 
@@ -230,6 +259,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         try:
             self.state_manager.update_state(ApplicationState.PAUSED)
             self.glue_dispensing_operation.pause_operation()
+
             return {
                 "success": True,
                 "message": "Glue dispensing operation paused"
@@ -430,7 +460,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
     def handleExecuteFromGallery(self, workpiece):
         return execute_from_gallery(self,workpiece,Z_OFFSET_FOR_CALIBRATION_PATTERN)
 
-    def changeMode(self,message):
+    def on_mode_change(self,message):
         print(f"Changing mode to: {message}")
         if message == "Spray Only":
             self.NESTING = False

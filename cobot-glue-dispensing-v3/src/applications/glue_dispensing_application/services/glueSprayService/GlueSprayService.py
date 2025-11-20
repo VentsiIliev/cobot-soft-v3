@@ -1,10 +1,11 @@
-from src.applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
-from modules.glueSprayService.fanControl.fanControl import FanControl, FanState
-from modules.glueSprayService.generatorControl.GeneratorControl import GeneratorControl, GeneratorState
-from modules.glueSprayService.generatorControl.timer import Timer
-from modules.glueSprayService.motorControl.MotorControl import MotorControl
+from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
+from applications.glue_dispensing_application.services.glueSprayService.fanControl.fanControl import FanControl, FanState
+from applications.glue_dispensing_application.services.glueSprayService.generatorControl.GeneratorControl import GeneratorControl, GeneratorState
+from applications.glue_dispensing_application.services.glueSprayService.generatorControl.timer import Timer
+from applications.glue_dispensing_application.services.glueSprayService.motorControl.MotorControl import MotorControl
 import time
 
+from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
 from src.backend.system.utils.custom_logging import setup_logger,log_if_enabled, LoggingLevel
 
 ENABLE_LOGGING = True
@@ -12,6 +13,7 @@ glue_spray_service_logger = setup_logger("GlueSprayService")
 
 class GlueSprayService:
     def __init__(self, settings:GlueSettings,generatorTurnOffTimeout=10):
+        self.service_id = "GlueSprayService"
         self.settings = settings
         self.motorController = MotorControl(motorSlaveId=1)
         self.fanController = FanControl(fanSlaveId=1, fanSpeed_address=8)
@@ -35,6 +37,7 @@ class GlueSprayService:
             3: self.glueC_addresses,
             4: self.glueD_addresses
         }
+
 
     """ MOTOR CONTROL """
 
@@ -220,217 +223,3 @@ class GlueSprayService:
         return result
 
 
-def fan_test():
-    glueService = GlueSprayService()
-    glueService.fanOn(100)
-    # time.sleep(1)
-    # glueService.fanOff()
-
-
-def generator_test():
-    glueService = GlueSprayService()
-    
-    print("=== Testing New GeneratorState ===")
-    
-    # Test new GeneratorState methods
-    generator_state = glueService.getGeneratorState()
-    print("Initial Generator State:")
-    print(f"  {generator_state}")
-    print(f"  Healthy: {glueService.isGeneratorHealthy()}")
-    
-    # Test legacy compatibility
-    legacy_state = glueService.generatorState()
-    print(f"Legacy state: {legacy_state}")
-    
-    # Turn on generator
-    print("\nTurning generator ON...")
-    glueService.generatorOn()
-    
-    generator_state = glueService.getGeneratorState()
-    print("Generator State after ON:")
-    print(f"  {generator_state}")
-    
-    time.sleep(1)
-    
-    # Turn off generator
-    print("\nTurning generator OFF...")
-    glueService.generatorOff()
-    
-    generator_state = glueService.getGeneratorState()
-    print("Generator State after OFF:")
-    print(f"  {generator_state}")
-    
-    # Test error checking
-    errors = glueService.getGeneratorErrors()
-    print(f"Generator Errors: {errors}")
-
-
-def fan_test_new():
-    """Test new FanState functionality"""
-    glueService = GlueSprayService()
-    
-    print("=== Testing New FanState ===")
-    
-    # Test new FanState methods
-    fan_state = glueService.getFanState()
-    print("Initial Fan State:")
-    print(f"  {fan_state}")
-    print(f"  Healthy: {glueService.isFanHealthy()}")
-    
-    # Test legacy compatibility
-    legacy_success, legacy_state = glueService.fanState()
-    print(f"Legacy fan state: success={legacy_success}, state={legacy_state}")
-    
-    # Turn on fan
-    print("\nTurning fan ON with speed 50...")
-    result = glueService.fanOn(50)
-    print(f"Fan ON result: {result}")
-    
-    fan_state = glueService.getFanState()
-    print("Fan State after ON:")
-    print(f"  {fan_state}")
-    
-    time.sleep(1)
-    
-    # Turn off fan
-    print("\nTurning fan OFF...")
-    result = glueService.fanOff()
-    print(f"Fan OFF result: {result}")
-    
-    fan_state = glueService.getFanState()
-    print("Fan State after OFF:")
-    print(f"  {fan_state}")
-    
-    # Test error checking
-    errors = glueService.getFanErrors()
-    print(f"Fan Errors: {errors}")
-
-
-def comprehensive_test():
-    """Test all device states comprehensively"""
-    glueService = GlueSprayService()
-    
-    print("=== Comprehensive Device State Test ===")
-    
-    # Test all device states
-    print("\n--- Motor States ---")
-    try:
-        all_motors = glueService.motorController.getAllMotorStates()
-        if all_motors.success:
-            for addr, motor_state in all_motors.motors.items():
-                print(f"Motor {addr}: {motor_state}")
-        else:
-            print("Failed to get motor states")
-    except Exception as e:
-        print(f"Error testing motors: {e}")
-    
-    print("\n--- Generator State ---")
-    try:
-        generator_state = glueService.getGeneratorState()
-        print(f"Generator: {generator_state}")
-        print(f"Generator Healthy: {glueService.isGeneratorHealthy()}")
-    except Exception as e:
-        print(f"Error testing generator: {e}")
-    
-    print("\n--- Fan State ---")
-    try:
-        fan_state = glueService.getFanState()
-        print(f"Fan: {fan_state}")
-        print(f"Fan Healthy: {glueService.isFanHealthy()}")
-    except Exception as e:
-        print(f"Error testing fan: {e}")
-    
-    print("\n--- Device Health Summary ---")
-    try:
-        motor_health = []
-        all_motors = glueService.motorController.getAllMotorStates()
-        if all_motors.success:
-            for addr, motor_state in all_motors.motors.items():
-                motor_health.append(f"M{addr}: {'✓' if motor_state.is_healthy else '✗'}")
-        
-        gen_healthy = glueService.isGeneratorHealthy()
-        fan_healthy = glueService.isFanHealthy()
-        
-        print(f"Motors: {', '.join(motor_health)}")
-        print(f"Generator: {'✓' if gen_healthy else '✗'}")
-        print(f"Fan: {'✓' if fan_healthy else '✗'}")
-        
-    except Exception as e:
-        print(f"Error in health summary: {e}")
-
-
-if __name__ == "__main__":
-    print("=== GlueSprayService Testing Interface ===")
-    print("Available test functions:")
-    print("1. generator_test() - New GeneratorState test")
-    print("2. fan_test_new() - New FanState test")
-    print("3. comprehensive_test() - Test all devices")
-    print("4. Interactive mode")
-    
-    glueService = GlueSprayService()
-    
-    # Run comprehensive test first
-    comprehensive_test()
-    
-    # Interactive testing mode
-    print("\n=== Interactive Testing Mode ===")
-    print("Commands: motor, generator, fan, all, exit")
-    
-    while True:
-        try:
-            command = input("\nEnter command: ").strip().lower()
-            
-            if command == "motor" or command == "m":
-                print("\n--- Motor Testing ---")
-                try:
-                    all_motors = glueService.motorController.getAllMotorStates()
-                    if all_motors.success:
-                        for addr, motor_state in all_motors.motors.items():
-                            print(f"Motor {addr}: {motor_state}")
-                            if not motor_state.is_healthy:
-                                print(f"  Errors: {motor_state.get_filtered_errors()}")
-                    else:
-                        print("Failed to get motor states")
-                except Exception as e:
-                    print(f"Error: {e}")
-                    
-            elif command == "generator" or command == "g":
-                print("\n--- Generator Testing ---")
-                try:
-                    generator_state = glueService.getGeneratorState()
-                    print(f"Generator: {generator_state}")
-                    print(f"Healthy: {glueService.isGeneratorHealthy()}")
-                    errors = glueService.getGeneratorErrors()
-                    if errors['has_errors']:
-                        print(f"Errors: {errors}")
-                except Exception as e:
-                    print(f"Error: {e}")
-                    
-            elif command == "fan" or command == "f":
-                print("\n--- Fan Testing ---")
-                try:
-                    fan_state = glueService.getFanState()
-                    print(f"Fan: {fan_state}")
-                    print(f"Healthy: {glueService.isFanHealthy()}")
-                    errors = glueService.getFanErrors()
-                    if errors['has_errors']:
-                        print(f"Errors: {errors}")
-                except Exception as e:
-                    print(f"Error: {e}")
-                    
-            elif command == "all" or command == "a":
-                print("\n--- All Devices Status ---")
-                comprehensive_test()
-                
-            elif command == "exit" or command == "q":
-                break
-                
-            else:
-                print("Unknown command. Use: motor, generator, fan, all, exit")
-                
-        except KeyboardInterrupt:
-            break
-        except Exception as e:
-            print(f"Error: {e}")
-    
-    print("Exiting GlueSprayService test.")

@@ -35,6 +35,9 @@ class SystemTopics(TopicCategory):
     SYSTEM_STATE = "system/state"
     SYSTEM_MODE_CHANGE = "system/mode-change"
     CURRENT_PROCESS = "system/current-process"
+    # Glue process state
+    PROCESS_STATE = "glue-process/state"
+    APPLICATION_STATE = "application/state"
 
 
 class RobotTopics(TopicCategory):
@@ -80,9 +83,6 @@ class VisionTopics(TopicCategory):
 
 class GlueTopics(TopicCategory):
     """Glue dispensing specific topics"""
-
-    # Glue process state
-    PROCESS_STATE = "glue-process/state"
     # Glue meter values
     GLUE_METER_1_VALUE = "GlueMeter_1/VALUE"
     GLUE_METER_2_VALUE = "GlueMeter_2/VALUE" 

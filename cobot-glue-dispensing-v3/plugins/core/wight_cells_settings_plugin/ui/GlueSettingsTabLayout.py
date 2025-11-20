@@ -1,15 +1,14 @@
-import sys
 from enum import Enum
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScroller
-from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QApplication, QHBoxLayout,
+from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QHBoxLayout,
                              QSizePolicy, QComboBox,
                              QScrollArea, QGroupBox, QGridLayout)
 from frontend.widgets.MaterialButton import MaterialButton
 from frontend.core.utils.localization import TranslationKeys, get_app_translator
 from applications.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
-from modules.glueSprayService.GlueSprayService import GlueSprayService
+from applications.glue_dispensing_application.services.glueSprayService import GlueSprayService
 from frontend.widgets.SwitchButton import QToggle
 from frontend.widgets.ToastWidget import ToastWidget
 

@@ -10,6 +10,7 @@ from enum import Enum, auto
 from typing import Dict, Set
 
 
+
 class GlueProcessState(Enum):
     """
     States specific to the glue dispensing process.

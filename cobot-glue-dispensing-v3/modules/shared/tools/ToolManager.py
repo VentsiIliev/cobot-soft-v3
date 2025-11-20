@@ -16,6 +16,10 @@ class ToolManager:
         self.robot_service = robot_service
         self.current_gripper: Optional[int] = None
         self._lock = threading.Lock()
+        self.tools = {}
+
+    def add_tool(self,name,tool):
+        self.tools[name] = tool
 
     def pickup_gripper(self, gripper_id: int) -> Tuple[bool, Optional[str]]:
         """Pick up a gripper/tool from its slot."""

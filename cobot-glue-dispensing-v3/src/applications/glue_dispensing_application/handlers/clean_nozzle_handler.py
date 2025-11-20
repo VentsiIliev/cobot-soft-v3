@@ -1,7 +1,7 @@
-from applications.glue_dispensing_application.services.robot_service.glue_robot_service import GlueRobotService
+from core.services.robot_service.impl.base_robot_service import RobotService
 
 
-def clean_nozzle(robot_service:GlueRobotService):
+def clean_nozzle(robot_service:RobotService):
     pos1, pos2 = robot_service.robot_config.getNozzleCleanPointsParsed()
     config = robot_service.robot_config.getNozzleCleanConfig()
 

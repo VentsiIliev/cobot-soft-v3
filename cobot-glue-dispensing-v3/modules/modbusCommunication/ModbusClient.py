@@ -1,8 +1,10 @@
 import time
 import minimalmodbus
 import logging
+
+from applications.glue_dispensing_application.services.glueSprayService.motorControl.errorCodes import \
+    ModbusExceptionType
 from modules.modbusCommunication.modbus_lock import modbus_lock
-from modules.glueSprayService.motorControl.errorCodes import ModbusExceptionType
 
 class ModbusClient:
     """

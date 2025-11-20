@@ -5,7 +5,7 @@ from datetime import datetime
 
 from applications.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
 from applications.glue_dispensing_application.glue_process.ExecutionContext import ExecutionContext
-from modules.glueSprayService.GlueSprayService import GlueSprayService
+from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
 
 from applications.glue_dispensing_application.glue_process.state_machine.GlueProcessState import GlueProcessState
 
@@ -27,22 +27,19 @@ ENABLE_CONTEXT_DEBUG = True
 DEBUG_DIR = os.path.join(os.path.dirname(__file__), "debug")
 
 class GlueDispensingOperation:
-    def __init__(self, robot_service, glue_application=None):
+    def __init__(self, robot_service, glue_service, glue_application=None):
         self.robot_service = robot_service
         self.glue_application = glue_application
+        self.glue_service = glue_service
         
         # Get glue settings from the glue application
         if glue_application is not None:
             glue_settings = glue_application.get_glue_settings()
         else:
             # Fallback to default settings if no application provided
-            from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
             glue_settings = GlueSettings()
         
-        self.glue_service = GlueSprayService(
-                generatorTurnOffTimeout=10,
-                settings=glue_settings
-            )
+        self.glue_service.settings = glue_settings
 
         self.pump_controller = PumpController(USE_SEGMENT_SETTINGS, glue_dispensing_logger_context, glue_settings)
         # Execution context for pause/resume

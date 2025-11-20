@@ -27,8 +27,8 @@ class ControlButtonsWidget(TranslatableWidget):
         # Initialize translations after UI is created
         self.init_translations()
         self.broker = MessageBroker()
-        print(f"🎛️ ControlButtonsWidget: Subscribing to {SystemTopics.SYSTEM_STATE}")
-        self.broker.subscribe(SystemTopics.SYSTEM_STATE, self.on_system_status_update)
+        print(f"🎛️ ControlButtonsWidget: Subscribing to {SystemTopics.APPLICATION_STATE}")
+        self.broker.subscribe(SystemTopics.APPLICATION_STATE, self.on_system_status_update)
         print(f"🎛️ ControlButtonsWidget: Subscription completed")
 
     def init_ui(self) -> None:
@@ -112,7 +112,7 @@ class ControlButtonsWidget(TranslatableWidget):
             else:
                 # Fallback for old format or direct state object
                 new_state = state_data
-
+            print(f"ControlButtonsWidget: Received application state update: {new_state}")
             # Store the state and schedule GUI update on main thread
             # FIRST CHECK IF THE RECEIVED STATE IS DIFFERENT FROM THE CURRENT ONE
             if self.app_state == new_state:
@@ -206,7 +206,7 @@ class ControlButtonsWidget(TranslatableWidget):
 
     def clean_up(self) -> None:
         """Clean up resources when the widget is closed"""
-        self.broker.unsubscribe(SystemTopics.SYSTEM_STATE, self.on_system_status_update)
+        self.broker.unsubscribe(SystemTopics.APPLICATION_STATE, self.on_system_status_update)
 
 if __name__ == "__main__":
     import sys

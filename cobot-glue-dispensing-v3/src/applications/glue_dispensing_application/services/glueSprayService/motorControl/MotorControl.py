@@ -2,9 +2,9 @@ import time
 from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
-from modules.glueSprayService.motorControl.utils import split_into_16bit
+from applications.glue_dispensing_application.services.glueSprayService.motorControl.utils import split_into_16bit
 from modules.modbusCommunication.ModbusController import ModbusController
-from modules.glueSprayService.motorControl.errorCodes import MotorErrorCode
+from applications.glue_dispensing_application.services.glueSprayService.motorControl.errorCodes import MotorErrorCode
 
 from src.backend.system.utils.custom_logging import setup_logger,log_if_enabled, LoggingLevel
 

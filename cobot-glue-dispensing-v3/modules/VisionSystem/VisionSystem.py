@@ -6,7 +6,7 @@ from enum import Enum
 
 # Internal shared settings
 from backend.system.settings.CameraSettings import CameraSettings
-
+from core.system_state_management import ServiceState
 # Vision System core modules
 from modules.VisionSystem.brightness_manager import BrightnessManager
 from modules.VisionSystem.camera_initialization import CameraInitializer
@@ -37,26 +37,18 @@ ENABLE_LOGGING = True  # Enable or disable logging
 vision_system_logger = setup_logger("VisionSystem") if ENABLE_LOGGING else None
 
 
-
-class VisionSystemState(Enum):
-    INITIALIZING = "initializing"
-    IDLE = "idle"
-    CALIBRATING = "calibrating"
-    RUNNING = "running"
-    ERROR = "error"
-
-
 class VisionSystem:
     def __init__(self, configFilePath=None, camera_settings=None):
         self.logger_context = LoggerContext(ENABLE_LOGGING, vision_system_logger)
         self.data_manager = DataManager(self, ENABLE_LOGGING, vision_system_logger)
         self.settings_manager = SettingsManager()
-
+        self.service_id = "vision_system"
         self.message_publisher = MessagePublisher()
-        self.state_manager = StateManager(initial_state=VisionSystemState.INITIALIZING,
+        self.state_manager = StateManager(initial_state=ServiceState.INITIALIZING,
                                           message_publisher=self.message_publisher,
                                           log_enabled=ENABLE_LOGGING,
-                                          logger=vision_system_logger)
+                                          logger=vision_system_logger,
+                                          service_id=self.service_id)
 
         self.state_manager.start_state_publisher_thread()
 
@@ -187,7 +179,7 @@ class VisionSystem:
         if self.image is None:
             return None, None, None
 
-        self.state_manager.update_state(VisionSystemState.RUNNING)
+        self.state_manager.update_state(ServiceState.IDLE)
         self.rawImage = self.image.copy()
 
         # Handle brightness adjustment if enabled
