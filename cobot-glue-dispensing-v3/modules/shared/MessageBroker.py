@@ -75,7 +75,7 @@ class MessageBroker:
         # print(f"[MessageBroker] Publishing to topic '{topic}' message: {message}")
 
         if topic not in self.subscribers:
-            print(f"[MessageBroker] WARNING: No subscribers for topic '{topic}'")
+            # print(f"[MessageBroker] WARNING: No subscribers for topic '{topic}'")
             self.logger.debug(f"No subscribers for topic '{topic}'")
             return
         # Get all live callbacks and clean up dead ones

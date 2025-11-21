@@ -119,7 +119,7 @@ if __name__ == "__main__":
     )
 
     # GET CURRENT APPLICATION (defaulting to glue dispensing)
-    # current_application = application_factory.switch_application(ApplicationType.PAINT_APPLICATION)
+    # current_application = application_factory.switch_application(ApplicationType.TEST_APPLICATION)
     current_application = application_factory.switch_application(ApplicationType.GLUE_DISPENSING)
 
     # INIT REQUEST HANDLER

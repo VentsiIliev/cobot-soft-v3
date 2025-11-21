@@ -54,8 +54,8 @@ class CreateWorkpieceHandler:
 
     def create_workpiece_step_1(self)->CrateWorkpieceResult:
         # if robot service is not in idle state, return error
-        if self.application.state_manager.state != ApplicationState.IDLE:
-            return CrateWorkpieceResult(success=False, message="Application not in IDLE state", data=None)
+        if self.application.state_manager.current_state != ApplicationState.IDLE:
+            return CrateWorkpieceResult(success=False, message="Application not ready", data=None)
 
         ret = self.application.move_to_spray_capture_position()
         if ret != 0:
@@ -65,12 +65,12 @@ class CreateWorkpieceHandler:
 
     def create_workpiece_step_2(self) -> CrateWorkpieceResult:
         # if robot service is not in idle state, return error
-        if self.application.state_manager.state != ApplicationState.IDLE:
-            return CrateWorkpieceResult(success=False, message="Application not in IDLE state", data=None)
+        if self.application.state_manager.current_state != ApplicationState.IDLE:
+            return CrateWorkpieceResult(success=False, message="Application not ready", data=None)
 
         # if vision service is not running, return error
-        if self.application.state_manager.visonServiceState != ServiceState.IDLE:
-            return CrateWorkpieceResult(success=False, message="Vision service not in RUNNING state", data=None)
+        if self.application.state_manager.current_state != ApplicationState.IDLE:
+            return CrateWorkpieceResult(success=False, message="Application not ready", data=None)
         self.create_workpiece_step_1()
         # Store original contours for later use
         originalContours = self.application.visionService.contours

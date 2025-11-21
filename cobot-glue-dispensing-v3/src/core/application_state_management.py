@@ -1,6 +1,10 @@
+from enum import auto, Enum
 from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
 from core.application.interfaces.ISubscriptionModule import ISubscriptionModule
 from core.operation_state_management import OperationState
+from core.system_state_management import SystemState
+from communication_layer.api.v1.topics import VisionTopics, RobotTopics, SystemTopics
+
 
 
 class SubscriptionManger:
@@ -40,10 +44,6 @@ class SubscriptionManger:
             del self.subscriptions[topic]
 
 
-from enum import auto, Enum
-
-from communication_layer.api.v1.topics import VisionTopics, RobotTopics, SystemTopics
-
 
 class ApplicationState(Enum):
     """Base application states that all robot applications should support"""
@@ -78,51 +78,88 @@ class ApplicationMessagePublisher:
         self.broker.publish(self.trajectory_start_topic, "")
 
 class ApplicationStateManager:
-    """Extended state manager for glue dispensing specific state handling"""
 
     def __init__(self, message_publisher: ApplicationMessagePublisher):
+        self.state_publisher = None
         self.message_publisher = message_publisher
         self.current_state = ApplicationState.INITIALIZING
-        self._services_ready = False  # Flag to indicate when both services are ready
-        self.state_publisher = None
-        self.system_state = None
-        self.process_state = None
 
-    def update_state(self, state):
-        """Update the application state"""
-        print(f"ApplicationStateManager: Updating state to {state}")
-        self.current_state = state
-        self.publish_state()
+        self.system_state = SystemState.UNKNOWN
+        self.process_state = OperationState.INITIALIZING
+
 
     def publish_state(self):
-        """Publish the current state (no arguments needed - used by publisher thread)"""
-        # print(f"ApplicationStateManager: Publishing state {self.current_state}")
         self.message_publisher.publish_state(self.current_state)
 
-    def __map_operation_to_application_state(self, process_state):
-        """Map GlueProcessState to ApplicationState"""
-        if process_state == OperationState.PAUSED:
-            return ApplicationState.PAUSED
-        elif process_state == OperationState.COMPLETED:
-            return ApplicationState.IDLE
-        elif process_state == OperationState.ERROR:
-            return ApplicationState.ERROR
-        elif process_state == OperationState.STOPPED:
-            return ApplicationState.IDLE
-        elif process_state == OperationState.IDLE:
-            return ApplicationState.IDLE
+    # ----------------------------
+    # Update Events (System / Operation)
+    # ----------------------------
+    def on_system_state_update(self, message):
+        """message is like {'state': SystemState.XYZ}"""
+        if isinstance(message, dict) and "state" in message:
+            self.system_state = message["state"]
         else:
-            return ApplicationState.STARTED
+            self.system_state = message  # already raw enum
 
-    def on_operation_state_update(self, state):
-        """Handle glue process state updates"""
-        print(f"[APPLICATION STATE MANAGER] Operation state update received: {state}")
-        print(f"[APPLICATION STATE MANAGER] State type: {type(state)}")
-        print(f"[APPLICATION STATE MANAGER] Is OperationState: {isinstance(state, OperationState)}")
-        # check if state is GluePrecessState and map to ApplicationState
+        print(f"[ApplicationStateManager] Received system state → {self.system_state}")
+        self._update_application_state()
+
+    def on_operation_state_update(self, state: OperationState):
         if not isinstance(state, OperationState):
-            raise ValueError(f"Invalid state type: {type(state)}. Expected GlueProcessState.")
-        self.update_state(self.__map_operation_to_application_state(state))
+            raise ValueError("Expected OperationState")
+        self.process_state = state
+        self._update_application_state()
+
+    # ----------------------------
+    # Aggregation Logic
+    # ----------------------------
+    def _recompute_application_state(self) -> ApplicationState:
+        print("\n[ApplicationStateManager] --- Recomputing Application State ---")
+        print(f"[ApplicationStateManager] SystemState:     {self.system_state}")
+        print(f"[ApplicationStateManager] OperationState:  {self.process_state}")
+
+        # 1. Any error -> application is ERROR
+        if self.system_state == SystemState.ERROR:
+            print("[ApplicationStateManager] Rule: SYSTEM ERROR → ApplicationState.ERROR")
+            return ApplicationState.ERROR
+
+        if self.process_state == OperationState.ERROR:
+            print("[ApplicationStateManager] Rule: OPERATION ERROR → ApplicationState.ERROR")
+            return ApplicationState.ERROR
+
+        # 2. Services not ready yet
+        if self.system_state in [SystemState.INITIALIZING, SystemState.UNKNOWN]:
+            print("[ApplicationStateManager] Rule: System not ready → ApplicationState.INITIALIZING")
+            return ApplicationState.INITIALIZING
+
+        # 3. Active operation rules
+        if self.process_state == OperationState.PAUSED:
+            print("[ApplicationStateManager] Rule: OPERATION PAUSED → ApplicationState.PAUSED")
+            return ApplicationState.PAUSED
+
+        # Treat INITIALIZING as IDLE (operation not running yet)
+        if self.process_state == OperationState.INITIALIZING:
+            print("[ApplicationStateManager] Rule: OPERATION INITIALIZING → ApplicationState.IDLE")
+            return ApplicationState.IDLE
+
+        if self.process_state in [OperationState.COMPLETED, OperationState.STOPPED]:
+            print("[ApplicationStateManager] Rule: COMPLETED/STOPPED → ApplicationState.IDLE")
+            return ApplicationState.IDLE
+
+        if self.process_state == OperationState.IDLE:
+            print("[ApplicationStateManager] Rule: OPERATION IDLE → ApplicationState.IDLE")
+            return ApplicationState.IDLE
+
+        # Default: considered “running”
+        print("[ApplicationStateManager] Rule: Default → ApplicationState.STARTED")
+        return ApplicationState.STARTED
+
+    def _update_application_state(self):
+        new_state = self._recompute_application_state()
+        if new_state != self.current_state:
+            print(f"[ApplicationStateManager] Application state → {new_state}")
+            self.current_state = new_state
+            self.publish_state()
 
     def start_state_publisher_thread(self):
         if self.state_publisher is None:

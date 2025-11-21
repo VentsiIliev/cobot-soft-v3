@@ -1,17 +1,19 @@
 from typing import Dict, Any
 
+from typing_extensions import override
 
 from applications.glue_dispensing_application.services.glueSprayService.GlueSprayService import GlueSprayService
 from applications.glue_dispensing_application.services.workpiece.glue_workpiece_service import GlueWorkpieceService
 from communication_layer.api.v1.topics import GlueTopics, SystemTopics
 from core.application.interfaces.application_settings_interface import ApplicationSettingsRegistry
-from core.application.interfaces.robot_application_interface import RobotApplicationInterface, OperationMode
+from core.application.interfaces.robot_application_interface import RobotApplicationInterface
 
 import logging
 
 from backend.system.settings.SettingsService import SettingsService
 from core.application_state_management import SubscriptionManger, OperationState
 from core.operation_state_management import OperationStatePublisher
+from core.operation_state_management import OperationResult
 from core.operations_handlers.camera_calibration_handler import \
     calibrate_camera
 from core.operations_handlers.robot_calibration_handler import calibrate_robot
@@ -86,11 +88,6 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
 
         # Register application-specific settings after initialization
         self._register_settings()
-        # Override the base managers with glue dispensing specific extensions
-
-
-        self.subscription_manager = SubscriptionManger(self,self.broker,self.get_subscriptions())
-        self.subscription_manager.subscribe_all()
 
         # Application-specific initialization
         self.preselected_workpiece = None
@@ -107,17 +104,24 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         # Initialize glue dispensing operation with proper settings access
         self.glue_dispensing_operation = GlueDispensingOperation(self.robot_service, self.glue_service,self)
         self.glue_dispensing_operation.set_state_publisher(OperationStatePublisher(self.broker))
-
-        # Debug: Check subscription status before publishing
-        print(f"[DEBUG] About to publish OPERATION_STATE.IDLE")
-        print(f"[DEBUG] Subscriber count for '{SystemTopics.OPERATION_STATE}': {self.broker.get_subscriber_count(SystemTopics.OPERATION_STATE)}")
-        print(f"[DEBUG] All topics: {self.broker.get_all_topics()}")
-
         self.broker.publish(SystemTopics.OPERATION_STATE, OperationState.IDLE)
 
         self.NESTING = True
         self.CONTOUR_MATCHING = True
-        self.current_operation = None
+        self.current_operation = self.glue_dispensing_operation
+
+    @property
+    def operation(self):
+        return self.current_operation
+
+    @override
+    def set_current_operation(self):
+        """determine the current operation based on mode"""
+        self.current_operation = self.glue_dispensing_operation
+
+    @override
+    def _on_operation_start(self, debug=True, **kwargs) ->OperationResult:
+        return start(self, self.CONTOUR_MATCHING, self.NESTING, debug)
 
     @staticmethod
     def get_metadata() -> ApplicationMetadata:
@@ -131,7 +135,6 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         )
 
 
-
     def initialize_glue_data_fetcher(self):
         glue_fetcher = GlueDataFetcher()
         glue_fetcher.start()
@@ -141,35 +144,13 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
     def get_initial_state(self) -> ApplicationState:
         """Return the initial state for this application"""
         return ApplicationState.INITIALIZING
-    
-    # ========== Core Operation Control ==========
-    
-    def start(self, mode: OperationMode = OperationMode.AUTOMATIC, debug=True, **kwargs) -> Dict[str, Any]:
-        """Start the robot application operation"""
-        try:
-            result = start(self, self.CONTOUR_MATCHING, self.NESTING, debug)
-            # self.state_manager.update_state(ApplicationState.RUNNING)
-            return {
-                "success": True,
-                "message": "Glue dispensing operation started",
-                "mode": mode.value,
-                "data": result
-            }
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-            # self.state_manager.update_state(ApplicationState.ERROR)
-            return {
-                "success": False,
-                "message": f"Failed to start operation: {e}",
-                "error": str(e)
-            }
 
-    def start_nesting(self, debug=True):
+    def start_nesting(self, debug=True)-> OperationResult:
         self.current_operation = "Nesting"
-        return nesting_handler.start_nesting(self, self.get_workpieces())
+        result =  nesting_handler.start_nesting(self, self.get_workpieces())
+        return OperationResult(success=result.success,message=result.message)
 
-    def start_spraying(self,workpieces, debug=True):
+    def start_spraying(self,workpieces, debug=True)-> OperationResult:
         self.current_operation = "Spraying"
         return spraying_handler.start_spraying(self, workpieces, debug)
 
@@ -204,97 +185,30 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         """
         return clean_nozzle(self.robot_service)
 
-    def clean_tool(self, tool_id: str) -> Dict[str, Any]:
+    def clean_tool(self, tool_id: str) -> OperationResult:
         """Clean a specific tool (e.g., nozzle cleaning)"""
         try:
             if tool_id == "nozzle":
                 result = self.clean_nozzle()
-                return {
-                    "success": True,
-                    "message": f"Tool {tool_id} cleaned successfully",
-                    "data": result
-                }
+                return OperationResult(
+                    success=True,
+                    message=f"Tool {tool_id} cleaned successfully",
+                    data=result
+                )
+
             else:
-                return {
-                    "success": False,
-                    "message": f"Tool {tool_id} not supported for cleaning"
-                }
-        except Exception as e:
-            return {
-                "success": False,
-                "message": f"Failed to clean tool: {e}",
-                "error": str(e)
-            }
-    
-    def home_robot(self) -> Dict[str, Any]:
-        """Move robot to home position"""
-        try:
-            # Use robot service to move to home position
-            result = self.robot_service.moveToStartPosition()
-            return {
-                "success": True,
-                "message": "Robot moved to home position",
-                "data": result
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "message": f"Failed to home robot: {e}",
-                "error": str(e)
-            }
+                return OperationResult(
+                    success=False,
+                    message=f"Tool {tool_id} not supported for cleaning"
+                )
 
-    def stop(self, emergency: bool = False) -> Dict[str, Any]:
-        """Stop the robot application operation"""
-        try:
-            self.state_manager.update_state(ApplicationState.STOPPED)
-            result = self.glue_dispensing_operation.stop()
-            self.state_manager.update_state(ApplicationState.IDLE)
-            return {
-                "success": True,
-                "message": "Glue dispensing operation stopped",
-                "emergency": emergency,
-                "data": result
-            }
         except Exception as e:
-            self.state_manager.update_state(ApplicationState.ERROR)
-            return {
-                "success": False,
-                "message": f"Failed to stop operation: {e}",
-                "error": str(e)
-            }
+            return OperationResult(
+                success=False,
+                message=f"Failed to clean tool {tool_id}: {e}",
+                error=str(e)
+            )
 
-    def pause(self) -> Dict[str, Any]:
-        """Pause the robot application operation"""
-        try:
-            self.state_manager.update_state(ApplicationState.PAUSED)
-            self.glue_dispensing_operation.pause()
-
-            return {
-                "success": True,
-                "message": "Glue dispensing operation paused"
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "message": f"Failed to pause operation: {e}",
-                "error": str(e)
-            }
-
-    def resume(self) -> Dict[str, Any]:
-        """Resume the robot application operation"""
-        try:
-            self.state_manager.update_state(ApplicationState.STARTED)
-            self.glue_dispensing_operation.resume()
-            return {
-                "success": True,
-                "message": "Glue dispensing operation resumed"
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "message": f"Failed to resume operation: {e}",
-                "error": str(e)
-            }
     
     def reset(self) -> Dict[str, Any]:
         """Reset the robot application to initial state"""
@@ -324,51 +238,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
             } # TODO not used!
 
     # ========== Calibration Management ==========
-    
-    def calibrate_robot(self) -> Dict[str, Any]:
-        """Calibrate the robot coordinate system"""
-        try:
-            self.state_manager.update_state(ApplicationState.CALIBRATING)
-            result = calibrate_robot(self)
-            self.state_manager.update_state(ApplicationState.IDLE)
-            return {
-                "success": True,
-                "message": "Robot calibration completed",
-                "data": result
-            }
-        except Exception as e:
-            self.state_manager.update_state(ApplicationState.ERROR)
-            return {
-                "success": False,
-                "message": f"Robot calibration failed: {e}",
-                "error": str(e)
-            }
-    
-    def calibrate_camera(self) -> Dict[str, Any]:
-        """Calibrate the camera system"""
-        try:
-            self.state_manager.update_state(ApplicationState.CALIBRATING)
-            result = calibrate_camera(self)
-            self.state_manager.update_state(ApplicationState.IDLE)
-            return {
-                "success": True,
-                "message": "Camera calibration completed",
-                "data": result
-            }
-        except Exception as e:
-            self.state_manager.update_state(ApplicationState.ERROR)
-            return {
-                "success": False,
-                "message": f"Camera calibration failed: {e}",
-                "error": str(e)
-            }
-    
-    # Legacy methods for backward compatibility
-    def calibrateRobot(self):
-        return self.calibrate_robot()
 
-    def calibrateCamera(self):
-        return self.calibrate_camera()
 
     def create_workpiece(self) -> CrateWorkpieceResult:
         return  self.create_workpiece_handler.create_workpiece()
@@ -495,7 +365,6 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
     """ TEMP METHODS FOR TESTING WHILE IN DEVELOPMENT """
 
     def handle_set_preselected_workpiece(self, wp_id):
-
         selected_workpiece = None
         all_workpieces = self.workpiece_service.load_all()
         for wp in all_workpieces:
@@ -543,3 +412,48 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
             self.logger.error(f"Failed to get glue settings: {e}")
             # Fallback to default settings
             return GlueSettings()
+
+    """SUPER CLASS METHODS FOR EXTENSIONS OR OVERRIDE IF NEEDED"""
+
+    @override
+    def start(self, debug=True, **kwargs) -> OperationResult:
+        """Start the robot application operation
+        calling the super class start method which in turn calls _on_operation_start
+        keeping this method for clarity and possible future customizations"""
+        return super().start()
+        # return start(self, self.CONTOUR_MATCHING, self.NESTING, debug)
+
+    @override
+    def stop(self, emergency: bool = False) -> OperationResult:
+        """Stop the robot application operation"""
+        # CALLING SUPER CLASS STOP METHOD. KEEPING THIS METHOD FOR CLARITY AND POSSIBLE FUTURE CUSTOMIZATIONS
+        return super().stop()
+
+    @override
+    def pause(self) -> OperationResult:
+        """Pause the robot application operation"""
+        # CALLING SUPER CLASS PAUSE METHOD. KEEPING THIS METHOD FOR CLARITY AND POSSIBLE FUTURE CUSTOMIZATIONS
+        return super().pause()
+
+    @override
+    def resume(self) -> OperationResult:
+        """Resume the robot application operation"""
+        # CALLING SUPER CLASS RESUME METHOD. KEEPING THIS METHOD FOR CLARITY AND POSSIBLE FUTURE CUSTOMIZATIONS
+        return super().resume()
+
+    @override
+    def calibrate_robot(self) -> Dict[str, Any]:
+        """Calibrate the robot coordinate system"""
+        # CALLING THE SUPER CALIBRATE ROBOT METHOD AND KEEPING THIS FOR CLARITY AND POSSIBLE CHANGES
+        return super().calibrate_robot()
+
+    @override
+    def calibrate_camera(self) -> Dict[str, Any]:
+        """Calibrate the camera system"""
+        # CALLING THE SUPER CALIBRATE CAMERA METHOD AND KEEPING THIS FOR CLARITY AND POSSIBLE CHANGES
+        return super().calibrate_camera()
+
+    @override
+    def home_robot(self):
+        """Move robot to home position"""
+        return super().home_robot()

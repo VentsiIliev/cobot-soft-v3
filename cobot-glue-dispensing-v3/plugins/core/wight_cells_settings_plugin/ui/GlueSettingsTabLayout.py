@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (QVBoxLayout, QLabel, QWidget, QHBoxLayout,
 from frontend.widgets.MaterialButton import MaterialButton
 from frontend.core.utils.localization import TranslationKeys, get_app_translator
 from applications.glue_dispensing_application.settings.GlueSettings import GlueSettingKey
-from applications.glue_dispensing_application.services.glueSprayService import GlueSprayService
+from applications.glue_dispensing_application.services.glueSprayService.GlueSprayService import GlueSprayService
 from frontend.widgets.SwitchButton import QToggle
 from frontend.widgets.ToastWidget import ToastWidget
 

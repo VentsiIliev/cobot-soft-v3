@@ -1,6 +1,7 @@
 # Configuration
 import math
 import os
+from dataclasses import dataclass
 from datetime import datetime
 
 from communication_layer.api.v1.topics import VisionTopics
@@ -48,6 +49,11 @@ if ENABLE_LOGGING:
     nesting_logger = setup_logger("nesting")
 else:
     nesting_logger = None
+
+@dataclass
+class NestingResult:
+    success: bool
+    message: str
 
 def calculate_drop_off_position(match, centroid, orientation, plane, pickup_height,gripper):
     """
@@ -254,7 +260,7 @@ def calculate_pickup_positions(flat_centroid, match_height, robotService, orient
     return pickup_positions, height_measure_position,pickup_height
 
 
-def start_nesting(application,visionService, robotService,preselected_workpiece,z_offset_for_calibration_pattern):
+def start_nesting(application,visionService, robotService,preselected_workpiece,z_offset_for_calibration_pattern) -> NestingResult:
     Z_OFFSET_FOR_CALIBRATION_PATTERN = z_offset_for_calibration_pattern
     # === LOGGING ===
     log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.INFO, "=" * 80)
@@ -288,7 +294,7 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
         ret = application.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
         if ret != 0:
             laser.turnOff()
-            return False, "Failed to move to start position"
+            return NestingResult(success=False, message="Failed to move to start position")
 
 
         broker = MessageBroker()
@@ -325,9 +331,9 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
                 log_if_enabled(ENABLE_LOGGING, nesting_logger, LoggingLevel.INFO, "✅ NESTING COMPLETE: Dropping off gripper")
                 robotService.dropOffGripper(robotService.currentGripper)
                 laser.turnOff()
-                return True, "No more workpieces to pick"
+                return NestingResult(success=True, message="Nesting complete, no more workpieces to pick")
             laser.turnOff()
-            return False, "No contours found"
+            return NestingResult(success=False, message="No contours found after retries")
 
         # add first point to the end to close the contour
         for i, cnt in enumerate(newContours):
@@ -383,13 +389,13 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
                 ret = application.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
                 if ret != 0:
                     laser.turnOff()
-                    return False, "Failed to move to start position"
-                return True, "No more workpieces to pick"
+                    return NestingResult(success=False, message="Failed to move to start position")
+                return NestingResult(success=True, message="Nesting complete, no more workpieces to pick")
             else:
                 # === LOGGING ===
                 log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.WARNING, "❌ NO MATCHES: No workpieces matched detected contours")
                 # === FUNCTIONALITY ===
-                return False, "No workpieces matched detected contours"
+                return NestingResult(success=False, message="No workpieces matched detected contours")
 
         # === LOGGING ===
         log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.DEBUG, "Starting workpiece matching process...")
@@ -401,7 +407,7 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
             # === FUNCTIONALITY ===
             from modules.shared.localization.enums.Message import Message
             laser.turnOff()
-            return False, Message.NO_WORKPIECE_DETECTED
+            return NestingResult(success=False, message=Message.NO_WORKPIECE_DETECTED.value)
 
         # === LOGGING ===
         log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.INFO, f"✅ MATCHING: Found {len(matches)} workpiece matches")
@@ -520,8 +526,8 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
                 log_if_enabled(ENABLE_LOGGING, nesting_logger, LoggingLevel.ERROR, 
                               f"Invalid gripper value: {gripper.value}. Error: {e}")
                 laser.turnOff()
-                return False
-            
+                return NestingResult(success=False, message=f"Invalid gripper value: {gripper.value}")
+
             if robotService.currentGripper != target_gripper_id:
                 # if different, drop the current gripper (if any) and pick up the new one
                 if robotService.currentGripper is not None:
@@ -532,7 +538,7 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
                         log_if_enabled(ENABLE_LOGGING, nesting_logger, LoggingLevel.ERROR, 
                                       f"Failed to drop off gripper {robotService.currentGripper}: {message}")
                         laser.turnOff()
-                        return False
+                        return NestingResult(success=False, message=f"Failed to drop off gripper {robotService.currentGripper}: {message}")
 
                 # pick up the new gripper
                 log_if_enabled(ENABLE_LOGGING, nesting_logger, LoggingLevel.INFO, 
@@ -542,14 +548,14 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
                     log_if_enabled(ENABLE_LOGGING, nesting_logger, LoggingLevel.ERROR, 
                                   f"Failed to pick up gripper {target_gripper_id}: {message}")
                     laser.turnOff()
-                    return False
-                
+                    return NestingResult(success=False, message=f"Failed to pick up gripper {target_gripper_id}: {message}")
+
                 # Verify the gripper change was successful
                 if robotService.currentGripper != target_gripper_id:
                     log_if_enabled(ENABLE_LOGGING, nesting_logger, LoggingLevel.ERROR, 
                                   f"Gripper change verification failed. Expected: {target_gripper_id}, Current: {robotService.currentGripper}")
-                    return False
-                
+                    return NestingResult(success=False, message=f"Gripper change verification failed. Expected: {target_gripper_id}, Current: {robotService.currentGripper}")
+
                 log_if_enabled(ENABLE_LOGGING, nesting_logger, LoggingLevel.INFO, 
                               f"Successfully switched to gripper: {target_gripper_id}")
             else:
@@ -583,7 +589,7 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
 
             if not result:
                 laser.turnOff()
-                return False, "Failed to measure height."
+                return NestingResult(success=False, message="Failed to measure height.")
 
             measured_height = measured_height + 2  # temp add 1 mm
 
@@ -601,7 +607,7 @@ def start_nesting(application,visionService, robotService,preselected_workpiece,
             if ret != 0:
                 robotService.tool_manager.pump.turnOff(robotService.robot)
                 laser.turnOff()
-                return False, "Failed to move to pickup position"
+                return NestingResult(success=False, message="Failed during pick and place sequence")
 
 def measure_height_at_position(robot_service,vision_service,laser_tracking_service,position,laser):
     ret = move_to(robot_service, position)

@@ -2,6 +2,7 @@ import time
 
 from applications.glue_dispensing_application.handlers.spraying_handler import publish_robot_trajectory, \
     start_path_execution
+from core.operation_state_management import OperationResult
 from frontend.contour_editor.widgets.SegmentSettingsWidget import default_settings
 
 
@@ -16,7 +17,7 @@ def handle_direct_tracing_mode(application):
 
     newContours = application.visionService.contours
     if newContours is None:
-        return False, "No contours found"
+        return OperationResult(success=False, message="No contours found")
 
     # Transform contours to robot coordinates and convert to proper format
     paths = []
@@ -31,4 +32,4 @@ def handle_direct_tracing_mode(application):
         application.move_to_spray_capture_position()
         start_path_execution(application,paths)
 
-    return True,""
+    return OperationResult(success=True, message="Direct tracing mode completed")

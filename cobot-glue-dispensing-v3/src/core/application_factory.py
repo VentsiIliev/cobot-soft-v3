@@ -9,6 +9,7 @@ their lifecycle.
 from typing import Dict, Optional, Type, List
 import logging
 
+from applications.test_application import TestApplication
 from .application.interfaces.application_settings_interface import ApplicationSettingsRegistry
 from .application.interfaces.robot_application_interface import RobotApplicationInterface
 from .base_robot_application import BaseRobotApplication, ApplicationType
@@ -360,6 +361,14 @@ def auto_register_applications(factory: ApplicationFactory) -> None:
     except Exception as e:
         logger.warning(f"Error registering GlueDispensingApplication: {e}")
 
+    # Register Robot Base Application For Testing
+    try:
+        factory.register_application(ApplicationType.TEST_APPLICATION, TestApplication)
+        logger.info("Registered BaseRobotApplication")
+    except ImportError as e:
+        logger.warning(f"Could not register BaseRobotApplication: {e}")
+    except Exception as e:
+        logger.warning(f"Error registering BaseRobotApplication: {e}")
     # try:
     #     # Register Painting Application
     #     factory.register_application(ApplicationType.PAINT_APPLICATION, PaintingApplication)

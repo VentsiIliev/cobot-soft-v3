@@ -2,6 +2,7 @@ import time
 import json
 import os
 from datetime import datetime
+from typing import Optional
 
 from applications.glue_dispensing_application.glue_process.state_handlers.pause_operation import pause_operation
 from applications.glue_dispensing_application.glue_process.state_handlers.resume_operation import resume_operation
@@ -15,7 +16,8 @@ from applications.glue_dispensing_application.glue_process.state_machine.GluePro
 from backend.system.utils.custom_logging import log_debug_message, log_info_message, log_error_message, \
     log_calls_with_timestamp_decorator, setup_logger, LoggerContext
 from applications.glue_dispensing_application.glue_process.PumpController import PumpController
-from core.operation_state_management import IOperation
+from core.operation_state_management import OperationResult, IOperation
+from core.services.robot_service.impl.base_robot_service import RobotService
 
 # glue dispensing process configuration
 USE_SEGMENT_SETTINGS = True
@@ -129,7 +131,7 @@ class GlueDispensingOperation(IOperation):
         self.execution_context.pump_ready_event = None
 
     @log_calls_with_timestamp_decorator(enabled=ENABLE_GLUE_DISPENSING_LOGGING, logger=glue_dispensing_logger)
-    def _do_start(self, paths, spray_on=False, resume=False):
+    def _do_start(self, paths, spray_on=False, resume=False)->OperationResult:
         """Main path execution method with proper state management"""
         message = f"Resuming from execution context: {self.execution_context}" if resume and self.execution_context.has_valid_context() else f"Starting new execution with {len(paths)} paths, spray_on={spray_on}"
         log_debug_message(glue_dispensing_logger_context, message=message)
@@ -324,13 +326,13 @@ class GlueDispensingOperation(IOperation):
             self.execution_context.state_machine.transition(GlueProcessState.ERROR)
             return False, f"Execution error: {e}"
 
-    def _do_pause(self):
+    def _do_pause(self)->OperationResult:
         return pause_operation(self, self.execution_context,glue_dispensing_logger_context)
 
-    def _do_stop(self):
+    def _do_stop(self)->OperationResult:
         return stop_operation(self, self.execution_context,glue_dispensing_logger_context)
 
-    def _do_resume(self):
+    def _do_resume(self)->OperationResult:
         """Resume operation from paused state"""
         return resume_operation(self.execution_context,glue_dispensing_logger_context)
 

@@ -69,7 +69,7 @@ class RobotDispatch(IDispatcher):
         print("RobotHandler: Handling robot calibration")
         
         try:
-            result, message, image = self.application.calibrateRobot()
+            result, message, image = self.application.calibrate_robot()
             
             if result:
                 return Response(

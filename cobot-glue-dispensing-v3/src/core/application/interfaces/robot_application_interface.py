@@ -10,15 +10,7 @@ from typing import Dict, Any, List
 from enum import Enum
 
 from core.base_robot_application import ApplicationType
-
-
-class OperationMode(Enum):
-    """Available operation modes for robot applications"""
-    AUTOMATIC = "automatic"
-    MANUAL = "manual"
-    SEMI_AUTOMATIC = "semi_automatic"
-    TEST = "test"
-    DEMO = "demo"
+from core.operation_state_management import OperationResult
 
 
 class CalibrationStatus(Enum):
@@ -54,7 +46,7 @@ class RobotApplicationInterface(ABC):
     # ========== Core Operation Control ==========
     
     @abstractmethod
-    def start(self, mode: OperationMode = OperationMode.AUTOMATIC, **kwargs) -> Dict[str, Any]:
+    def start(self, **kwargs) -> OperationResult:
         """
         Start the robot application operation.
         
@@ -68,7 +60,7 @@ class RobotApplicationInterface(ABC):
         pass
     
     @abstractmethod
-    def stop(self, emergency: bool = False) -> Dict[str, Any]:
+    def stop(self, emergency: bool = False) -> OperationResult:
         """
         Stop the robot application operation.
         
@@ -79,9 +71,9 @@ class RobotApplicationInterface(ABC):
             Dict containing operation result
         """
         pass
-    
+
     @abstractmethod
-    def pause(self) -> Dict[str, Any]:
+    def pause(self) -> OperationResult:
         """
         Pause the robot application operation.
         
@@ -91,7 +83,7 @@ class RobotApplicationInterface(ABC):
         pass
     
     @abstractmethod
-    def resume(self) -> Dict[str, Any]:
+    def resume(self) -> OperationResult:
         """
         Resume the robot application operation.
         
@@ -101,7 +93,7 @@ class RobotApplicationInterface(ABC):
         pass
     
     @abstractmethod
-    def reset(self) -> Dict[str, Any]:
+    def reset(self) -> OperationResult:
         """
         Reset the robot application to initial state.
         
@@ -113,7 +105,7 @@ class RobotApplicationInterface(ABC):
     # ========== Calibration Management ==========
     
     @abstractmethod
-    def calibrate_robot(self) -> Dict[str, Any]:
+    def calibrate_robot(self) -> OperationResult:
         """
         Calibrate the robot coordinate system.
         
@@ -124,7 +116,7 @@ class RobotApplicationInterface(ABC):
         pass
     
     @abstractmethod
-    def calibrate_camera(self) -> Dict[str, Any]:
+    def calibrate_camera(self) -> OperationResult:
         """
         Calibrate the camera system.
         
@@ -138,7 +130,7 @@ class RobotApplicationInterface(ABC):
     # ========== Tool and Hardware Control ==========
 
     @abstractmethod
-    def home_robot(self) -> Dict[str, Any]:
+    def home_robot(self) -> OperationResult:
         """
         Move robot to home position.
         
@@ -178,30 +170,4 @@ class ApplicationInfo:
             "supported_operations": self.supported_operations,
             "supported_tools": self.supported_tools,
             "supported_workpieces": self.supported_workpieces
-        }
-
-
-class OperationResult:
-    """Standardized operation result"""
-    
-    def __init__(self, 
-                 success: bool, 
-                 message: str, 
-                 data: Dict[str, Any] = None,
-                 warnings: List[str] = None,
-                 errors: List[str] = None):
-        self.success = success
-        self.message = message
-        self.data = data or {}
-        self.warnings = warnings or []
-        self.errors = errors or []
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary representation"""
-        return {
-            "success": self.success,
-            "message": self.message,
-            "data": self.data,
-            "warnings": self.warnings,
-            "errors": self.errors
         }

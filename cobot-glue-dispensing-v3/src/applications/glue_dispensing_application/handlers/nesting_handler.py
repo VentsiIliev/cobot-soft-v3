@@ -1,4 +1,7 @@
-def start_nesting(application,workpieces):
+from applications.glue_dispensing_application.pick_and_place_process.nesting import NestingResult
+
+
+def start_nesting(application,workpieces)-> NestingResult:
     from applications.glue_dispensing_application.pick_and_place_process.nesting import start_nesting
     return start_nesting(
         application = application,

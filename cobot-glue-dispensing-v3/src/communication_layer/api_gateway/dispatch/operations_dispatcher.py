@@ -80,18 +80,10 @@ class OperationsDispatch(IDispatcher):
         try:
             result = self.application.start()
             # print(f"OperationsHandler: Start result: {result}")
-            
-            if not result.get("success", False):
-                return Response(
-                    Constants.RESPONSE_STATUS_ERROR, 
-                    message=result.get("message", "Operation failed")
-                ).to_dict()
-            else:
-                return Response(
-                    Constants.RESPONSE_STATUS_SUCCESS, 
-                    message=result.get("message", "Operation successful")
-                ).to_dict()
-                
+            success = Constants.RESPONSE_STATUS_SUCCESS if result.success else Constants.RESPONSE_STATUS_ERROR
+            message = result.message
+            return Response(success, message=message).to_dict()
+
         except Exception as e:
             # print(f"OperationsHandler: Error starting: {e}")
             traceback.print_exc()
@@ -111,10 +103,9 @@ class OperationsDispatch(IDispatcher):
         
         try:
             result = self.application.stop()
-            status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
-            
-            return Response(status, message=result.get("message", "Operation completed")).to_dict()
-            
+            status = Constants.RESPONSE_STATUS_SUCCESS if result.success else Constants.RESPONSE_STATUS_ERROR
+            message = result.message
+            return Response(status, message=message).to_dict()
         except Exception as e:
             # print(f"OperationsHandler: Error stopping: {e}")
             return Response(
@@ -134,8 +125,8 @@ class OperationsDispatch(IDispatcher):
         try:
             result = self.application.pause()
             status = Constants.RESPONSE_STATUS_SUCCESS if result.get("success", False) else Constants.RESPONSE_STATUS_ERROR
-            
-            return Response(status, message=result.get("message", "Operation completed")).to_dict()
+            message = result.message
+            return Response(status, message=message).to_dict()
             
         except Exception as e:
             # print(f"OperationsHandler: Error pausing: {e}")

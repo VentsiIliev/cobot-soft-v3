@@ -73,7 +73,7 @@ class CameraDispatch(IDispatcher):
         print("CameraHandler: Handling camera calibration")
         
         try:
-            result, message = self.application.calibrateCamera()
+            result, message = self.application.calibrate_camera()
             print(f"CameraHandler: Calibration result: {result}, message: {message}")
             
             status = Constants.RESPONSE_STATUS_SUCCESS if result else Constants.RESPONSE_STATUS_ERROR
