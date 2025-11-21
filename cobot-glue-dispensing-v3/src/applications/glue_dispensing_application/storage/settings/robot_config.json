@@ -2,7 +2,7 @@
     "ROBOT_IP": "192.168.58.2",
     "ROBOT_TOOL": 1,
     "ROBOT_USER": 1,
-    "TCP_X_OFFSET": -0.041000000000000036,
+    "TCP_X_OFFSET": -0.041,
     "TCP_Y_OFFSET": 76.859,
     "TCP_X_STEP_DISTANCE": 50.0,
     "TCP_X_STEP_OFFSET": 0.1,
@@ -16,7 +16,7 @@
     },
     "MOVEMENT_GROUPS": {
         "LOGIN_POS": {
-            "velocity": 23,
+            "velocity": 5,
             "acceleration": 10,
             "iterations": 1,
             "position": "[59.09162521362304, -334.1329650878906, 750.5046997070312, -179.996871948242, 0.02683817781507969, -89.9997329711914]"

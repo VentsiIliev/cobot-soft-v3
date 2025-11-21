@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
-from backend.system.contour_matching.debug.plot_generator import plot_contour_alignment
+# from backend.system.contour_matching.debug.plot_generator import plot_contour_alignment
 from backend.system.contour_matching.matching.match_info import MatchInfo
 from modules.shared.core.ContourStandartized import Contour
 from backend.system.contour_matching.alignment.mask_refinement import _refine_alignment_with_mask

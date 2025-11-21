@@ -12,7 +12,7 @@ REQUEST_RESOURCE_GLUE_NOZZLE = "GlueNozzle"      # Glue nozzle control resource
 # === GLUE APPLICATION ENDPOINTS ===
 
 # Glue system configuration management
-SETTINGS_GLUE_GET = "/api/v1/settings/glue"
+SETTINGS_GLUE_GET = "/api/v1/settings/glue/get"
 SETTINGS_GLUE_SET = "/api/v1/settings/glue/set"
 
 
