@@ -5,9 +5,6 @@ import functools
 import inspect
 import datetime
 
-
-
-
 class LoggingLevel(Enum):
     DEBUG = logging.DEBUG
     INFO = logging.INFO
@@ -121,13 +118,13 @@ def setup_logger(name:str):
 
     return logger
 
-def log_if_enabled(enabled,logger,level, message,broadcast_to_ui=False,topic="log"):
+def log_if_enabled(enabled, logger, level, message, broadcast_to_ui=False, topic="log"):
     """Helper function to log only if logging is enabled"""
     if enabled and logger:
 
         if broadcast_to_ui:
             broker = MessageBroker()
-            broker.publish(topic,message)
+            broker.publish(topic, message)
 
         import inspect
         # Get the calling function's name
@@ -137,8 +134,11 @@ def log_if_enabled(enabled,logger,level, message,broadcast_to_ui=False,topic="lo
         # Convert LoggingLevel enum to string if necessary
         if isinstance(level, LoggingLevel):
             level_name = level.name.lower()
+        elif isinstance(level, str):
+            level_name = level.lower()
         else:
-            level_name = level
+            # Fallback to info if level is invalid
+            level_name = 'info'
 
         # Create a temporary log record with the caller's function name
         log_method = getattr(logger, level_name)

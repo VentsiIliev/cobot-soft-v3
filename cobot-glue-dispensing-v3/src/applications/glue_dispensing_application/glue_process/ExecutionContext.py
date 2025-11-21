@@ -1,4 +1,12 @@
-class ExecutionContext:
+from dataclasses import dataclass
+
+
+@dataclass
+class Context:
+    pass
+
+
+class ExecutionContext(Context):
     """Holds execution state for pause/resume functionality"""
 
     def __init__(self):
@@ -10,7 +18,7 @@ class ExecutionContext:
         self.paths = None
         self.spray_on = False
         self.service = None
-        self.robot_service= None
+        self.robot_service = None
         self.state_machine = None
         self.glue_type = None
         self.current_path_index = 0
@@ -20,8 +28,8 @@ class ExecutionContext:
         self.generator_started = False
         self.generator_to_glue_delay = 0
         self.motor_started = False
-        self.current_settings= None
-        self.current_path= None
+        self.current_settings = None
+        self.current_path = None
         self.paused_from_state = None
         self.pump_controller = None
 
@@ -80,4 +88,3 @@ class ExecutionContext:
             "glue_type": self.glue_type,
             "generator_to_glue_delay": self.generator_to_glue_delay,
         }
-
