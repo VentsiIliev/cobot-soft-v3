@@ -254,7 +254,7 @@ def calculate_pickup_positions(flat_centroid, match_height, robotService, orient
     return pickup_positions, height_measure_position,pickup_height
 
 
-def start_nesting(visionService, robotService,preselected_workpiece,z_offset_for_calibration_pattern):
+def start_nesting(application,visionService, robotService,preselected_workpiece,z_offset_for_calibration_pattern):
     Z_OFFSET_FOR_CALIBRATION_PATTERN = z_offset_for_calibration_pattern
     # === LOGGING ===
     log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.INFO, "=" * 80)
@@ -274,7 +274,6 @@ def start_nesting(visionService, robotService,preselected_workpiece,z_offset_for
     log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.INFO, f"Loaded {len(workpieces)} workpiece templates")
     log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.DEBUG, f"Plane configuration: {plane.xMin}-{plane.xMax} x {plane.yMin}-{plane.yMax}")
 
-    laser = robotService.tool_manager.laser
     laser = robotService.tool_manager.get_tool("laser")
     laserTrackingService = LaserTrackService()
     # === FUNCTIONALITY ===
@@ -286,7 +285,7 @@ def start_nesting(visionService, robotService,preselected_workpiece,z_offset_for
 
         # === FUNCTIONALITY ===
         # Move robot and capture new image
-        ret = robotService.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
+        ret = application.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
         if ret != 0:
             laser.turnOff()
             return False, "Failed to move to start position"
@@ -381,7 +380,7 @@ def start_nesting(visionService, robotService,preselected_workpiece,z_offset_for
                 # === FUNCTIONALITY ===
                 robotService.dropOffGripper(robotService.currentGripper)
 
-                ret = robotService.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
+                ret = application.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
                 if ret != 0:
                     laser.turnOff()
                     return False, "Failed to move to start position"
@@ -410,7 +409,7 @@ def start_nesting(visionService, robotService,preselected_workpiece,z_offset_for
         # === FUNCTIONALITY ===
         # Process each matched workpiece
         for match_i, match in enumerate(matches):
-            ret = robotService.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
+            ret = application.move_to_nesting_capture_position(z_offset = Z_OFFSET_FOR_CALIBRATION_PATTERN)
             # === LOGGING ===
             log_if_enabled(ENABLE_LOGGING,nesting_logger,LoggingLevel.INFO, f"\n🎯 PROCESSING MATCH {match_i + 1}/{len(matches)}")
 

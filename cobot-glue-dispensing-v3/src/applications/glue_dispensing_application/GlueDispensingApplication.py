@@ -10,7 +10,8 @@ from core.application.interfaces.robot_application_interface import RobotApplica
 import logging
 
 from backend.system.settings.SettingsService import SettingsService
-from core.application_state_management import SubscriptionManger, ProcessState
+from core.application_state_management import SubscriptionManger, OperationState
+from core.operation_state_management import OperationStatePublisher
 from core.operations_handlers.camera_calibration_handler import \
     calibrate_camera
 from core.operations_handlers.robot_calibration_handler import calibrate_robot
@@ -102,10 +103,17 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         self.glue_service= GlueSprayService(generatorTurnOffTimeout=10, settings=self.get_glue_settings())
         # TODO: register glue service in service registry when the glue service state management is implemented
         # self.service_registry.register_service(self.glue_service.service_id,"glue-service/state",ServiceState.UNKNOWN)
-        # print(f"Registed Services in Glue App: {service_registry.get_registered_services()}")
+        # print(f"Registered Services in Glue App: {service_registry.get_registered_services()}")
         # Initialize glue dispensing operation with proper settings access
         self.glue_dispensing_operation = GlueDispensingOperation(self.robot_service, self.glue_service,self)
-        self.broker.publish(SystemTopics.PROCESS_STATE, ProcessState.IDLE)
+        self.glue_dispensing_operation.set_state_publisher(OperationStatePublisher(self.broker))
+
+        # Debug: Check subscription status before publishing
+        print(f"[DEBUG] About to publish OPERATION_STATE.IDLE")
+        print(f"[DEBUG] Subscriber count for '{SystemTopics.OPERATION_STATE}': {self.broker.get_subscriber_count(SystemTopics.OPERATION_STATE)}")
+        print(f"[DEBUG] All topics: {self.broker.get_all_topics()}")
+
+        self.broker.publish(SystemTopics.OPERATION_STATE, OperationState.IDLE)
 
         self.NESTING = True
         self.CONTOUR_MATCHING = True
@@ -239,7 +247,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         """Stop the robot application operation"""
         try:
             self.state_manager.update_state(ApplicationState.STOPPED)
-            result = self.glue_dispensing_operation.stop_operation()
+            result = self.glue_dispensing_operation.stop()
             self.state_manager.update_state(ApplicationState.IDLE)
             return {
                 "success": True,
@@ -259,7 +267,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         """Pause the robot application operation"""
         try:
             self.state_manager.update_state(ApplicationState.PAUSED)
-            self.glue_dispensing_operation.pause_operation()
+            self.glue_dispensing_operation.pause()
 
             return {
                 "success": True,
@@ -276,7 +284,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         """Resume the robot application operation"""
         try:
             self.state_manager.update_state(ApplicationState.STARTED)
-            self.glue_dispensing_operation.resume_operation()
+            self.glue_dispensing_operation.resume()
             return {
                 "success": True,
                 "message": "Glue dispensing operation resumed"

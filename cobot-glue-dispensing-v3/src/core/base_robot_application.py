@@ -106,11 +106,12 @@ class BaseRobotApplication(ABC):
     def get_subscriptions(self):
         subscriptions = []
         # SUBSCRIBE TO PROCESS STATE UPDATES
-        process_state_subscription = [SystemTopics.PROCESS_STATE,self.state_manager.on_process_state_update]
+        process_state_subscription = [SystemTopics.OPERATION_STATE, self.state_manager.on_operation_state_update]
         # SUBSCRIBE TO MODE CHANGE UPDATES
         mode_change_subscription = [SystemTopics.SYSTEM_MODE_CHANGE,self.on_mode_change]
         # SUBSCRIBE TO SYSTEM STATE UPDATES
         system_state_subscription = [self.system_state_topic,self.on_system_state_update]
+
         subscriptions.append(system_state_subscription)
         subscriptions.append(process_state_subscription)
         subscriptions.append(mode_change_subscription)
@@ -118,8 +119,7 @@ class BaseRobotApplication(ABC):
 
     def on_system_state_update(self, state):
         self.system_state = state
-        self.state_manager = self.system_state
-    
+
     @staticmethod
     @abstractmethod
     def get_metadata() -> ApplicationMetadata:

@@ -154,10 +154,10 @@ class SystemStateManager:
             self.system_state = new_system_state
 
     def publish_state(self):
-        print(f"publishing system state: {self.system_state}")
+        # print(f"publishing system state: {self.system_state}")
         # print all registered services and their states
-        for service_name, state in self.service_states.items():
-            print(f" - Service '{service_name}': {state}")
+        # for service_name, state in self.service_states.items():
+        #     print(f" - Service '{service_name}': {state}")
         self.broker.publish("system/state", {"state": self.system_state})
 
     def start_state_publisher_thread(self):

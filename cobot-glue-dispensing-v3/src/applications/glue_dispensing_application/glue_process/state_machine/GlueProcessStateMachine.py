@@ -77,11 +77,7 @@ class GlueProcessStateMachine:
         """Attempt to transition to new state"""
         # with self._state_lock:
         if not self.can_transition(to_state):
-            log_if_enabled(enabled=ENABLE_ROBOT_SERVICE_STATE_MACHINE_LOGGING,
-                           logger=robot_service_state_machine_logger,
-                           message=f"StateMachine: Invalid transition blocked: {self.current_state} -> {to_state}",
-                           level=LoggingLevel.DEBUG)
-
+            self.on_invalid_transition_attempt(attempted_state=to_state)
             return False
 
         log_if_enabled(enabled=ENABLE_ROBOT_SERVICE_STATE_MACHINE_LOGGING,
@@ -90,8 +86,7 @@ class GlueProcessStateMachine:
                        level=LoggingLevel.DEBUG)
         old_state = self.current_state
         self.current_state = to_state
-        self.broker.publish(GlueTopics.PROCESS_STATE, self.current_state)
-
+        self.on_transition_success_callback()
         # Call exit handler for old state
         self._call_handler(old_state, 'on_exit', context)
 
@@ -117,3 +112,14 @@ class GlueProcessStateMachine:
         """Get current state (thread-safe)"""
         # with self._state_lock:
         return self.current_state
+
+    def on_transition_success_callback(self):
+        """Hook for actions after successful transition"""
+        self.broker.publish(GlueTopics.PROCESS_STATE, self.current_state)
+
+    def on_invalid_transition_attempt(self, attempted_state: GlueProcessState):
+        """Hook for actions on invalid transition attempt"""
+        log_if_enabled(enabled=ENABLE_ROBOT_SERVICE_STATE_MACHINE_LOGGING,
+                       logger=robot_service_state_machine_logger,
+                       message=f"Invalid transition attempt to {attempted_state} from {self.current_state}",
+                       level=LoggingLevel.WARNING)

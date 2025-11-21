@@ -3,6 +3,9 @@ import json
 import os
 from datetime import datetime
 
+from applications.glue_dispensing_application.glue_process.state_handlers.pause_operation import pause_operation
+from applications.glue_dispensing_application.glue_process.state_handlers.resume_operation import resume_operation
+from applications.glue_dispensing_application.glue_process.state_handlers.stop_operation import stop_operation
 from applications.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
 from applications.glue_dispensing_application.glue_process.ExecutionContext import ExecutionContext
 from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
@@ -12,6 +15,8 @@ from applications.glue_dispensing_application.glue_process.state_machine.GluePro
 from backend.system.utils.custom_logging import log_debug_message, log_info_message, log_error_message, \
     log_calls_with_timestamp_decorator, setup_logger, LoggerContext
 from applications.glue_dispensing_application.glue_process.PumpController import PumpController
+from core.operation_state_management import IOperation
+
 # glue dispensing process configuration
 USE_SEGMENT_SETTINGS = True
 TURN_OFF_PUMP_BETWEEN_PATHS = True
@@ -26,19 +31,21 @@ glue_dispensing_logger_context = LoggerContext(enabled=ENABLE_GLUE_DISPENSING_LO
 ENABLE_CONTEXT_DEBUG = True
 DEBUG_DIR = os.path.join(os.path.dirname(__file__), "debug")
 
-class GlueDispensingOperation:
+
+class GlueDispensingOperation(IOperation):
     def __init__(self, robot_service, glue_service, glue_application=None):
+        super().__init__()
         self.robot_service = robot_service
         self.glue_application = glue_application
         self.glue_service = glue_service
-        
+
         # Get glue settings from the glue application
         if glue_application is not None:
             glue_settings = glue_application.get_glue_settings()
         else:
             # Fallback to default settings if no application provided
             glue_settings = GlueSettings()
-        
+
         self.glue_service.settings = glue_settings
 
         self.pump_controller = PumpController(USE_SEGMENT_SETTINGS, glue_dispensing_logger_context, glue_settings)
@@ -102,7 +109,7 @@ class GlueDispensingOperation:
                 message=f"Failed to write debug context: {e}"
             )
 
-    def setup_execution_context(self,paths,spray_on):
+    def setup_execution_context(self, paths, spray_on):
         self.execution_context.reset()
         self.execution_context.paths = paths
         self.execution_context.spray_on = spray_on
@@ -122,23 +129,24 @@ class GlueDispensingOperation:
         self.execution_context.pump_ready_event = None
 
     @log_calls_with_timestamp_decorator(enabled=ENABLE_GLUE_DISPENSING_LOGGING, logger=glue_dispensing_logger)
-    def start(self, paths, spray_on=False, resume=False):
+    def _do_start(self, paths, spray_on=False, resume=False):
         """Main path execution method with proper state management"""
         message = f"Resuming from execution context: {self.execution_context}" if resume and self.execution_context.has_valid_context() else f"Starting new execution with {len(paths)} paths, spray_on={spray_on}"
-        log_debug_message(glue_dispensing_logger_context,        message=message)
+        log_debug_message(glue_dispensing_logger_context, message=message)
 
         if resume is False or not self.execution_context.has_valid_context():
-          self.setup_execution_context(paths,spray_on)
+            self.setup_execution_context(paths, spray_on)
 
-          # ✅ Ensure proper state transition before execution
-          if self.execution_context.state_machine.state == GlueProcessState.IDLE:
-              self.execution_context.state_machine.transition(GlueProcessState.STARTING)
-              log_debug_message(glue_dispensing_logger_context,
-                                message="Transitioned from IDLE to STARTING to begin execution")
+            # ✅ Ensure proper state transition before execution
+            if self.execution_context.state_machine.state == GlueProcessState.IDLE:
+                self.execution_context.state_machine.transition(GlueProcessState.STARTING)
+                log_debug_message(glue_dispensing_logger_context,
+                                  message="Transitioned from IDLE to STARTING to begin execution")
 
         try:
             # Main execution loop
-            while self.execution_context.state_machine.state not in [GlueProcessState.COMPLETED, GlueProcessState.ERROR]:
+            while self.execution_context.state_machine.state not in [GlueProcessState.COMPLETED,
+                                                                     GlueProcessState.ERROR]:
                 current_state = self.execution_context.state_machine.state
                 log_debug_message(glue_dispensing_logger_context,
                                   message=f"Execution loop - Current State: {current_state}")
@@ -156,7 +164,6 @@ class GlueDispensingOperation:
                     log_debug_message(glue_dispensing_logger_context, message="Execution stopped, completing...")
                     self.execution_context.state_machine.transition(GlueProcessState.COMPLETED)
                     break
-
 
                 elif current_state == GlueProcessState.INITIALIZING:
                     # Transition from INITIALIZING to IDLE, then to STARTING
@@ -283,13 +290,16 @@ class GlueDispensingOperation:
                                       message=f"Unexpected state in execution loop: {current_state}")
                     break
 
-
-            self.execution_context.pump_controller.pump_off(self.execution_context.service,self.execution_context.robot_service,self.execution_context.glue_type,self.execution_context.current_settings)
+            self.execution_context.pump_controller.pump_off(self.execution_context.service,
+                                                            self.execution_context.robot_service,
+                                                            self.execution_context.glue_type,
+                                                            self.execution_context.current_settings)
 
             # Guard: current_settings may be None if no valid path/settings were established
             if self.execution_context.current_settings and isinstance(self.execution_context.current_settings, dict):
                 timeout_before_generator_off = float(
-                    self.execution_context.current_settings.get(GlueSettingKey.TIME_BETWEEN_GENERATOR_AND_GLUE.value, 1))
+                    self.execution_context.current_settings.get(GlueSettingKey.TIME_BETWEEN_GENERATOR_AND_GLUE.value,
+                                                                1))
             else:
                 # Fallback safe default
                 timeout_before_generator_off = 1.0
@@ -314,18 +324,15 @@ class GlueDispensingOperation:
             self.execution_context.state_machine.transition(GlueProcessState.ERROR)
             return False, f"Execution error: {e}"
 
-    def pause_operation(self):
-        from applications.glue_dispensing_application.glue_process.state_handlers.pause_operation import pause_operation
-        return pause_operation(self,self.execution_context)
+    def _do_pause(self):
+        return pause_operation(self, self.execution_context,glue_dispensing_logger_context)
 
-    def stop_operation(self):
-        from applications.glue_dispensing_application.glue_process.state_handlers.stop_operation import stop_operation
-        return stop_operation(self,self.execution_context)
+    def _do_stop(self):
+        return stop_operation(self, self.execution_context,glue_dispensing_logger_context)
 
-    def resume_operation(self):
+    def _do_resume(self):
         """Resume operation from paused state"""
-        from applications.glue_dispensing_application.glue_process.state_handlers.resume_operation import resume_operation
-        return resume_operation(self.execution_context)
+        return resume_operation(self.execution_context,glue_dispensing_logger_context)
 
     def _resume_execution(self):
         """Resume execution from saved context"""
@@ -338,32 +345,38 @@ class GlueDispensingOperation:
             log_debug_message(glue_dispensing_logger_context, message=f"Error during resume execution: {e}")
             self.execution_context.state_machine.transition(GlueProcessState.ERROR)
 
-    def _handle_starting_state(self,context):
-        from applications.glue_dispensing_application.glue_process.state_handlers.start_state_handler import handle_starting_state
+    def _handle_starting_state(self, context):
+        from applications.glue_dispensing_application.glue_process.state_handlers.start_state_handler import \
+            handle_starting_state
         # Return whatever the handler returns so the caller can update its local execution context variables
         return handle_starting_state(context)
 
-    def _handle_moving_to_first_point_state(self,context,resume):
-        from applications.glue_dispensing_application.glue_process.state_handlers.moving_to_first_point_state_handler import handle_moving_to_first_point_state
-        return handle_moving_to_first_point_state(context,resume)
+    def _handle_moving_to_first_point_state(self, context, resume):
+        from applications.glue_dispensing_application.glue_process.state_handlers.moving_to_first_point_state_handler import \
+            handle_moving_to_first_point_state
+        return handle_moving_to_first_point_state(context, resume)
 
-    def _handle_transition_between_paths(self,context):
-        from applications.glue_dispensing_application.glue_process.state_handlers.transition_between_paths_state_handler import handle_transition_between_paths
+    def _handle_transition_between_paths(self, context):
+        from applications.glue_dispensing_application.glue_process.state_handlers.transition_between_paths_state_handler import \
+            handle_transition_between_paths
         return handle_transition_between_paths(context)
 
     def _handle_pump_initial_boost(self, context):
-        from applications.glue_dispensing_application.glue_process.state_handlers.initial_pump_boost_state_handler import handle_pump_initial_boost
+        from applications.glue_dispensing_application.glue_process.state_handlers.initial_pump_boost_state_handler import \
+            handle_pump_initial_boost
         return handle_pump_initial_boost(context)
 
     def _handle_start_pump_adjustment_thread(self, execution_context):
-        from applications.glue_dispensing_application.glue_process.state_handlers.start_pump_adjustment_thread_handler import handle_start_pump_adjustment_thread
+        from applications.glue_dispensing_application.glue_process.state_handlers.start_pump_adjustment_thread_handler import \
+            handle_start_pump_adjustment_thread
         return handle_start_pump_adjustment_thread(execution_context)
 
     def _handle_send_path_to_robot_state(self, execution_context):
-        from applications.glue_dispensing_application.glue_process.state_handlers.sending_path_to_robot_state_handler import handle_send_path_to_robot
+        from applications.glue_dispensing_application.glue_process.state_handlers.sending_path_to_robot_state_handler import \
+            handle_send_path_to_robot
         return handle_send_path_to_robot(execution_context)
 
-    def _handle_wait_for_path_completion(self,execution_context):
-        from applications.glue_dispensing_application.glue_process.state_handlers.wait_for_path_completion_state_handler import handle_wait_for_path_completion
+    def _handle_wait_for_path_completion(self, execution_context):
+        from applications.glue_dispensing_application.glue_process.state_handlers.wait_for_path_completion_state_handler import \
+            handle_wait_for_path_completion
         return handle_wait_for_path_completion(execution_context)
-

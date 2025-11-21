@@ -72,9 +72,10 @@ class MessageBroker:
 
     def publish(self, topic: str, message: Any):
         """Publish message to all live subscribers"""
-        # print(f"Publishing to topic '{topic}' message: {message}")
+        # print(f"[MessageBroker] Publishing to topic '{topic}' message: {message}")
 
         if topic not in self.subscribers:
+            print(f"[MessageBroker] WARNING: No subscribers for topic '{topic}'")
             self.logger.debug(f"No subscribers for topic '{topic}'")
             return
         # Get all live callbacks and clean up dead ones
@@ -252,3 +253,4 @@ if __name__ == "__main__":
     print(f"No subscriber result: {no_result}")
 
     print(f"Final subscriber count: {broker1.get_subscriber_count('chat')}")
+

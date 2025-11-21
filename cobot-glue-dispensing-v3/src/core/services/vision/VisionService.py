@@ -101,12 +101,6 @@ class _VisionService(VisionSystem):
 
         while True:
             self.contours, frame, _ = super().run()
-            # self.contours, frame, _  = self.captureFrameThreadSafe()
-            state = "waiting_image" if frame is None else "ok"
-            now = time.time()
-            if now - last_publish_time >= publish_interval:
-                broker.publish("vision/state", {"state": state})
-                last_publish_time = now
             if frame is None:
                 continue
 

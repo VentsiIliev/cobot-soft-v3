@@ -112,7 +112,7 @@ class ControlButtonsWidget(TranslatableWidget):
             else:
                 # Fallback for old format or direct state object
                 new_state = state_data
-            print(f"ControlButtonsWidget: Received application state update: {new_state}")
+            # print(f"ControlButtonsWidget: Received application state update: {new_state}")
             # Store the state and schedule GUI update on main thread
             # FIRST CHECK IF THE RECEIVED STATE IS DIFFERENT FROM THE CURRENT ONE
             if self.app_state == new_state:

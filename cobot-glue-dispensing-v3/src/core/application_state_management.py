@@ -1,5 +1,6 @@
 from backend.system.SystemStatePublisherThread import SystemStatePublisherThread
 from core.application.interfaces.ISubscriptionModule import ISubscriptionModule
+from core.operation_state_management import OperationState
 
 
 class SubscriptionManger:
@@ -54,17 +55,6 @@ class ApplicationState(Enum):
     ERROR = "error"
     CALIBRATING = "calibrating"
 
-
-class ProcessState(Enum):
-    INITIALIZING = auto()
-    IDLE = auto()
-    STARTING = auto()
-    STOPPED = auto()
-    PAUSED = auto()
-    COMPLETED = auto()
-    ERROR = auto()
-
-
 class ApplicationMessagePublisher:
     """Extended message publisher for glue dispensing specific messages"""
 
@@ -106,31 +96,33 @@ class ApplicationStateManager:
 
     def publish_state(self):
         """Publish the current state (no arguments needed - used by publisher thread)"""
-        print(f"ApplicationStateManager: Publishing state {self.current_state}")
+        # print(f"ApplicationStateManager: Publishing state {self.current_state}")
         self.message_publisher.publish_state(self.current_state)
 
-    def __map_process_to_application_state(self, process_state):
+    def __map_operation_to_application_state(self, process_state):
         """Map GlueProcessState to ApplicationState"""
-        if process_state == ProcessState.PAUSED:
+        if process_state == OperationState.PAUSED:
             return ApplicationState.PAUSED
-        elif process_state == ProcessState.COMPLETED:
+        elif process_state == OperationState.COMPLETED:
             return ApplicationState.IDLE
-        elif process_state == ProcessState.ERROR:
+        elif process_state == OperationState.ERROR:
             return ApplicationState.ERROR
-        elif process_state == ProcessState.STOPPED:
+        elif process_state == OperationState.STOPPED:
             return ApplicationState.IDLE
-        elif process_state == ProcessState.IDLE:
+        elif process_state == OperationState.IDLE:
             return ApplicationState.IDLE
         else:
             return ApplicationState.STARTED
 
-    def on_process_state_update(self, state):
+    def on_operation_state_update(self, state):
         """Handle glue process state updates"""
-        print(f"Glue process state update received: {state}")
+        print(f"[APPLICATION STATE MANAGER] Operation state update received: {state}")
+        print(f"[APPLICATION STATE MANAGER] State type: {type(state)}")
+        print(f"[APPLICATION STATE MANAGER] Is OperationState: {isinstance(state, OperationState)}")
         # check if state is GluePrecessState and map to ApplicationState
-        if not isinstance(state, ProcessState):
+        if not isinstance(state, OperationState):
             raise ValueError(f"Invalid state type: {type(state)}. Expected GlueProcessState.")
-        self.update_state(self.__map_process_to_application_state(state))
+        self.update_state(self.__map_operation_to_application_state(state))
 
     def start_state_publisher_thread(self):
         if self.state_publisher is None:
