@@ -93,9 +93,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         self.preselected_workpiece = None
         self.workpiece_to_spray_paths_generator = WorkpieceToSprayPathsGenerator(self)
         self.create_workpiece_handler = CreateWorkpieceHandler(self)
-        
-        # Initialize glue process state machine for operation control
-        self.glue_process_state_machine = GlueProcessStateMachine(GlueProcessState.INITIALIZING)
+
         self.workpiece_matcher = WorkpieceMatcher()
         self.glue_service= GlueSprayService(generatorTurnOffTimeout=10, settings=self.get_glue_settings())
         # TODO: register glue service in service registry when the glue service state management is implemented
@@ -110,6 +108,8 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         self.CONTOUR_MATCHING = True
         self.current_operation = self.glue_dispensing_operation
 
+
+
     @property
     def operation(self):
         return self.current_operation
@@ -118,7 +118,6 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
     def set_current_operation(self):
         """determine the current operation based on mode"""
         self.current_operation = self.glue_dispensing_operation
-
     @override
     def _on_operation_start(self, debug=True, **kwargs) ->OperationResult:
         return start(self, self.CONTOUR_MATCHING, self.NESTING, debug)
@@ -146,12 +145,12 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
         return ApplicationState.INITIALIZING
 
     def start_nesting(self, debug=True)-> OperationResult:
-        self.current_operation = "Nesting"
+
         result =  nesting_handler.start_nesting(self, self.get_workpieces())
         return OperationResult(success=result.success,message=result.message)
 
     def start_spraying(self,workpieces, debug=True)-> OperationResult:
-        self.current_operation = "Spraying"
+
         return spraying_handler.start_spraying(self, workpieces, debug)
 
     def move_to_nesting_capture_position(self, z_offset=0):
@@ -427,6 +426,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
     def stop(self, emergency: bool = False) -> OperationResult:
         """Stop the robot application operation"""
         # CALLING SUPER CLASS STOP METHOD. KEEPING THIS METHOD FOR CLARITY AND POSSIBLE FUTURE CUSTOMIZATIONS
+        print(f"[GlueSprayingApplication] Stopping operation, emergency={emergency}")
         return super().stop()
 
     @override

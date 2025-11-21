@@ -34,17 +34,22 @@ def handle_start_pump_adjustment_thread(context):
             log_debug_message(glue_dispensing_logger_context, message="Pump adjustment thread started.")
         except Exception as e:
             log_error_message(glue_dispensing_logger_context, message=f"Failed to start pump adjustment thread: {e}")
-            return PumpAdjustmentResult(False, GlueProcessState.ERROR, None, None, context.current_path_index, context.current_point_index, context.current_path, context.current_settings)
+
+            result = PumpAdjustmentResult(False, GlueProcessState.ERROR, None, None, context.current_path_index, context.current_point_index, context.current_path, context.current_settings)
+            update_context_from_pump_adjustment_result(context, result)
+            return result.next_state
 
         # Wait for thread readiness
         if not pump_ready_event.wait(timeout=5.0):
             log_error_message(glue_dispensing_logger_context, message="Pump adjustment thread failed to initialize in time.")
-            return PumpAdjustmentResult(False, GlueProcessState.ERROR, None, None, context.current_path_index, context.current_point_index, context.current_path, context.current_settings)
+            result = PumpAdjustmentResult(False, GlueProcessState.ERROR, None, None, context.current_path_index, context.current_point_index, context.current_path, context.current_settings)
+            handle_start_pump_adjustment_thread(context, result)
+            return result.next_state
 
         log_debug_message(glue_dispensing_logger_context, message="Pump adjustment thread ready.")
 
     # ✅ Return the result with thread references
-    return PumpAdjustmentResult(
+    result = PumpAdjustmentResult(
         handled=True,
         next_state=GlueProcessState.SENDING_PATH_POINTS,
         pump_thread=pump_thread,
@@ -54,3 +59,15 @@ def handle_start_pump_adjustment_thread(context):
         next_path=context.current_path,
         next_settings=context.current_settings,
     )
+    update_context_from_pump_adjustment_result(context, result)
+    return result.next_state
+
+def update_context_from_pump_adjustment_result(context, result: PumpAdjustmentResult):
+    """Update context based on PumpAdjustmentResult."""
+    context.current_path_index = result.next_path_index
+    context.current_point_index = result.next_point_index
+    context.current_path = result.next_path
+    context.current_settings = result.next_settings
+    # ✅ store thread + event in context
+    context.pump_thread = result.pump_thread
+    context.pump_ready_event = result.pump_ready_event

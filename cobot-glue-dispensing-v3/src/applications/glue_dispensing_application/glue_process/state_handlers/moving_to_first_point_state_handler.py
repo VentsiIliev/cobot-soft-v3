@@ -22,7 +22,7 @@ def handle_moving_to_first_point_state(context, resume):
 
     # Ensure settings exist
     if context.current_settings is None:
-        return MovingResult(
+        result = MovingResult(
             handled=False,
             resume=False,
             next_state=GlueProcessState.ERROR,
@@ -31,6 +31,8 @@ def handle_moving_to_first_point_state(context, resume):
             next_path=context.current_path,
             next_settings=context.current_settings,
         )
+        update_context_after_moving_to_first_point(context,result)
+        return result.next_state
 
     # --- Wait for robot to reach first point ---
     reach_start_threshold = float(
@@ -69,7 +71,7 @@ def handle_moving_to_first_point_state(context, resume):
         if "PAUSED" in reason:
             # Determine which point to resume from later
             point_to_save = context.current_point_index if resume else 0
-            return MovingResult(
+            result = MovingResult(
                 handled=True,
                 resume=True,
                 next_state=GlueProcessState.PAUSED,
@@ -78,8 +80,10 @@ def handle_moving_to_first_point_state(context, resume):
                 next_path=context.current_path,
                 next_settings=context.current_settings,
             )
+            update_context_after_moving_to_first_point(context, result)
+            return result.next_state
         else:  # STOPPED
-            return MovingResult(
+            result = MovingResult(
                 handled=True,
                 resume=False,
                 next_state=GlueProcessState.STOPPED,
@@ -88,11 +92,13 @@ def handle_moving_to_first_point_state(context, resume):
                 next_path=context.current_path,
                 next_settings=context.current_settings,
             )
+            update_context_after_moving_to_first_point(context, result)
+            return result.next_state
 
     # --- Handle robot reaching / not reaching target ---
     if reached:
         # ✅ Robot reached the start point — proceed to EXECUTING_PATH
-        return MovingResult(
+        result =  MovingResult(
             handled=True,
             resume=resume,
             next_state=GlueProcessState.EXECUTING_PATH,
@@ -101,9 +107,10 @@ def handle_moving_to_first_point_state(context, resume):
             next_path=context.current_path,
             next_settings=context.current_settings,
         )
-
+        update_context_after_moving_to_first_point(context, result)
+        return result.next_state
     # --- Timeout or other failure case ---
-    return MovingResult(
+    result = MovingResult(
         handled=False,
         resume=False,
         next_state=GlueProcessState.ERROR,
@@ -112,3 +119,16 @@ def handle_moving_to_first_point_state(context, resume):
         next_path=context.current_path,
         next_settings=context.current_settings,
     )
+    update_context_after_moving_to_first_point(context,result)
+    return result.next_state
+
+
+def update_context_after_moving_to_first_point(context, result: MovingResult):
+    """
+    Update execution context after handling MOVING_TO_FIRST_POINT state.
+    Mutates the context in place based on the MovingResult.
+    """
+    context.current_path_index = result.next_path_index
+    context.current_point_index = result.next_point_index
+    context.current_path = result.next_path
+    context.current_settings = result.next_settings

@@ -44,12 +44,15 @@ def handle_send_path_to_robot(context):
         if context.state_machine.state == GlueProcessState.PAUSED:
             context.save_progress(path_index, i)
             log_debug_message(glue_dispensing_logger_context, message=f"Paused before point {i}")
-            return HandlerResult(True, True, GlueProcessState.PAUSED, path_index, i, path, settings)
+            result = HandlerResult(True, True, GlueProcessState.PAUSED, path_index, i, path, settings)
+            update_context_from_handler_result(context, result)
+            return result.next_state
 
         if context.state_machine.state == GlueProcessState.STOPPED:
             log_debug_message(glue_dispensing_logger_context, message=f"Stopped before point {i}")
-            return HandlerResult(True, False, GlueProcessState.STOPPED, path_index, i, path, settings)
-
+            result = HandlerResult(True, False, GlueProcessState.STOPPED, path_index, i, path, settings)
+            update_context_from_handler_result(context, result)
+            return result.next_state
         try:
             # Send move command (non-blocking)
             ret = context.robot_service.robot.move_liner(
@@ -63,15 +66,27 @@ def handle_send_path_to_robot(context):
 
             if ret != 0:
                 log_error_message(glue_dispensing_logger_context, message=f"MoveL failed with code {ret} at point {i}")
-                return HandlerResult(False, False, GlueProcessState.ERROR, path_index, i, path, settings)
-
+                result = HandlerResult(False, False, GlueProcessState.ERROR, path_index, i, path, settings)
+                update_context_from_handler_result(context, result)
+                return result.next_state
         except Exception as e:
             import traceback
             traceback.print_exc()
             log_error_message(glue_dispensing_logger_context, message=f"Exception at point {i}: {e}")
-            return HandlerResult(False, False, GlueProcessState.ERROR, path_index, i, path, settings)
+            result = HandlerResult(False, False, GlueProcessState.ERROR, path_index, i, path, settings)
+            update_context_from_handler_result(context, result)
+            return result.next_state
 
     # All points completed successfully
     log_debug_message(glue_dispensing_logger_context, message="All points sent and reached. Path completed.")
-    return HandlerResult(True, False, GlueProcessState.WAIT_FOR_PATH_COMPLETION, path_index, 0, path, settings)
+    result = HandlerResult(True, False, GlueProcessState.WAIT_FOR_PATH_COMPLETION, path_index, 0, path, settings)
+    update_context_from_handler_result(context, result)
+    return result.next_state
 
+def update_context_from_handler_result(context, result: HandlerResult):
+    """Update context based on HandlerResult."""
+    # Update context explicitly
+    context.current_path_index = result.next_path_index
+    context.current_point_index = result.next_point_index
+    context.current_path = result.next_path
+    context.current_settings = result.next_settings

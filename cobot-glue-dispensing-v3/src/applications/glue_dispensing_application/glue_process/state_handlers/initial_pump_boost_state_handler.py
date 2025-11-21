@@ -39,7 +39,7 @@ def handle_pump_initial_boost(context):
                 message=f"Motor start failed for path {path_index}, point_offset={point_index}"
             )
 
-            return InitialPumpBoostResult(
+            result = InitialPumpBoostResult(
                 handled=False,
                 resume=False,
                 next_state=GlueProcessState.ERROR,
@@ -49,13 +49,15 @@ def handle_pump_initial_boost(context):
                 next_settings=context.current_settings,
                 motor_started=False
             )
+            update_context_from_initial_pump_boost_result(context, result)
+            return  result.next_state
 
         log_debug_message(
             glue_dispensing_logger_context,
             message=f"Motor started successfully for path {path_index}, point_offset={point_index}"
         )
 
-        return InitialPumpBoostResult(
+        result = InitialPumpBoostResult(
             handled=True,
             resume=False,
             next_state=GlueProcessState.STARTING_PUMP_ADJUSTMENT_THREAD,
@@ -65,6 +67,8 @@ def handle_pump_initial_boost(context):
             next_settings=context.current_settings,
             motor_started=True
         )
+        update_context_from_initial_pump_boost_result(context, result)
+        return result.next_state
 
     # --- Case 2: Spray off or already started ---
     log_debug_message(
@@ -75,7 +79,7 @@ def handle_pump_initial_boost(context):
         )
     )
 
-    return InitialPumpBoostResult(
+    result = InitialPumpBoostResult(
         handled=True,
         resume=False,
         next_state=GlueProcessState.STARTING_PUMP_ADJUSTMENT_THREAD,
@@ -85,3 +89,13 @@ def handle_pump_initial_boost(context):
         next_settings=context.current_settings,
         motor_started=context.motor_started
     )
+    update_context_from_initial_pump_boost_result(context,result)
+    return result.next_state
+
+def update_context_from_initial_pump_boost_result(context, result: InitialPumpBoostResult):
+    """Update the context based on the result from handle_pump_initial_boost."""
+    context.motor_started = result.motor_started
+    context.current_path_index = result.next_path_index
+    context.current_point_index = result.next_point_index
+    context.current_path = result.next_path
+    context.current_settings = result.next_settings

@@ -51,10 +51,16 @@ def handle_transition_between_paths(context):
         )
         next_state = GlueProcessState.STARTING
 
-    # ✅ Return clean TransitionResult
-    return TransitionResult(
+    result = TransitionResult(
         handled=True,
         next_state=next_state,
         next_path_index=next_path_index,
         next_point_index=next_point_index,
     )
+    update_context_from_transition_result(context, result)
+    return result.next_state
+
+def update_context_from_transition_result(context, result):
+    """Update context based on TransitionResult."""
+    context.current_path_index = result.next_path_index
+    context.current_point_index = result.next_point_index

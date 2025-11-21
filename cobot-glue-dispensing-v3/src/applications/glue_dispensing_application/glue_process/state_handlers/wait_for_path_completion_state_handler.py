@@ -33,8 +33,9 @@ def handle_wait_for_path_completion(context):
 
     if pump_thread is None:
         log_error_message(glue_dispensing_logger_context, message="[WAIT] No pump thread found in context.")
-        return HandlerResult(False, False, GlueProcessState.ERROR, path_index, 0, path, settings)
-
+        result = HandlerResult(False, False, GlueProcessState.ERROR, path_index, 0, path, settings)
+        update_context_from_handler_result(context, result)
+        return result.next_state
     try:
         # Wait indefinitely for the pump thread to finish.
         # You can add a soft timeout if you ever need to handle unexpected hangs.
@@ -58,12 +59,15 @@ def handle_wait_for_path_completion(context):
                         log_debug_message(glue_dispensing_logger_context, 
                             message=f"[WAIT] Error capturing pump thread progress: {e}")
                 
-                return HandlerResult(True, True, GlueProcessState.PAUSED, path_index, paused_point_index, path, settings)
+                result = HandlerResult(True, True, GlueProcessState.PAUSED, path_index, paused_point_index, path, settings)
+                update_context_from_handler_result(context, result)
+                return result.next_state
 
             if state == GlueProcessState.STOPPED:
                 log_debug_message(glue_dispensing_logger_context, message="[WAIT] Stopped while waiting for pump thread")
-                return HandlerResult(True, False, GlueProcessState.STOPPED, path_index, context.current_point_index, path, settings)
-
+                result = HandlerResult(True, False, GlueProcessState.STOPPED, path_index, context.current_point_index, path, settings)
+                update_context_from_handler_result(context, result)
+                return result.next_state
             time.sleep(0.1)
 
         # Get the pump thread result to capture final progress
@@ -95,12 +99,14 @@ def handle_wait_for_path_completion(context):
 
     except Exception as e:
         log_error_message(glue_dispensing_logger_context, message=f"[WAIT] Error waiting for pump thread: {e}")
-        return HandlerResult(False, False, GlueProcessState.ERROR, path_index, context.current_point_index, path, settings)
+        result = HandlerResult(False, False, GlueProcessState.ERROR, path_index, context.current_point_index, path, settings)
+        update_context_from_handler_result(context, result)
+        return result.next_state
     finally:
         context.pump_thread = None
 
     # ✅ The thread finished — robot reached last point.
-    return HandlerResult(
+    result = HandlerResult(
         handled=True,
         resume=False,
         next_state=next_state,
@@ -109,3 +115,10 @@ def handle_wait_for_path_completion(context):
         next_path=path,
         next_settings=settings,
     )
+    update_context_from_handler_result(context, result)
+    return result.next_state
+
+def update_context_from_handler_result(context, result: HandlerResult):
+    """Update context based on HandlerResult."""
+    context.current_path_index = result.next_path_index
+    context.current_point_index = result.next_point_index

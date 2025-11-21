@@ -96,6 +96,10 @@ class BaseRobotApplication(ABC):
         self._initialize_application()
 
     @property
+    def state(self):
+        return self.state_manager.current_state
+
+    @property
     @abstractmethod
     def operation(self):
         """
@@ -152,6 +156,7 @@ class BaseRobotApplication(ABC):
         Returns:
             Dict containing operation result
         """
+        print(f"[BaseRobotApplication] Stopping operation...{self.operation} type: {type(self.operation)}")
         return self.operation.stop(*args, **kwargs)
 
 

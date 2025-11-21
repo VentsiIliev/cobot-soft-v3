@@ -7,11 +7,16 @@ from typing import Optional
 from applications.glue_dispensing_application.glue_process.state_handlers.pause_operation import pause_operation
 from applications.glue_dispensing_application.glue_process.state_handlers.resume_operation import resume_operation
 from applications.glue_dispensing_application.glue_process.state_handlers.stop_operation import stop_operation
+from applications.glue_dispensing_application.glue_process.state_machine.ExecutableStateMachine import \
+    ExecutableStateMachine, StateRegistry, State
+from applications.glue_dispensing_application.glue_process.state_machine.GlueProcessStateMachine import \
+    GlueProcessStateMachine
 from applications.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
 from applications.glue_dispensing_application.glue_process.ExecutionContext import ExecutionContext
 from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
 
-from applications.glue_dispensing_application.glue_process.state_machine.GlueProcessState import GlueProcessState
+from applications.glue_dispensing_application.glue_process.state_machine.GlueProcessState import GlueProcessState, \
+    GlueProcessTransitionRules
 
 from backend.system.utils.custom_logging import log_debug_message, log_info_message, log_error_message, \
     log_calls_with_timestamp_decorator, setup_logger, LoggerContext
@@ -49,17 +54,9 @@ class GlueDispensingOperation(IOperation):
             glue_settings = GlueSettings()
 
         self.glue_service.settings = glue_settings
-
         self.pump_controller = PumpController(USE_SEGMENT_SETTINGS, glue_dispensing_logger_context, glue_settings)
-        # Execution context for pause/resume
-        # ✅ Initialize control flags and state variables
-
-        self.motor_started = False
-        self.resume_requested = False
-        self.pause_requested = False
-        self.stop_requested = False
-
         self.execution_context = ExecutionContext()
+        self.glue_process_state_machine = self.get_state_machine()
 
         # Create debug directory if it doesn't exist
         if ENABLE_CONTEXT_DEBUG:
@@ -118,7 +115,7 @@ class GlueDispensingOperation(IOperation):
         self.execution_context.service = self.glue_service
         self.execution_context.robot_service = self.robot_service
         # Use the application's glue process state machine instead of robot service state machine
-        self.execution_context.state_machine = getattr(self.glue_application, 'glue_process_state_machine', None)
+        self.execution_context.state_machine = self.glue_process_state_machine
         self.execution_context.glue_type = self.glue_service.glueA_addresses
         self.execution_context.current_path_index = 0
         self.execution_context.current_point_index = 0
@@ -183,37 +180,16 @@ class GlueDispensingOperation(IOperation):
 
                 elif current_state == GlueProcessState.STARTING:
 
-                    result = self._handle_starting_state(self.execution_context)
-                    # Explicitly update execution context
                     ctx = self.execution_context
-                    ctx.current_path_index = result.next_path_index
-                    ctx.current_point_index = result.next_point_index
-                    ctx.current_path = result.next_path
-                    ctx.current_settings = result.next_settings
-                    # Apply the state transition explicitly
-                    ctx.state_machine.transition(result.next_state)
-                    # Write debug context
+                    next_state = self._handle_starting_state(self.execution_context)
+                    ctx.state_machine.transition(next_state)
                     self._write_context_debug("STARTING")
-                    # Log cleanly
-                    log_debug_message(
-                        glue_dispensing_logger_context,
-                        message=(
-                            f"STARTING handler → handled={result.handled}, resume={result.resume}, "
-                            f"path_index={ctx.current_path_index}, point_index={ctx.current_point_index}, "
-                            f"next_state={result.next_state}"
-                        ),
-                    )
+
 
                 elif current_state == GlueProcessState.MOVING_TO_FIRST_POINT:
-                    result = self._handle_moving_to_first_point_state(self.execution_context, resume)
+                    next_state = self._handle_moving_to_first_point_state(self.execution_context, resume)
                     ctx = self.execution_context
-                    # Apply result to context (explicitly)
-                    ctx.current_path_index = result.next_path_index
-                    ctx.current_point_index = result.next_point_index
-                    ctx.current_path = result.next_path
-                    ctx.current_settings = result.next_settings
-                    # Transition state based on result
-                    ctx.state_machine.transition(result.next_state)
+                    ctx.state_machine.transition(next_state)
                     # Write debug context
                     self._write_context_debug("MOVING_TO_FIRST_POINT")
 
@@ -223,68 +199,35 @@ class GlueDispensingOperation(IOperation):
                     self._write_context_debug("EXECUTING_PATH")
 
                 elif current_state == GlueProcessState.PUMP_INITIAL_BOOST:
-                    result = self._handle_pump_initial_boost(self.execution_context)
+                    next_state = self._handle_pump_initial_boost(self.execution_context)
                     ctx = self.execution_context
-                    # Explicitly apply result (no internal mutation)
-                    ctx.motor_started = result.motor_started
-                    ctx.current_path_index = result.next_path_index
-                    ctx.current_point_index = result.next_point_index
-                    ctx.current_path = result.next_path
-                    ctx.current_settings = result.next_settings
-                    ctx.state_machine.transition(result.next_state)
+                    ctx.state_machine.transition(next_state)
                     # Write debug context
                     self._write_context_debug("PUMP_INITIAL_BOOST")
 
                 elif current_state == GlueProcessState.STARTING_PUMP_ADJUSTMENT_THREAD:
-                    result = self._handle_start_pump_adjustment_thread(self.execution_context)
+                    next_state = self._handle_start_pump_adjustment_thread(self.execution_context)
                     ctx = self.execution_context
-                    ctx.current_path_index = result.next_path_index
-                    ctx.current_point_index = result.next_point_index
-                    ctx.current_path = result.next_path
-                    ctx.current_settings = result.next_settings
-                    # ✅ store thread + event in context
-                    ctx.pump_thread = result.pump_thread
-                    ctx.pump_ready_event = result.pump_ready_event
-                    ctx.state_machine.transition(result.next_state)
+                    ctx.state_machine.transition(next_state)
                     # Write debug context
                     self._write_context_debug("STARTING_PUMP_ADJUSTMENT_THREAD")
 
                 elif current_state == GlueProcessState.SENDING_PATH_POINTS:
-
-                    result = self._handle_send_path_to_robot_state(self.execution_context)
+                    next_state = self._handle_send_path_to_robot_state(self.execution_context)
                     ctx = self.execution_context
-                    # Update context explicitly
-                    ctx.current_path_index = result.next_path_index
-                    ctx.current_point_index = result.next_point_index
-                    ctx.current_path = result.next_path
-                    ctx.current_settings = result.next_settings
-                    # Now handle the state transition in one place
-                    if not result.handled:
-                        ctx.state_machine.transition(GlueProcessState.ERROR)
-                    elif result.resume:
-                        ctx.state_machine.transition(GlueProcessState.PAUSED)
-                    else:
-                        ctx.state_machine.transition(result.next_state)
-                    # Write debug context
+                    ctx.state_machine.transition(next_state)
                     self._write_context_debug("SENDING_PATH_POINTS")
 
                 elif current_state == GlueProcessState.WAIT_FOR_PATH_COMPLETION:
-                    result = self._handle_wait_for_path_completion(self.execution_context)
+                    next_state = self._handle_wait_for_path_completion(self.execution_context)
                     ctx = self.execution_context
-                    # Update context with captured progress from pump thread
-                    ctx.current_path_index = result.next_path_index
-                    ctx.current_point_index = result.next_point_index
-                    ctx.state_machine.transition(result.next_state)
-                    # Write debug context
+                    ctx.state_machine.transition(next_state)
                     self._write_context_debug("WAIT_FOR_PATH_COMPLETION")
 
                 elif current_state == GlueProcessState.TRANSITION_BETWEEN_PATHS:
-                    result = self._handle_transition_between_paths(self.execution_context)
+                    next_state = self._handle_transition_between_paths(self.execution_context)
                     ctx = self.execution_context
-                    ctx.current_path_index = result.next_path_index
-                    ctx.current_point_index = result.next_point_index
-                    ctx.state_machine.transition(result.next_state)
-                    # Write debug context
+                    ctx.state_machine.transition(next_state)
                     self._write_context_debug("TRANSITION_BETWEEN_PATHS")
 
                 else:
@@ -313,10 +256,10 @@ class GlueDispensingOperation(IOperation):
             self.execution_context.service.generatorOff()
             log_info_message(glue_dispensing_logger_context,
                              message=f"Generator turned off after waiting {timeout_before_generator_off}s")
-            self.execution_context.state_machine.transition(GlueProcessState.IDLE, None)
+            self.execution_context.state_machine.transition(GlueProcessState.IDLE)
             self.execution_context.robot_service.robot_state_manager.trajectoryUpdate = False
             self.execution_context.robot_service.message_publisher.publish_trajectory_stop_topic()
-            return True, "Execution completed"
+            return OperationResult(False, "Execution did not complete")
 
         except Exception as e:
             log_error_message(glue_dispensing_logger_context, message=f"Error during traceContours execution: {e}")
@@ -324,7 +267,7 @@ class GlueDispensingOperation(IOperation):
             import traceback
             traceback.print_exc()
             self.execution_context.state_machine.transition(GlueProcessState.ERROR)
-            return False, f"Execution error: {e}"
+            return OperationResult(False, "Execution error occurred",error=str(e))
 
     def _do_pause(self)->OperationResult:
         return pause_operation(self, self.execution_context,glue_dispensing_logger_context)
@@ -382,3 +325,42 @@ class GlueDispensingOperation(IOperation):
         from applications.glue_dispensing_application.glue_process.state_handlers.wait_for_path_completion_state_handler import \
             handle_wait_for_path_completion
         return handle_wait_for_path_completion(execution_context)
+
+    def get_state_machine(self)->ExecutableStateMachine:
+        transition_rules = GlueProcessTransitionRules.get_glue_transition_rules()
+        # Register all states and link to their respective handler functions
+        state_handlers_map = {
+            GlueProcessState.IDLE: lambda ctx: None,  # IDLE state does nothing
+            GlueProcessState.STARTING: self._handle_starting_state,
+            GlueProcessState.MOVING_TO_FIRST_POINT: lambda ctx: self._handle_moving_to_first_point_state(ctx,
+                                                                                                         resume=False),
+            GlueProcessState.EXECUTING_PATH: lambda ctx: GlueProcessState.PUMP_INITIAL_BOOST,
+            GlueProcessState.PUMP_INITIAL_BOOST: self._handle_pump_initial_boost,
+            GlueProcessState.STARTING_PUMP_ADJUSTMENT_THREAD: self._handle_start_pump_adjustment_thread,
+            GlueProcessState.SENDING_PATH_POINTS: self._handle_send_path_to_robot_state,
+            GlueProcessState.WAIT_FOR_PATH_COMPLETION: self._handle_wait_for_path_completion,
+            GlueProcessState.TRANSITION_BETWEEN_PATHS: self._handle_transition_between_paths,
+            GlueProcessState.PAUSED: lambda ctx: GlueProcessState.PAUSED,
+            GlueProcessState.STOPPED: lambda ctx: GlueProcessState.COMPLETED,
+            GlueProcessState.ERROR: lambda ctx: GlueProcessState.ERROR,
+            GlueProcessState.COMPLETED: lambda ctx: GlueProcessState.COMPLETED,
+            GlueProcessState.INITIALIZING: lambda ctx: GlueProcessState.IDLE,
+        }
+        registry = StateRegistry()
+        # Create and register State objects
+        for state_enum, handler in state_handlers_map.items():
+            registry.register_state(State(
+                state=state_enum,
+                handler=handler,
+                on_enter=lambda ctx, s=state_enum: self._write_context_debug(f"{s.name}_ENTER"),
+                on_exit=lambda ctx, s=state_enum: self._write_context_debug(f"{s.name}_EXIT")
+            ))
+
+        # Build the executable state machine
+        transition_rules = GlueProcessTransitionRules.get_glue_transition_rules()
+        return ExecutableStateMachine(
+            initial_state=GlueProcessState.INITIALIZING,
+            transition_rules=transition_rules,
+            state_registry=registry,
+            context=self.execution_context
+        )
