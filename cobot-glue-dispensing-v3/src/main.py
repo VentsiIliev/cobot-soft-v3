@@ -8,6 +8,7 @@ from applications.glue_dispensing_application.repositories.workpiece.GlueWorkPie
 from applications.glue_dispensing_application.services.workpiece.glue_workpiece_service import GlueWorkpieceService
 from communication_layer.api_gateway.dispatch.main_router import RequestHandler
 from core.application.interfaces.application_settings_interface import ApplicationSettingsRegistry
+from core.application.ApplicationContext import set_current_application, get_core_settings_path
 from core.controllers.vision.camera_system_controller import CameraSystemController
 from core.services.robot_service.impl.RobotStateManager import RobotStateManager
 from core.services.robot_service.impl.base_robot_service import RobotService
@@ -54,13 +55,16 @@ else:
     pass
 
 if __name__ == "__main__":
+    # Set the current application context (this determines which app's storage to use for core settings)
+    set_current_application("glue_dispensing_application")
 
     # Global registry instance
     settings_registry = ApplicationSettingsRegistry()
 
+    # Use application-specific core settings paths
     settings_file_paths = {
-        "camera":PathResolver.get_settings_file_path("camera_settings.json"),
-        "robot_config": PathResolver.get_settings_file_path("robot_config.json"),
+        "camera": get_core_settings_path("camera_settings.json") or PathResolver.get_settings_file_path("camera_settings.json"),
+        "robot_config": get_core_settings_path("robot_config.json") or PathResolver.get_settings_file_path("robot_config.json"),
     }
 
     settings_service = SettingsService(settings_file_paths=settings_file_paths,settings_registry=settings_registry)

@@ -38,7 +38,6 @@ class PathType(Enum):
     CAMERA_CALIBRATION_ROOT = "camera_calibration"
     CALIBRATION_RESULTS = "calibration_results"
 
-
     # === UI ASSETS ===
     UI_ASSETS = "ui_assets"
     UI_ICONS = "ui_icons"

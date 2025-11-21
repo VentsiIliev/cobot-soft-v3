@@ -9,6 +9,8 @@ from plugins.core.settings.ui.RobotConfigUI import RobotConfigController, RobotC
 from frontend.widgets.CustomWidgets import CustomTabWidget, BackgroundTabPage
 from .CameraSettingsTabLayout import CameraSettingsTabLayout
 from plugins.core.wight_cells_settings_plugin.ui.GlueSettingsTabLayout import GlueSettingsTabLayout
+from communication_layer.api.v1.endpoints import glue_endpoints
+from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
 
 #
 RESOURCE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..", "icons")
@@ -87,8 +89,9 @@ class SettingsContent(BackgroundWidget):
         robotConfigController = RobotConfigController(self.controller.requestSender)
         self.robotSettingsTabLayout = RobotConfigUI(self, robotConfigController)
         
-        # Create glue settings without initial data - will be populated externally
-        self.glueSettingsTabLayout = GlueSettingsTabLayout(self.glueSettingsTab, None)
+        # Create glue settings with initial data fetched from server
+        initial_glue_settings = self._load_initial_glue_settings()
+        self.glueSettingsTabLayout = GlueSettingsTabLayout(self.glueSettingsTab, initial_glue_settings)
 
         # *** ADD THIS: Set the layouts to the tab pages ***
         self.cameraSettingsTab.setLayout(self.cameraSettingsTabLayout)
@@ -117,6 +120,25 @@ class SettingsContent(BackgroundWidget):
         self.cameraSettingsTabLayout.value_changed_signal.connect(self._emit_setting_change)
         
         # Note: RobotConfigUI uses a different pattern - would need separate handling if required
+
+    def _load_initial_glue_settings(self):
+        """Load initial glue settings from the server."""
+        try:
+            print("Loading initial glue settings from server...")
+            response = self.controller.handle(glue_endpoints.SETTINGS_GLUE_GET)
+            
+            if response and response.get('status') == 'success':
+                settings_data = response.get('data', {})
+                print(f"Loaded glue settings: {settings_data}")
+                return GlueSettings(settings_data)
+            else:
+                print(f"Failed to load glue settings: {response}")
+                return GlueSettings()  # Return default settings
+        except Exception as e:
+            print(f"Error loading initial glue settings: {e}")
+            import traceback
+            traceback.print_exc()
+            return GlueSettings()  # Return default settings on error
     
     def _emit_setting_change(self, key: str, value, component_type: str):
         """

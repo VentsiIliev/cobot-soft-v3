@@ -47,7 +47,7 @@ class GlueSettings(Settings, ApplicationSettingsInterface):
     # ApplicationSettingsInterface implementation
     def get_settings_type_name(self) -> str:
         """Get the unique name for this settings type."""
-        return "glue"
+        return "glue_settings"
     
     def get_default_values(self) -> Dict[str, Any]:
         """Get default settings values for glue dispensing."""
@@ -119,8 +119,7 @@ class GlueSettings(Settings, ApplicationSettingsInterface):
         return [
             glue_endpoints.SETTINGS_GLUE_GET,
             glue_endpoints.SETTINGS_GLUE_SET,
-            glue_endpoints.SETTINGS_GLUE_GET_LEGACY,
-            glue_endpoints.SETTINGS_GLUE_SET_LEGACY,
+
         ]
 
     # Glue-specific methods (existing interface)

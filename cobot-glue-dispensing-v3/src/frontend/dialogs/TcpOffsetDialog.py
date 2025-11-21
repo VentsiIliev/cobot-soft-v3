@@ -7,6 +7,7 @@ from frontend.virtualKeyboard.VirtualKeyboard import FocusDoubleSpinBox
 import json
 import os
 from backend.system.settings.robotConfig import RobotConfig, get_default_config, OffsetDirectionMap
+from core.application.ApplicationContext import get_core_settings_path
 
 
 class TcpOffsetDialog(QDialog):
@@ -27,11 +28,14 @@ class TcpOffsetDialog(QDialog):
         # Store the controller for handling config operations
         self.controller = controller
         
-        # Fallback file path for direct access if no controller available
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        # From pl_ui/ui/widgets/, go up 3 levels to project root
-        project_root = os.path.join(current_dir, '..', '..', '..')
-        self.config_file = os.path.join(project_root, 'system', 'storage', 'settings', 'robot_config.json')
+        # Use application context for core settings path, with fallback
+        self.config_file = get_core_settings_path("robot_config.json")
+        if self.config_file is None:
+            # Fallback file path for direct access if no controller available
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            # From pl_ui/ui/widgets/, go up 3 levels to project root  
+            project_root = os.path.join(current_dir, '..', '..', '..')
+            self.config_file = os.path.join(project_root, 'system', 'storage', 'settings', 'robot_config.json')
         
         self.init_ui()
         self.load_current_values()

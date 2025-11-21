@@ -35,8 +35,17 @@ UPDATE_CONFIG_ENDPOINT = "/update-config?loadCellId={current_cell}&offset={offse
 """offset/scale - /get-config?loadCellId={current_cell}"""
 
 
-# Full path to config inside storage
-config_path = Path(PathResolver.get_settings_file_path('glue_cell_config.json'))
+# Full path to config inside storage - use application-specific storage
+def _get_glue_config_path():
+    """Get the path to glue cell config using application-specific storage."""
+    try:
+        from backend.system.utils.ApplicationStorageResolver import get_app_settings_path
+        return Path(get_app_settings_path("glue_dispensing_application", "glue_cell_config"))
+    except ImportError:
+        # Fallback to old path for backward compatibility
+        return Path(PathResolver.get_settings_file_path('glue_cell_config.json'))
+
+config_path = _get_glue_config_path()
 # Global logger variable
 ENABLE_LOGGING = False  # Enable or disable logging
 
@@ -657,10 +666,25 @@ class GlueCellsManager:
 class GlueCellsManagerSingleton:
     _manager_instance = None
 
-    CONFIG_PATH  = Path(PathResolver.get_settings_file_path('glue_cell_config.json'))
+    # Use application-specific storage for glue cell config
+    @classmethod
+    def _get_config_path(cls):
+        """Get the path to glue cell config using application-specific storage."""
+        try:
+            from backend.system.utils.ApplicationStorageResolver import get_app_settings_path
+            return Path(get_app_settings_path("glue_dispensing_application", "glue_cell_config"))
+        except ImportError:
+            # Fallback to old path for backward compatibility
+            return Path(PathResolver.get_settings_file_path('glue_cell_config.json'))
+    
+    CONFIG_PATH = None  # Will be set in get_instance()
     @staticmethod
     def get_instance():
         if GlueCellsManagerSingleton._manager_instance is None:
+            # Set CONFIG_PATH if not already set
+            if GlueCellsManagerSingleton.CONFIG_PATH is None:
+                GlueCellsManagerSingleton.CONFIG_PATH = GlueCellsManagerSingleton._get_config_path()
+            
             # Load config JSON inside the manager
             with GlueCellsManagerSingleton.CONFIG_PATH.open("r") as f:
                 config_data = json.load(f)
@@ -692,17 +716,6 @@ class GlueCellsManagerSingleton:
                     url = f"{base_url}/weight{cell_cfg['id']}"
                 else:
                     url = cell_cfg["url"]
-                    # cell_id = cell_cfg['id']
-                    # zero_offset = cell_cfg.get('zero_offset', 0)
-                    # scale = cell_cfg.get('scale', 1)
-                    # timeout = cell_cfg.get("FETCH_TIMEOUT")
-                    # # send request to set the zero offset and scale from config
-                    # endpoint = UPDATE_CONFIG_ENDPOINT.format(current_cell=cell_id,
-                    #                                          offset=zero_offset,
-                    #                                          scale=scale)
-                    #
-                    # url = f"{base_url}{endpoint}"
-                    # response = requests.get(url, timeout=timeout)
 
                 print(f"[GlueCellsManager] Cell {cell_cfg['id']}: {url}")
 

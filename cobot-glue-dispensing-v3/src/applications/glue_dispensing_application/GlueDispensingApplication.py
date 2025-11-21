@@ -14,20 +14,15 @@ from backend.system.settings.SettingsService import SettingsService
 from core.application_state_management import SubscriptionManger, OperationState
 from core.operation_state_management import OperationStatePublisher
 from core.operation_state_management import OperationResult
-from core.operations_handlers.camera_calibration_handler import \
-    calibrate_camera
-from core.operations_handlers.robot_calibration_handler import calibrate_robot
+
 from core.services.robot_service.impl.base_robot_service import RobotService
 from core.services.vision.VisionService import _VisionService
-# Import base classes
+
 from core.base_robot_application import BaseRobotApplication, ApplicationState, ApplicationMetadata
 
 from applications.glue_dispensing_application.glue_process.glue_dispensing_operation import \
     GlueDispensingOperation
-from applications.glue_dispensing_application.glue_process.state_machine.GlueProcessState import \
-    GlueProcessState
-from applications.glue_dispensing_application.glue_process.state_machine.GlueProcessStateMachine import \
-    GlueProcessStateMachine
+
 from applications.glue_dispensing_application.handlers import spraying_handler, nesting_handler
 from applications.glue_dispensing_application.handlers.clean_nozzle_handler import clean_nozzle
 from applications.glue_dispensing_application.handlers.create_workpiece_handler import \
@@ -41,7 +36,6 @@ from applications.glue_dispensing_application.handlers.workpieces_to_spray_paths
 from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
 from applications.glue_dispensing_application.settings.GlueSettingsHandler import GlueSettingsHandler
 from core.system_state_management import ServiceRegistry
-from modules.shared.MessageBroker import MessageBroker
 from modules.shared.tools.GlueCell import GlueCellsManagerSingleton, GlueDataFetcher
 
 """
@@ -405,7 +399,7 @@ class GlueSprayingApplication(BaseRobotApplication, RobotApplicationInterface):
     def get_glue_settings(self):
         """Get glue settings object for this application"""
         try:
-            handler = self.settings_registry.get_handler("glue")
+            handler = self.settings_registry.get_handler("glue_settings")
             return handler.get_settings_object()
         except Exception as e:
             self.logger.error(f"Failed to get glue settings: {e}")

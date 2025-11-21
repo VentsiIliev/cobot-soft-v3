@@ -9,8 +9,7 @@ from communication_layer.api.v1.topics import VisionTopics
 from modules.VisionSystem.VisionSystem import VisionSystem
 import os
 from modules.shared.MessageBroker import MessageBroker
-
-CONFIG_FILE_PATH = os.path.join(os.path.dirname(__file__), '..','..','..','backend', 'system','storage', 'settings', 'camera_settings.json')
+from core.application.ApplicationContext import get_core_settings_path
 
 # PICKUP_AREA_CAMERA_TO_ROBOT_MATRIX_PATH = '/home/ilv/Cobot-Glue-Nozzle/VisionSystem/calibration/cameraCalibration/storage/calibration_result/pickupCamToRobotMatrix.npy'
 PICKUP_AREA_CAMERA_TO_ROBOT_MATRIX_PATH = os.path.join(os.path.dirname(__file__),'..','..', '..', 'VisionSystem', 'calibration', 'cameraCalibration', 'storage', 'calibration_result', 'pickupCamToRobotMatrix.npy')
@@ -42,7 +41,14 @@ class _VisionService(VisionSystem):
             Args:
                 None
             """
-        super().__init__(configFilePath=CONFIG_FILE_PATH)
+        # Get camera settings path from application context
+        config_file_path = get_core_settings_path("camera_settings.json")
+        if config_file_path is None:
+            # Fallback to hardcoded path for backward compatibility
+            config_file_path = os.path.join(os.path.dirname(__file__), '..','..','..','backend', 'system','storage', 'settings', 'camera_settings.json')
+            print("VisionService: Warning - No application context set, using fallback camera settings path")
+        
+        super().__init__(configFilePath=config_file_path)
 
         self.MAX_QUEUE_SIZE = 100  # Maximum number of frames to store in the queue
         self.frameQueue = queue.Queue(maxsize=self.MAX_QUEUE_SIZE)

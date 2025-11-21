@@ -1,56 +1,36 @@
 """
-Glue Application Settings Handler
+Standardized Glue Settings Handler
 
-This module provides the settings handler for the glue dispensing application,
-implementing the ApplicationSettingsHandler interface to manage glue-specific
-settings operations.
-
-Updated to use the new standardized base class for consistency and reliability.
+This is the updated glue settings handler that uses the new standardized
+base class, providing consistent behavior and eliminating the parameter
+passing bugs we encountered earlier.
 """
 
-import os
 import logging
 from typing import Dict, Any, Tuple
+
 from backend.system.settings.BaseApplicationSettingsHandler import BaseApplicationSettingsHandler
 from applications.glue_dispensing_application.settings.GlueSettings import GlueSettings
 from applications.glue_dispensing_application.settings.enums.GlueSettingKey import GlueSettingKey
 
 
-class GlueSettingsHandler(BaseApplicationSettingsHandler):
+class StandardizedGlueSettingsHandler(BaseApplicationSettingsHandler):
     """
-    Handler for glue application settings operations.
+    Standardized handler for glue application settings.
     
-    This class manages the persistence, validation, and retrieval of
-    glue-specific settings for the glue dispensing application.
-    
-    Updated to use the standardized base class which provides:
+    This handler uses the new base class to provide:
     - Automatic path resolution using ApplicationStorageResolver
     - Consistent error handling and validation
     - Transaction-like save operations with rollback
     - Proper logging and debugging
     """
     
-    def __init__(self, storage_path: str = None):
-        """
-        Initialize the glue settings handler.
-        
-        Args:
-            storage_path: Custom path for storing settings files (deprecated, use ApplicationStorageResolver instead)
-        """
-        # Initialize using the standardized base class
+    def __init__(self):
+        """Initialize the standardized glue settings handler."""
         super().__init__(
-            app_name="glue_dispensing_application",
+            app_name="glue_dispensing_application", 
             settings_type="glue_settings"
         )
-        
-        # Support legacy storage_path parameter for backward compatibility
-        if storage_path is not None:
-            self.logger.warning("storage_path parameter is deprecated. Using ApplicationStorageResolver instead.")
-            # Override the automatically resolved path if legacy path is provided
-            custom_settings_file = os.path.join(storage_path, "glue_settings.json")
-            if os.path.exists(custom_settings_file):
-                self.settings_file_path = custom_settings_file
-                self._load_settings()  # Reload with custom path
     
     def create_default_settings(self) -> GlueSettings:
         """
@@ -124,31 +104,9 @@ class GlueSettingsHandler(BaseApplicationSettingsHandler):
             GlueSettingKey.SPRAY_ON.value: self._settings_object.get_spray_on()
         }
     
-    # ========== BACKWARD COMPATIBILITY METHODS ==========
-    
-    @property
-    def glue_settings(self) -> GlueSettings:
-        """
-        Legacy property access to glue settings object.
-        
-        Returns:
-            GlueSettings: The current glue settings object
-        """
-        return self.get_settings_object()
-    
-    @property 
-    def settings_file(self) -> str:
-        """
-        Legacy property access to settings file path.
-        
-        Returns:
-            str: Path to the settings file
-        """
-        return self.settings_file_path
-    
     def get_glue_settings(self) -> GlueSettings:
         """
-        Legacy method to get glue settings object.
+        Get the glue settings object directly.
         
         Returns:
             GlueSettings: The current glue settings object
@@ -157,7 +115,7 @@ class GlueSettingsHandler(BaseApplicationSettingsHandler):
     
     def update_individual_setting(self, setting_key: str, value: Any) -> Tuple[bool, str]:
         """
-        Update a single setting value (convenience method).
+        Update a single setting value.
         
         Args:
             setting_key: The setting key to update
@@ -176,7 +134,7 @@ class GlueSettingsHandler(BaseApplicationSettingsHandler):
     
     def get_setting_value(self, setting_key: str) -> Any:
         """
-        Get a single setting value (convenience method).
+        Get a single setting value.
         
         Args:
             setting_key: The setting key to retrieve

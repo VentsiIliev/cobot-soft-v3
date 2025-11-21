@@ -21,6 +21,7 @@ import copy
 
 
 from backend.system.utils import PathResolver
+from core.application.ApplicationContext import get_core_settings_path
 
 from plugins.core.settings.ui.BaseSettingsTabLayout import BaseSettingsTabLayout
 from frontend.core.utils.localization import TranslationKeys, get_app_translator
@@ -520,8 +521,8 @@ class RobotConfigController:
     def __init__(self,requestSender):
         self.ui = None  # Will be set by the UI after initialization
         self.requestSender=requestSender
-        # Use PathResolver to get the config file path
-        self.config_file = PathResolver.get_settings_file_path("robot_config.json")
+        # Use application context for core settings path
+        self.config_file = get_core_settings_path("robot_config.json") or PathResolver.get_settings_file_path("robot_config.json")
         self.command_history = CommandHistory()
         self.is_loading = False  # Flag to prevent undo tracking during load
 

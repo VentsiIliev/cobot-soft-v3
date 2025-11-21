@@ -15,9 +15,6 @@ REQUEST_RESOURCE_GLUE_NOZZLE = "GlueNozzle"      # Glue nozzle control resource
 SETTINGS_GLUE_GET = "/api/v1/settings/glue"
 SETTINGS_GLUE_SET = "/api/v1/settings/glue/set"
 
-# Legacy glue endpoints for backward compatibility
-SETTINGS_GLUE_GET_LEGACY = "settings/glue/get"
-SETTINGS_GLUE_SET_LEGACY = "settings/glue/set"
 
 # Glue application specific operations
 GLUE_NOZZLE_CLEAN = "glue/nozzle/clean"

@@ -1,5 +1,5 @@
 {
-    "Spray Width": 6.0,
+    "Spray Width": 8.5,
     "Spraying Height": 10.0,
     "Fan Speed": 50.0,
     "Generator-Glue Delay": 1,
@@ -10,12 +10,12 @@
     "Glue Type": "Type A",
     "Generator Timeout": 5.0,
     "Time Before Motion": 1.0,
-    "Reach Start Threshold": 3.0,
+    "Reach Start Threshold": 1,
     "Time Before Stop": 1,
     "Reach End Threshold": 1,
     "Initial Ramp Speed": 5000.0,
     "Forward Ramp Steps": 1,
     "Reverse Ramp Steps": 1,
-    "Initial Ramp Speed Duration": 0.5,
-    "Spray On": false
+    "Initial Ramp Speed Duration": 1,
+    "Spray On": true
 }
